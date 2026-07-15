@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { buildBreadcrumb, buildRestaurant } from '../../lib/jsonld';
+import { t, type UiKey } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+const [location] = (await getCollection('locations')).map((e) => e.data);
+if (!settings || !location) throw new Error('settings/locations content is missing');
+
+const alternates = structuralAlternates('/contact/');
+const site = Astro.site!;
+
+const title = {
+  en: 'Contact & location — Apple Vegan Cafe Pattaya',
+  th: 'ติดต่อและแผนที่ — ร้านอาหารเจ คาเฟ่เจ พัทยา',
+  ru: 'Контакты и адрес — Apple Vegan Cafe, Паттайя',
+}[locale];
+const description = {
+  en: 'Address, opening hours, phone and directions to Apple Vegan Cafe & Restaurant in Pattaya (Bang Lamung, Chonburi).',
+  th: 'ที่อยู่ เวลาเปิด-ปิด โทรศัพท์ และวิธีเดินทางมาร้านอาหารเจ คาเฟ่เจ พัทยา',
+  ru: 'Адрес, часы работы, телефон и как добраться до Apple Vegan Cafe в Паттайе.',
+}[locale];
+
+const jsonld = [
+  buildRestaurant({
+    name: settings.name,
+    url: absoluteUrl(site, '/'),
+    menuUrl: absoluteUrl(site, localePath(locale, '/menu/')),
+    telephone: settings.phone,
+    address: location.address.en,
+    geo: location.geo,
+    images: [],
+    sameAs: settings.social.map((s) => s.url),
+    hours: location.hours,
+  }),
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: t(locale, 'nav.contact'), url: absoluteUrl(site, localePath(locale, '/contact/')) },
+  ]),
+];
+
+const dayLabel = (day: string) => t(locale, `days.${day}` as UiKey);
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <h1 class="text-3xl font-bold">{t(locale, 'nav.contact')}</h1>
+
+  <section class="mt-6">
+    <h2 class="text-lg font-semibold">{t(locale, 'contact.address')}</h2>
+    <p class="mt-1">{location.address[locale]}</p>
+    {
+      location.mapsUrl && (
+        <p class="mt-2">
+          <a href={location.mapsUrl} rel="noopener" class="underline">
+            {t(locale, 'contact.findUs')}
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <section class="mt-6">
+    <h2 class="text-lg font-semibold">{t(locale, 'contact.phone')}</h2>
+    <p class="mt-1">
+      <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="underline">{settings.phone}</a>
+    </p>
+    {
+      settings.whatsapp && (
+        <p class="mt-1">
+          <a href={settings.whatsapp} rel="noopener" class="underline">
+            WhatsApp
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <section class="mt-6">
+    <h2 class="text-lg font-semibold">{t(locale, 'contact.hours')}</h2>
+    <table class="mt-2 text-left">
+      <tbody>
+        {
+          location.hours.map((h) => (
+            <tr>
+              <th scope="row" class="pr-6 font-normal">
+                {h.days.map(dayLabel).join(', ')}
+              </th>
+              <td>
+                {h.open}–{h.close}
+              </td>
+            </tr>
+          ))
+        }
+        <tr>
+          <th scope="row" class="pr-6 font-normal">{dayLabel('sun')}</th>
+          <td>{t(locale, 'contact.closed')}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</Base>

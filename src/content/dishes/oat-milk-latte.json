@@ -1,0 +1,22 @@
+{
+  "category": "drinks",
+  "price_thb": 85,
+  "name": {
+    "en": "Oat milk latte (sample dish)",
+    "th": "ลาเต้นมข้าวโอ๊ต (ตัวอย่าง)",
+    "ru": "Латте на овсяном молоке (образец)"
+  },
+  "description": {
+    "en": "SAMPLE seed dish — replace via the Grab menu import. Espresso with house oat milk."
+  },
+  "slug": { "en": "oat-milk-latte", "th": "ลาเต้นมข้าวโอ๊ต", "ru": "latte-na-ovsyanom-moloke" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan"],
+  "allergens": ["gluten"],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "retyped",
+  "reviewedAt": null
+}

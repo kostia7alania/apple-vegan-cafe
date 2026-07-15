@@ -1,0 +1,55 @@
+# CI gate: lint → typecheck → unit tests → content validation → build →
+# link check → e2e smoke → Lighthouse budget.
+# Renovate automerge is allowed ONLY when this workflow is green.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable pnpm via corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm check
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Validate content
+        run: pnpm validate:content
+
+      - name: Build
+        run: pnpm build
+
+      # canonical/hreflang tags point at the production origin; before the domain
+      # is live those would fail DNS — internal <a> links are relative and checked.
+      # TODO after launch: drop the --skip flag so production URLs are verified too.
+      - name: Check links
+        run: pnpm exec linkinator ./dist --recurse --silent --skip "^https://applevegancafe.com"
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E smoke tests
+        run: pnpm test:e2e
+
+      - name: Lighthouse budget
+        run: pnpm exec lhci autorun

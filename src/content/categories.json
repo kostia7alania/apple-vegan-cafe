@@ -1,0 +1,14 @@
+[
+  {
+    "id": "mains",
+    "order": 1,
+    "name": { "en": "Thai mains", "th": "อาหารจานหลัก", "ru": "Основные блюда" },
+    "slug": { "en": "thai-mains", "th": "อาหารจานหลัก", "ru": "osnovnye-blyuda" }
+  },
+  {
+    "id": "drinks",
+    "order": 2,
+    "name": { "en": "Drinks", "th": "เครื่องดื่ม", "ru": "Напитки" },
+    "slug": { "en": "drinks", "th": "เครื่องดื่ม", "ru": "napitki" }
+  }
+]

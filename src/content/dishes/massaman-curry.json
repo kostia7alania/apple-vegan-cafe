@@ -1,0 +1,22 @@
+{
+  "category": "mains",
+  "price_thb": 150,
+  "name": {
+    "en": "Vegan Massaman Curry (sample dish)",
+    "th": "แกงมัสมั่นเจ (ตัวอย่าง)",
+    "ru": "Веганский массаман карри (образец)"
+  },
+  "description": {
+    "en": "SAMPLE seed dish — replace via the Grab menu import. Coconut milk curry with potato and tofu."
+  },
+  "slug": { "en": "vegan-massaman-curry", "th": "แกงมัสมั่นเจ", "ru": "veganskiy-massaman-karri" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": ["peanut"],
+  "spicyLevel": 1,
+  "available": true,
+  "featured": true,
+  "source": "retyped",
+  "reviewedAt": null
+}

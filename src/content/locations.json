@@ -1,0 +1,19 @@
+{
+  "pattaya": {
+    "address": {
+      "en": "414/39 Moo 9, Bang Lamung, Chonburi 20150, Thailand",
+      "th": "414/39 หมู่ 9 ต.หนองปรือ อ.บางละมุง จ.ชลบุรี 20150",
+      "ru": "414/39 Му 9, Банг Ламунг, Чонбури 20150, Таиланд"
+    },
+    "geo": null,
+    "mapsUrl": null,
+    "hours": [
+      {
+        "days": ["mon", "tue", "wed", "thu", "fri", "sat"],
+        "open": "07:30",
+        "close": "22:30"
+      }
+    ],
+    "specialHours": []
+  }
+}

@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+/*
+ * System font stack only (performance constraint: no web fonts).
+ * Noto/Thonburi cover Thai on the respective platforms.
+ */
+@theme {
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Noto Sans Thai',
+    Thonburi, sans-serif;
+}

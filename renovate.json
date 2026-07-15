@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", "group:allNonMajor"],
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "description": "TypeScript stays on 6.x: Astro/Volar tooling requires TS 6 until the TS 7.1 programmatic API ships (per Microsoft's TS 7.0 announcement). Revisit at TS 7.1.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "~6.0.0"
+    }
+  ]
+}

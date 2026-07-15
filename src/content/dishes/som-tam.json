@@ -1,0 +1,22 @@
+{
+  "category": "mains",
+  "price_thb": 99,
+  "name": {
+    "en": "Som Tam — green papaya salad (sample dish)",
+    "th": "ส้มตำเจ (ตัวอย่าง)",
+    "ru": "Сом там — салат из зелёной папайи (образец)"
+  },
+  "description": {
+    "en": "SAMPLE seed dish — replace via the Grab menu import. No fish sauce: soy-based dressing."
+  },
+  "slug": { "en": "som-tam-papaya-salad", "th": "ส้มตำเจ", "ru": "som-tam-salat-iz-papayi" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "allergens": ["peanut"],
+  "spicyLevel": 3,
+  "available": true,
+  "featured": false,
+  "source": "retyped",
+  "reviewedAt": null
+}

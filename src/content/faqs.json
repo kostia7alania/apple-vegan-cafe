@@ -1,0 +1,32 @@
+[
+  {
+    "id": "all-vegan",
+    "topic": "food",
+    "order": 1,
+    "question": {
+      "en": "Is everything on the menu vegan?",
+      "th": "อาหารทุกจานเป็นเจ/วีแกนหรือไม่?",
+      "ru": "Всё ли меню веганское?"
+    },
+    "answer": {
+      "en": "Yes — 100%. We are a fully vegan (เจ) kitchen: no meat, no fish sauce, no egg, no dairy.",
+      "th": "ใช่ 100% ครัวของเราเป็นเจทั้งหมด ไม่มีเนื้อสัตว์ น้ำปลา ไข่ หรือนม",
+      "ru": "Да, на 100%. Наша кухня полностью веганская (เจ): без мяса, рыбного соуса, яиц и молочных продуктов."
+    }
+  },
+  {
+    "id": "fish-sauce",
+    "topic": "food",
+    "order": 2,
+    "question": {
+      "en": "Do you cook with fish sauce or oyster sauce?",
+      "th": "ใช้น้ำปลาหรือน้ำมันหอยไหม?",
+      "ru": "Используете ли вы рыбный или устричный соус?"
+    },
+    "answer": {
+      "en": "Never. We season with soy sauce, salt and Thai herbs only — the whole kitchen is plant-based.",
+      "th": "ไม่ใช้เลย เราปรุงด้วยซีอิ๊ว เกลือ และสมุนไพรไทยเท่านั้น",
+      "ru": "Никогда. Мы готовим только на соевом соусе, соли и тайских травах — вся кухня растительная."
+    }
+  }
+]

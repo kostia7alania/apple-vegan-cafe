@@ -1,0 +1,22 @@
+{
+  "category": "mains",
+  "price_thb": 120,
+  "name": {
+    "en": "Vegan Pad Thai (sample dish)",
+    "th": "ผัดไทยเจ (ตัวอย่าง)",
+    "ru": "Веганский пад тай (образец)"
+  },
+  "description": {
+    "en": "SAMPLE seed dish — replace via the Grab menu import. Rice noodles, tofu, tamarind sauce, peanuts."
+  },
+  "slug": { "en": "vegan-pad-thai", "th": "ผัดไทยเจ", "ru": "veganskiy-pad-tay" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": ["peanut", "soy"],
+  "spicyLevel": 1,
+  "available": true,
+  "featured": true,
+  "source": "retyped",
+  "reviewedAt": null
+}

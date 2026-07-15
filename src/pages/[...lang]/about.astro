@@ -1,0 +1,44 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { buildBreadcrumb } from '../../lib/jsonld';
+import { t } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const entry = (
+  await getCollection(
+    'pages',
+    ({ data }) => data.translationKey === 'about' && data.locale === locale,
+  )
+)[0];
+if (!entry) throw new Error(`about page missing for locale ${locale}`);
+const { Content } = await render(entry);
+
+const alternates = structuralAlternates('/about/');
+const site = Astro.site!;
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: t(locale, 'nav.about'), url: absoluteUrl(site, localePath(locale, '/about/')) },
+  ]),
+];
+---
+
+<Base {locale} title={entry.data.title} description={entry.data.description} {alternates} {jsonld}>
+  <article class="prose">
+    <h1 class="text-3xl font-bold">{entry.data.title}</h1>
+    <div class="mt-4 space-y-4">
+      <Content />
+    </div>
+  </article>
+</Base>

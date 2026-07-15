@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import { DEFAULT_LOCALE } from '../lib/i18n';
+import { t } from '../lib/ui';
+
+const locale = DEFAULT_LOCALE;
+---
+
+<Base
+  {locale}
+  title="Page not found — Apple Vegan Cafe"
+  description="This page does not exist."
+  alternates={{}}
+  noindex
+>
+  <h1 class="text-3xl font-bold">404 — {t(locale, 'notFound.title')}</h1>
+  <p class="mt-4">
+    <a href="/" class="underline">{t(locale, 'notFound.back')}</a>
+  </p>
+</Base>

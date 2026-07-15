@@ -1,0 +1,5 @@
+[
+  { "id": "peanut", "name": { "en": "Peanuts", "th": "ถั่วลิสง", "ru": "Арахис" } },
+  { "id": "soy", "name": { "en": "Soy", "th": "ถั่วเหลือง", "ru": "Соя" } },
+  { "id": "gluten", "name": { "en": "Gluten", "th": "กลูเตน", "ru": "Глютен" } }
+]

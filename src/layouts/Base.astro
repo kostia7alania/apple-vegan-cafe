@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import Seo from '../components/Seo.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import { type Locale, type PartiallyLocalized } from '../lib/i18n';
+import { localePath } from '../lib/urls';
+import { t } from '../lib/ui';
+import '../styles/global.css';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  alternates: PartiallyLocalized;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  /** JSON-LD objects to embed on this page */
+  jsonld?: Record<string, unknown>[];
+}
+
+const { locale, title, description, alternates, noindex, ogType, jsonld = [] } = Astro.props;
+
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+if (!settings) throw new Error('settings.json is missing');
+const [location] = (await getCollection('locations')).map((e) => e.data);
+if (!location) throw new Error('locations.json is missing');
+
+const nav = [
+  { href: localePath(locale, '/'), label: t(locale, 'nav.home') },
+  { href: localePath(locale, '/menu/'), label: t(locale, 'nav.menu') },
+  { href: localePath(locale, '/about/'), label: t(locale, 'nav.about') },
+  { href: localePath(locale, '/blog/'), label: t(locale, 'nav.blog') },
+  { href: localePath(locale, '/contact/'), label: t(locale, 'nav.contact') },
+];
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <Seo {locale} {title} {description} {alternates} {noindex} {ogType} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {
+      jsonld.map((obj) => (
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(obj)} />
+      ))
+    }
+  </head>
+  <body class="mx-auto flex min-h-screen max-w-3xl flex-col px-4 font-sans text-neutral-900">
+    <header class="flex flex-wrap items-center justify-between gap-4 py-4">
+      <a href={localePath(locale, '/')} class="text-lg font-bold">
+        {settings.nameLocalized[locale]}
+      </a>
+      <LanguageSwitcher {locale} {alternates} />
+      <nav class="w-full" aria-label="Main">
+        <ul class="flex flex-wrap gap-4 text-sm">
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href} class="underline">
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </header>
+
+    <main class="flex-1 py-6">
+      <slot />
+    </main>
+
+    <footer class="border-t border-neutral-200 py-6 text-sm text-neutral-700">
+      <p class="font-semibold">{settings.nameLocalized[locale]}</p>
+      <p>{location.address[locale]}</p>
+      <p>
+        <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="underline">{settings.phone}</a>
+      </p>
+      <ul class="mt-2 flex flex-wrap gap-4">
+        {
+          settings.reviewLinks.google && (
+            <li>
+              <a href={settings.reviewLinks.google} rel="noopener" class="underline">
+                {t(locale, 'footer.reviews')}
+              </a>
+            </li>
+          )
+        }
+        {
+          settings.social.map((s) => (
+            <li>
+              <a href={s.url} rel="noopener" class="underline">
+                {s.platform}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </footer>
+  </body>
+</html>

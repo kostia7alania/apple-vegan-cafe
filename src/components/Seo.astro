@@ -1,0 +1,56 @@
+---
+import { DEFAULT_LOCALE, OG_LOCALES, type Locale, type PartiallyLocalized } from '../lib/i18n';
+import { absoluteUrl, normalizePath } from '../lib/urls';
+
+/**
+ * SEO head block: title, description, self-canonical, reciprocal hreflang
+ * (including self and x-default → EN), Open Graph locale tags.
+ * hreflang lives in <head> ONLY (not duplicated in the sitemap) — one method,
+ * per Google guidance.
+ */
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** site-relative paths of every existing translation of THIS page, keyed by locale */
+  alternates: PartiallyLocalized;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const { locale, title, description, alternates, noindex = false, ogType = 'website' } = Astro.props;
+
+const site = Astro.site!;
+const currentPath = alternates[locale] ?? normalizePath(Astro.url.pathname);
+const canonical = absoluteUrl(site, currentPath);
+const defaultAlternate = alternates[DEFAULT_LOCALE];
+const alternateEntries = Object.entries(alternates).filter(([, path]) => Boolean(path)) as [
+  Locale,
+  string,
+][];
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{
+  alternateEntries.map(([l, path]) => (
+    <link rel="alternate" hreflang={l} href={absoluteUrl(site, path)} />
+  ))
+}
+{
+  defaultAlternate && (
+    <link rel="alternate" hreflang="x-default" href={absoluteUrl(site, defaultAlternate)} />
+  )
+}
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={OG_LOCALES[locale]} />
+{
+  alternateEntries
+    .filter(([l]) => l !== locale)
+    .map(([l]) => <meta property="og:locale:alternate" content={OG_LOCALES[l]} />)
+}

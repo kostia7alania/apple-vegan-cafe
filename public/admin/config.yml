@@ -1,0 +1,327 @@
+# Sveltia CMS configuration (Decap-compatible format — the same file works with
+# Decap CMS as an escape hatch).
+#
+# SETUP (developer, one-time):
+# 1. Replace `repo` with the real GitHub owner/repo once it is pushed.
+# 2. Deploy https://github.com/sveltia/sveltia-cms-auth as a Cloudflare Worker,
+#    set its GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET as Worker secrets (dashboard
+#    only — never in this repo), and put its URL into `base_url`.
+#
+# Storage model note: translations live as {en,th,ru} objects per field; the
+# price exists exactly once per dish. We intentionally do NOT use the CMS i18n
+# feature for JSON data collections — object widgets match our schema exactly.
+# Categories/allergens/FAQs/redirects are developer-edited in git (rarely change).
+
+backend:
+  name: github
+  repo: OWNER/apple-vegan-cafe # TODO: real owner/repo
+  branch: main
+  base_url: https://sveltia-cms-auth.EXAMPLE.workers.dev # TODO: deployed auth Worker URL
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: dishes
+    label: Menu dishes
+    label_singular: Dish
+    folder: src/content/dishes
+    format: json
+    extension: json
+    create: true
+    slug: '{{fields.name.en | slugify}}'
+    summary: '{{fields.name.en}} — ฿{{fields.price_thb}}'
+    fields:
+      - {
+          name: name,
+          label: Name,
+          widget: object,
+          fields:
+            [
+              { name: en, label: English, widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: Русский, widget: string },
+            ],
+        }
+      - { name: price_thb, label: 'Price (THB)', widget: number, value_type: float, min: 1 }
+      - { name: category, label: Category, widget: select, options: [mains, drinks] }
+      - {
+          name: available,
+          label: 'Available (uncheck = stop list)',
+          widget: boolean,
+          default: true,
+        }
+      - {
+          name: featured,
+          label: 'Show on home page',
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          name: description,
+          label: Description,
+          widget: object,
+          required: false,
+          fields:
+            [
+              { name: en, label: English, widget: text, required: false },
+              { name: th, label: ไทย, widget: text, required: false },
+              { name: ru, label: Русский, widget: text, required: false },
+            ],
+        }
+      - {
+          name: slug,
+          label: 'URL slug (per language)',
+          widget: object,
+          fields:
+            [
+              { name: en, label: English, widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: Русский, widget: string },
+            ],
+        }
+      - {
+          name: images,
+          label: Photos,
+          widget: list,
+          required: false,
+          field: { name: image, label: Image, widget: image },
+        }
+      - {
+          name: dietaryTags,
+          label: 'Dietary tags',
+          widget: select,
+          multiple: true,
+          default: [vegan],
+          options: [vegan, jay, gluten-free, raw, nut-free],
+        }
+      - {
+          name: allergens,
+          label: Allergens,
+          widget: select,
+          multiple: true,
+          required: false,
+          options: [peanut, soy, gluten],
+        }
+      - {
+          name: spicyLevel,
+          label: 'Spicy level (0–3)',
+          widget: number,
+          value_type: int,
+          min: 0,
+          max: 3,
+          default: 0,
+        }
+      - {
+          name: source,
+          label: 'Data source',
+          widget: select,
+          options: [grab_export, owner, retyped],
+          default: owner,
+        }
+      - { name: reviewedAt, label: 'Reviewed on', widget: datetime, required: false, default: '' }
+      - {
+          name: previousSlugs,
+          label: 'Previous slugs (for redirects)',
+          widget: list,
+          required: false,
+          field: { name: slug, label: Slug, widget: string },
+        }
+
+  - name: articles_en
+    label: Blog (English)
+    folder: src/content/articles/en
+    create: true
+    slug: '{{fields.slug}}'
+    fields:
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: en }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: 'Short description (meta)', widget: text }
+      - { name: slug, label: 'URL slug', widget: string }
+      - { name: author, label: Author, widget: select, options: [family], default: family }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
+
+  - name: articles_th
+    label: Blog (ไทย)
+    folder: src/content/articles/th
+    create: true
+    slug: '{{fields.slug}}'
+    fields:
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: th }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: 'Short description (meta)', widget: text }
+      - { name: slug, label: 'URL slug', widget: string }
+      - { name: author, label: Author, widget: select, options: [family], default: family }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
+
+  - name: articles_ru
+    label: Blog (Русский)
+    folder: src/content/articles/ru
+    create: true
+    slug: '{{fields.slug}}'
+    fields:
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: ru }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: 'Short description (meta)', widget: text }
+      - { name: slug, label: 'URL slug', widget: string }
+      - { name: author, label: Author, widget: select, options: [family], default: family }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
+
+  - name: pages
+    label: Static pages
+    folder: src/content/pages
+    create: false
+    fields:
+      - { name: translationKey, label: 'Translation key', widget: string }
+      - { name: locale, label: Language, widget: select, options: [en, th, ru] }
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: 'Short description (meta)', widget: text }
+      - { name: body, label: Text, widget: markdown }
+
+  - name: site
+    label: Site settings
+    files:
+      - name: settings
+        label: 'Cafe info (name, phone, links)'
+        file: src/content/settings.json
+        fields:
+          - name: site
+            label: Settings
+            widget: object
+            fields:
+              - { name: name, label: 'Official name', widget: string }
+              - {
+                  name: nameLocalized,
+                  label: 'Displayed name',
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: tagline,
+                  label: Tagline,
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - { name: phone, label: Phone, widget: string }
+              - { name: whatsapp, label: 'WhatsApp link', widget: string, required: false }
+              - { name: lineId, label: 'LINE ID', widget: string, required: false }
+              - { name: email, label: Email, widget: string, required: false }
+              - {
+                  name: social,
+                  label: 'Social links',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: platform, label: Platform, widget: string },
+                      { name: url, label: URL, widget: string },
+                    ],
+                }
+              - {
+                  name: orderingLinks,
+                  label: 'Ordering links (Grab…)',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: provider, label: Provider, widget: string },
+                      { name: url, label: URL, widget: string },
+                    ],
+                }
+              - {
+                  name: reviewLinks,
+                  label: 'Review links',
+                  widget: object,
+                  fields:
+                    [
+                      { name: google, label: Google, widget: string, required: false },
+                      { name: happycow, label: HappyCow, widget: string, required: false },
+                      { name: tripadvisor, label: TripAdvisor, widget: string, required: false },
+                    ],
+                }
+      - name: location
+        label: 'Address & opening hours'
+        file: src/content/locations.json
+        fields:
+          - name: pattaya
+            label: Pattaya
+            widget: object
+            fields:
+              - {
+                  name: address,
+                  label: Address,
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: geo,
+                  label: 'Coordinates (from the exact Google Maps pin)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: lat, label: Latitude, widget: number, value_type: float },
+                      { name: lng, label: Longitude, widget: number, value_type: float },
+                    ],
+                }
+              - { name: mapsUrl, label: 'Google Maps link', widget: string, required: false }
+              - {
+                  name: hours,
+                  label: 'Opening hours',
+                  widget: list,
+                  fields:
+                    [
+                      {
+                        name: days,
+                        label: Days,
+                        widget: select,
+                        multiple: true,
+                        options: [mon, tue, wed, thu, fri, sat, sun],
+                      },
+                      { name: open, label: 'Opens (HH:MM)', widget: string },
+                      { name: close, label: 'Closes (HH:MM)', widget: string },
+                    ],
+                }
+              - {
+                  name: specialHours,
+                  label: 'Special days (holidays)',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: date, label: 'Date (YYYY-MM-DD)', widget: string },
+                      {
+                        name: open,
+                        label: 'Opens (empty = closed)',
+                        widget: string,
+                        required: false,
+                      },
+                      { name: close, label: Closes, widget: string, required: false },
+                      { name: note, label: Note, widget: string, required: false },
+                    ],
+                }

@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { buildRestaurant } from '../../lib/jsonld';
+import { t } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+const [location] = (await getCollection('locations')).map((e) => e.data);
+if (!settings || !location) throw new Error('settings/locations content is missing');
+
+const featured = (await getCollection('dishes', ({ data }) => data.featured && data.available)).map(
+  (e) => e.data,
+);
+
+const alternates = structuralAlternates('/');
+const site = Astro.site!;
+
+const jsonld = [
+  buildRestaurant({
+    name: settings.name,
+    url: absoluteUrl(site, '/'),
+    menuUrl: absoluteUrl(site, localePath(locale, '/menu/')),
+    telephone: settings.phone,
+    address: location.address.en,
+    geo: location.geo,
+    images: [],
+    sameAs: [
+      ...settings.social.map((s) => s.url),
+      ...(settings.reviewLinks.happycow ? [settings.reviewLinks.happycow] : []),
+    ],
+    hours: location.hours,
+  }),
+];
+
+const title = {
+  en: 'Apple Vegan Cafe & Restaurant — 100% vegan food in Pattaya',
+  th: 'ร้านอาหารเจ คาเฟ่เจ พัทยา — Apple Vegan Cafe',
+  ru: 'Apple Vegan Cafe — 100% веганское кафе в Паттайе',
+}[locale];
+const description = {
+  en: 'Family-run 100% vegan Thai cafe in Pattaya. Open Mon–Sat from 7:30. Real menu, real prices, plant-based only — no fish sauce, no egg, no dairy.',
+  th: 'ร้านอาหารเจของครอบครัวในพัทยา เปิด จ.–ส. ตั้งแต่ 7:30 น. อาหารเจ 100% ไม่มีน้ำปลา ไข่ หรือนม',
+  ru: 'Семейное 100% веганское тайское кафе в Паттайе. Открыто пн–сб с 7:30. Настоящее меню и цены, только растительная еда.',
+}[locale];
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <h1 class="text-3xl font-bold">{settings.nameLocalized[locale]}</h1>
+  <p class="mt-2 text-lg">{settings.tagline[locale]}</p>
+
+  <div class="mt-6 flex flex-wrap gap-4">
+    <a href={localePath(locale, '/menu/')} class="rounded border px-4 py-2 font-semibold underline">
+      {t(locale, 'home.viewMenu')}
+    </a>
+    {
+      location.mapsUrl && (
+        <a href={location.mapsUrl} rel="noopener" class="rounded border px-4 py-2 underline">
+          {t(locale, 'home.getDirections')}
+        </a>
+      )
+    }
+  </div>
+
+  {
+    featured.length > 0 && (
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold">{t(locale, 'home.featured')}</h2>
+        <ul class="mt-4 space-y-3">
+          {featured.map((dish) => (
+            <li class="flex items-baseline justify-between gap-4 border-b border-neutral-100 pb-2">
+              <a href={`${localePath(locale, '/menu/')}#${dish.slug[locale]}`} class="underline">
+                {dish.name[locale]}
+              </a>
+              <span class="whitespace-nowrap font-semibold">฿{dish.price_thb}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>

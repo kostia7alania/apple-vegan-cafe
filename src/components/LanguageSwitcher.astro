@@ -1,0 +1,36 @@
+---
+import { LOCALE_LABELS, type Locale, type PartiallyLocalized } from '../lib/i18n';
+import { t } from '../lib/ui';
+
+/**
+ * Plain crawlable links to the same page in other locales.
+ * A locale without an existing translation is simply not rendered —
+ * no fallback redirects, no duplicate pages.
+ */
+interface Props {
+  locale: Locale;
+  alternates: PartiallyLocalized;
+}
+
+const { locale, alternates } = Astro.props;
+const others = Object.entries(alternates).filter(([l, path]) => l !== locale && Boolean(path)) as [
+  Locale,
+  string,
+][];
+---
+
+{
+  others.length > 0 && (
+    <nav aria-label={t(locale, 'lang.switch')} class="text-sm">
+      <ul class="flex gap-3">
+        {others.map(([l, path]) => (
+          <li>
+            <a href={path} lang={l} hreflang={l} class="underline">
+              {LOCALE_LABELS[l]}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

@@ -1,0 +1,18 @@
+# Security headers for Cloudflare Workers Static Assets.
+# Applies to statically served assets only (this site is 100% static).
+# CSP starts from default-src 'none' and allowlists what the site actually uses.
+# 'unsafe-inline' for styles is required by Astro's inlined <style> blocks.
+
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=()
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests
+
+# The CMS admin page loads Sveltia from a pinned CDN URL and talks to the
+# GitHub API + the sveltia-cms-auth Worker. Scoped override, admin only.
+/admin/*
+  X-Robots-Tag: noindex
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://unpkg.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://github.com https://*.workers.dev; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'

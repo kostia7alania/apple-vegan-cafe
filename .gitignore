@@ -1,0 +1,23 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# environment — never commit real env values (secrets live in the Cloudflare dashboard)
+.env
+.env.*
+!.env.example
+
+# cloudflare
+.wrangler/
+
+# tests
+test-results/
+playwright-report/
+.lighthouseci/
+
+# os / editor
+.DS_Store
+*.local

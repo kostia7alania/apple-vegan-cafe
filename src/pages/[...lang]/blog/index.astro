@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { localeStaticPaths, type Locale } from '../../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../../lib/urls';
+import { buildBreadcrumb } from '../../../lib/jsonld';
+import { t } from '../../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const articles = (
+  await getCollection('articles', ({ data }) => data.locale === locale && !data.draft)
+).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const alternates = structuralAlternates('/blog/');
+const site = Astro.site!;
+
+const title = {
+  en: 'Blog — Apple Vegan Cafe Pattaya',
+  th: 'บทความ — ร้านอาหารเจ คาเฟ่เจ พัทยา',
+  ru: 'Блог — Apple Vegan Cafe, Паттайя',
+}[locale];
+const description = {
+  en: 'Stories, vegan food guides and news from our family cafe in Pattaya.',
+  th: 'เรื่องราว ไกด์อาหารเจ และข่าวจากร้านครอบครัวของเราในพัทยา',
+  ru: 'Истории, гиды по веганской еде и новости нашего семейного кафе в Паттайе.',
+}[locale];
+
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: t(locale, 'nav.blog'), url: absoluteUrl(site, localePath(locale, '/blog/')) },
+  ]),
+];
+
+const dateFmt = new Intl.DateTimeFormat(locale, { dateStyle: 'long' });
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <h1 class="text-3xl font-bold">{t(locale, 'nav.blog')}</h1>
+  <ul class="mt-6 space-y-6">
+    {
+      articles.map(({ data: article }) => (
+        <li>
+          <article>
+            <h2 class="text-xl font-semibold">
+              <a href={localePath(locale, `/blog/${article.slug}/`)} class="underline">
+                {article.title}
+              </a>
+            </h2>
+            <p class="mt-1 text-sm text-neutral-500">
+              <time datetime={article.publishedAt.toISOString().slice(0, 10)}>
+                {dateFmt.format(article.publishedAt)}
+              </time>
+            </p>
+            <p class="mt-2">{article.description}</p>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

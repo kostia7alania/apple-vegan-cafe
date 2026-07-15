@@ -1,0 +1,8 @@
+# Single-package project (no workspaces) — this file holds pnpm settings
+# (pnpm 11 no longer reads the "pnpm" field in package.json).
+# Dependencies allowed to run install scripts:
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+  '@parcel/watcher': true

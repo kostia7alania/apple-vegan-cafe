@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { buildBreadcrumb } from '../../lib/jsonld';
+import { t } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+// The owner's "stop list": unavailable dishes disappear from the menu entirely.
+const dishes = await getCollection('dishes', ({ data }) => data.available);
+
+const alternates = structuralAlternates('/menu/');
+const site = Astro.site!;
+
+const title = {
+  en: 'Menu & prices — Apple Vegan Cafe Pattaya',
+  th: 'เมนูและราคา — ร้านอาหารเจ คาเฟ่เจ พัทยา',
+  ru: 'Меню и цены — Apple Vegan Cafe, Паттайя',
+}[locale];
+const description = {
+  en: 'Full menu of Apple Vegan Cafe & Restaurant in Pattaya with prices in Thai Baht. 100% vegan Thai and Western dishes, updated by the family.',
+  th: 'เมนูทั้งหมดของร้านอาหารเจ คาเฟ่เจ พัทยา พร้อมราคา อัปเดตโดยครอบครัว',
+  ru: 'Полное меню Apple Vegan Cafe в Паттайе с ценами в батах. 100% веганские тайские и европейские блюда.',
+}[locale];
+
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: t(locale, 'nav.menu'), url: absoluteUrl(site, localePath(locale, '/menu/')) },
+  ]),
+];
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <h1 class="text-3xl font-bold">{t(locale, 'menu.title')}</h1>
+
+  {
+    categories.map((category) => {
+      const items = dishes.filter((d) => d.data.category.id === category.id);
+      if (items.length === 0) return null;
+      return (
+        <details open class="mt-8" id={category.data.slug[locale]}>
+          <summary class="cursor-pointer text-xl font-semibold">
+            {category.data.name[locale]}
+          </summary>
+          <ul class="mt-4 space-y-4">
+            {items.map(({ data: dish }) => (
+              <li
+                id={dish.slug[locale]}
+                class="flex items-baseline justify-between gap-4 border-b border-neutral-100 pb-3"
+              >
+                <div>
+                  <h3 class="font-medium">{dish.name[locale]}</h3>
+                  {dish.description?.[locale] && (
+                    <p class="mt-1 text-sm text-neutral-600">{dish.description[locale]}</p>
+                  )}
+                  {dish.spicyLevel > 0 && (
+                    <p class="mt-1 text-sm" aria-label={t(locale, 'menu.spicy')}>
+                      {'🌶'.repeat(dish.spicyLevel)}
+                    </p>
+                  )}
+                </div>
+                <span class="whitespace-nowrap font-semibold">฿{dish.price_thb}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      );
+    })
+  }
+</Base>
