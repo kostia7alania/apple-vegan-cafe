@@ -1,0 +1,57 @@
+---
+// Small cross-linking block shared by the English landing pages
+// (backlog R2/R3/R4). Each landing links to the other two — internal
+// linking without adding more banners to the home page.
+interface Landing {
+  path: string;
+  label: string;
+  note: string;
+}
+
+const LANDINGS: Landing[] = [
+  {
+    path: '/vegan-breakfast-pattaya/',
+    label: 'Vegan breakfast in Pattaya',
+    note: 'One of the earliest in town — doors open 7:30, Mon–Sat',
+  },
+  {
+    path: '/vegan-delivery-pattaya/',
+    label: 'Vegan food delivery in Pattaya',
+    note: 'GrabFood to your door, or pickup at cafe prices',
+  },
+  {
+    path: '/pure-veg-jain-friendly/',
+    label: 'Pure veg & Jain-friendly food',
+    note: '100% vegetarian kitchen with dishes in the เจ tradition',
+  },
+];
+
+interface Props {
+  /** Path of the landing being rendered — excluded from the list. */
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const links = LANDINGS.filter((l) => l.path !== currentPath);
+---
+
+<section class="wrap pb-4" aria-labelledby="more-for-you">
+  <h2 id="more-for-you" class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+    More for you
+  </h2>
+  <ul class="mt-4 grid gap-4 sm:grid-cols-2">
+    {
+      links.map((l) => (
+        <li>
+          <a
+            href={l.path}
+            class="flex h-full flex-col gap-1 rounded-2xl border border-cream-300 bg-cream-50 px-5 py-4 transition-colors hover:border-leaf-700/40 hover:bg-leaf-50"
+          >
+            <span class="font-display text-lg leading-snug font-bold text-leaf-900">{l.label}</span>
+            <span class="text-sm leading-relaxed text-ink-500">{l.note}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>

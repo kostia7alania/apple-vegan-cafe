@@ -1,9 +1,14 @@
 ---
-// EN copy self-reviewed; final proofread before launch — backlog R2.
-// English landing page for the «vegan breakfast pattaya» query cluster.
+// EN copy self-reviewed; final proofread before launch — backlog R3.
+// English landing page for the «vegan delivery pattaya» query cluster.
 // English-only: `alternates` carries a single `en` entry, so Seo emits a
 // self-referential hreflang plus x-default (EN is the default locale) —
 // correct while the page has no TH/RU translation.
+//
+// Ordering links live in the CMS (settings.orderingLinks). While the family
+// hasn't added a Grab link yet, we show honest «search for us in the app»
+// guidance; once a provider containing «grab» appears in settings, the page
+// upgrades to a direct GrabFood button automatically.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import JayBadge from '../components/JayBadge.astro';
@@ -16,43 +21,43 @@ import { buildBreadcrumb } from '../lib/jsonld';
 import { t, type UiKey } from '../lib/ui';
 
 const locale: Locale = 'en';
-const PAGE_PATH = '/vegan-breakfast-pattaya/';
+const PAGE_PATH = '/vegan-delivery-pattaya/';
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// Every available breakfast dish, cheapest first.
-const breakfastDishes = (
-  await getCollection('dishes', ({ data }) => data.available && data.category.id === 'breakfast')
+// Hand-picked dishes from mains + desserts that survive the ride well.
+const DELIVERY_DISH_IDS = [
+  'pad-thai-vegan',
+  'massaman-curry',
+  'khao-soi',
+  'som-tam',
+  'mango-sticky-rice',
+];
+const deliveryDishes = (
+  await getCollection('dishes', ({ id, data }) => data.available && DELIVERY_DISH_IDS.includes(id))
 )
-  .map((e) => e.data)
-  .sort((a, b) => a.price_thb - b.price_thb);
-
-// Two morning drinks, hand-picked: the oat milk latte and a fresh coconut.
-const MORNING_DRINK_IDS = ['oat-milk-latte', 'fresh-coconut'];
-const morningDrinks = (
-  await getCollection('dishes', ({ id, data }) => data.available && MORNING_DRINK_IDS.includes(id))
-)
-  .sort((a, b) => MORNING_DRINK_IDS.indexOf(a.id) - MORNING_DRINK_IDS.indexOf(b.id))
+  .sort((a, b) => DELIVERY_DISH_IDS.indexOf(a.id) - DELIVERY_DISH_IDS.indexOf(b.id))
   .map((e) => e.data);
+
+const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
 
 const alternates = { en: PAGE_PATH };
 const site = Astro.site!;
 
-const title = 'Vegan Breakfast in Pattaya from 7:30 — Apple Vegan Cafe';
+const title = 'Vegan Food Delivery in Pattaya — Apple Vegan Cafe (Grab & pickup)';
 const description =
-  'One of the earliest vegan breakfasts in Pattaya — doors open 7:30, Mon–Sat. 100% plant-based pancakes, granola, avocado toast and oat milk coffee.';
+  '100% vegan Thai food delivered in Pattaya via GrabFood, or call and pick up at in-cafe prices. Family kitchen — no egg, no dairy, no fish sauce.';
 
 const jsonld = [
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
-    { name: 'Vegan breakfast in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
+    { name: 'Vegan food delivery in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
   ]),
 ];
 
 const menuPath = localePath(locale, '/menu/');
-const breakfastAnchor = `${menuPath}#breakfast`;
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
@@ -79,16 +84,16 @@ const daysLabel = (days: readonly string[]) =>
       <h1
         class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
       >
-        Vegan breakfast in Pattaya — Apple Vegan Cafe &amp; Restaurant
+        Vegan food delivery in Pattaya — Apple Vegan Cafe &amp; Restaurant
       </h1>
       <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
-        A small family kitchen serving one of the earliest vegan breakfasts in town
+        Our small family kitchen, brought to your door — or packed and waiting at the counter
       </p>
       <p
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Doors open 7:30 · Mon–Sat
+        Delivery &amp; pickup · Mon–Sat 7:30–22:30
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -110,47 +115,97 @@ const daysLabel = (days: readonly string[]) =>
   <section class="wrap py-12 sm:py-14">
     <div class="prose-editorial">
       <p>
-        Half past seven is a quiet hour in Pattaya. The streets are still cool, the beach crowd
-        hasn't arrived, and most vegan kitchens in town won't open for a while yet. Ours already
-        has. We're <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a small family-run cafe in
-        Bang Lamung, and breakfast here starts at <strong>7:30, Monday to Saturday</strong> — one of the
-        earliest vegan breakfasts in Pattaya.
-      </p>
-      <p>
-        Everything we cook is 100% plant-based — not a vegan corner of a regular menu, but the whole
-        kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> anywhere on the premises,
-        so nothing needs double-checking and nothing is cooked next to meat. The morning coffee is made
-        with our house-made oat milk, and the pancakes rise happily without a single egg.
-      </p>
-      <p>
-        Mornings here are unhurried. It's usually just us and a few regulars — someone reading
-        before work, a couple fuelling up before a dive trip to the islands. Order at the counter,
-        take a table, and breakfast arrives when it's ready. No buffet, no rush, no music turned up
-        too loud.
+        Some evenings you just don't want to leave the room — we understand. We're{' '}
+        <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a family-run cafe in Bang Lamung, and
+        everything we cook is 100% plant-based. In our kitchen there is{' '}
+        <strong>no meat, no fish sauce, no egg and no dairy</strong> — ever. It's the same honest cooking
+        whether it lands on one of our tables or arrives at your door in a delivery bag.
       </p>
     </div>
     <LeafDivider class="mt-10 max-w-60" />
   </section>
 
   <section class="wrap pb-12">
+    <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+      How to order
+    </h2>
+    {
+      grabLink ? (
+        <>
+          <p class="mt-3 max-w-[60ch] leading-relaxed text-ink-700">
+            We're on <strong>GrabFood</strong> — tap the button below, order, and a rider brings it
+            over while it's still warm.
+          </p>
+          <p class="mt-5">
+            <a
+              href={grabLink.url}
+              rel="noopener"
+              class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+            >
+              Order on GrabFood
+            </a>
+          </p>
+        </>
+      ) : (
+        <p class="mt-3 max-w-[60ch] leading-relaxed text-ink-700">
+          Delivery is available through <strong>Grab</strong> — open the GrabFood app and search for{' '}
+          <strong>«Apple Vegan Cafe»</strong>. You'll find our dishes there, and a rider brings them
+          over while they're still warm.
+        </p>
+      )
+    }
+    <p class="mt-4 max-w-[60ch] leading-relaxed text-ink-700">
+      Prefer to skip the app? Call us, tell us what you'd like, and pick it up at the counter —
+      we'll have it packed and ready.
+    </p>
+    <p class="mt-5">
+      <a
+        href={phoneHref}
+        class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+      >
+        {`${t(locale, 'actions.call')} ${settings.phone} for pickup`}
+      </a>
+    </p>
+  </section>
+
+  <section class="wrap pb-12">
+    <div
+      class="relative overflow-hidden rounded-3xl border border-jay-500/20 bg-mango-200/30 px-6 py-8 sm:px-10 sm:py-10"
+    >
+      <Sprig
+        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
+      />
+      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+        An honest word about prices
+      </h2>
+      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
+        Dishes in delivery apps usually cost a little more than they do at our tables — that's
+        simply how the apps work. The menu on this website shows our <strong>in-cafe prices</strong
+        >, and <strong>pickup is always at cafe prices</strong>. So if you're nearby, collecting
+        your order yourself is the friendliest deal — and you get to say hello.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap pb-12">
     <div class="flex items-baseline justify-between gap-4">
       <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-        What's for breakfast
+        Popular for delivery
       </h2>
       <a
-        href={breakfastAnchor}
+        href={menuPath}
         class="hidden text-sm font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900 sm:inline"
       >
         {t(locale, 'home.viewMenu')} →
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      The breakfast menu is short on purpose — a few things we make well every morning, at the same
-      prices you'll see on the table.
+      A few dishes that travel especially well — curries and noodles arrive just as happy as they
+      left the kitchen. Prices shown are our in-cafe prices.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
-        breakfastDishes.map((dish) => (
+        deliveryDishes.map((dish) => (
           <li class="py-5">
             <div class="flex items-baseline gap-3">
               <h3 class="font-display text-lg leading-snug font-bold">
@@ -177,56 +232,12 @@ const daysLabel = (days: readonly string[]) =>
     </ul>
     <p class="mt-6">
       <a
-        href={breakfastAnchor}
+        href={menuPath}
         class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
       >
-        See breakfast on the full menu
+        See the full menu with prices
       </a>
     </p>
-  </section>
-
-  <section class="wrap pb-12">
-    <div
-      class="relative overflow-hidden rounded-3xl border border-jay-500/20 bg-mango-200/30 px-6 py-8 sm:px-10 sm:py-10"
-    >
-      <Sprig
-        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
-      />
-      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
-        Also great in the morning
-      </h2>
-      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        No latte art competitions here — just proper espresso with oat milk we make ourselves, and
-        cold young coconuts straight from the fridge.
-      </p>
-      <ul class="relative mt-4 max-w-xl divide-y divide-mango-500/20">
-        {
-          morningDrinks.map((drink) => (
-            <li class="py-4">
-              <div class="flex items-baseline gap-3">
-                <h3 class="font-display text-lg leading-snug font-bold">
-                  <a
-                    href={`${menuPath}#${drink.slug[locale]}`}
-                    class="transition-colors hover:text-leaf-800"
-                  >
-                    {drink.name[locale]}
-                  </a>
-                </h3>
-                <span class="leader" aria-hidden="true" />
-                <span class="text-lg font-bold whitespace-nowrap text-leaf-800 tabular-nums">
-                  ฿{drink.price_thb}
-                </span>
-              </div>
-              {drink.description?.[locale] && (
-                <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-700">
-                  {drink.description[locale]}
-                </p>
-              )}
-            </li>
-          ))
-        }
-      </ul>
-    </div>
   </section>
 
   <section class="wrap pb-12">
@@ -240,8 +251,8 @@ const daysLabel = (days: readonly string[]) =>
         {t(locale, 'home.findUs')}
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        We open at <strong>7:30</strong> — early enough for breakfast before a morning flight, a dive
-        trip or a long beach day. On Sundays we rest with our own family.
+        The kitchen cooks from <strong>7:30 to 22:30, Monday to Saturday</strong> — early breakfast boxes
+        and late dinners both welcome. On Sundays we rest with our own family.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
