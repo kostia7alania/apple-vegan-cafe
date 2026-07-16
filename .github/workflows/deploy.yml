@@ -1,0 +1,54 @@
+# Auto-deploy to Cloudflare Workers on every push to main.
+# Activates itself once the CLOUDFLARE_API_TOKEN repo secret exists
+# (create token: dash.cloudflare.com/profile/api-tokens → "Edit Cloudflare
+# Workers" template; add it yourself: repo Settings → Secrets → Actions).
+# Until then the job no-ops and deploys stay manual (`pnpm run deploy`).
+# This replaces the Workers Builds git integration — no GitHub App needed.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for deploy token
+        id: token
+        run: echo "present=${{ secrets.CLOUDFLARE_API_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Skip note
+        if: steps.token.outputs.present != 'true'
+        run: echo "CLOUDFLARE_API_TOKEN secret not set — deploy skipped (run \`pnpm run deploy\` locally)." >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/checkout@v4
+        if: steps.token.outputs.present == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.token.outputs.present == 'true'
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable pnpm
+        if: steps.token.outputs.present == 'true'
+        run: corepack enable
+
+      - name: Install
+        if: steps.token.outputs.present == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        if: steps.token.outputs.present == 'true'
+        run: pnpm build
+
+      - name: Deploy
+        if: steps.token.outputs.present == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm run deploy
