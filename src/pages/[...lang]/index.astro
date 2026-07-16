@@ -213,6 +213,34 @@ const openChip = mainHours
   </section>
 
   {
+    /* TH-only: internal link to the seasonal เจ landing page (backlog R1).
+       Locale-conditional — the EN/RU home pages must not render this block. */
+    locale === 'th' && (
+      <section class="wrap pt-10">
+        <a
+          href="/th/ร้านอาหารเจ-พัทยา/"
+          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
+        >
+          <span class="flex min-w-0 items-center gap-3">
+            <span
+              class="font-display text-2xl leading-none font-bold text-jay-700"
+              aria-hidden="true"
+            >
+              เจ
+            </span>
+            <span class="font-semibold text-ink-900">
+              มองหาร้านอาหารเจในพัทยา? ครัวเราเป็นเจ 100% ทุกวันตลอดปี — ไม่ใช่เฉพาะเทศกาลกินเจ
+            </span>
+          </span>
+          <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">
+            อ่านต่อ →
+          </span>
+        </a>
+      </section>
+    )
+  }
+
+  {
     featured.length > 0 && (
       <section class="wrap py-14 sm:py-16">
         <div class="flex items-baseline justify-between gap-4">
