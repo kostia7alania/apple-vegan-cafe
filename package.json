@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm run generate:redirects && astro build",
+    "build": "pnpm run generate:redirects && astro build --force",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
     "lint": "eslint . && prettier --check .",

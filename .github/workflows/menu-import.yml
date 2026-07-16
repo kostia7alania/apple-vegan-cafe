@@ -1,0 +1,71 @@
+# Legal menu sync with human confirmation (see imports/README.md).
+# - On any change to imports/menu.csv: dry-run diff into the job summary.
+# - Manual "Run workflow": applies the import and opens a PR — the family
+#   reviews dish-by-dish and merges to confirm.
+# NOTE: PRs opened with the default GITHUB_TOKEN do not trigger the CI
+# workflow automatically; CI runs on the merge push instead.
+name: Menu import
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['imports/menu.csv']
+  pull_request:
+    paths: ['imports/menu.csv']
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  diff:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Dry-run diff into summary
+        run: |
+          echo '## Menu import — dry run (nothing applied)' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          pnpm import:menu -- --input imports/menu.csv | tee -a "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  apply:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Apply import
+        run: pnpm import:menu -- --input imports/menu.csv --write
+      - name: Validate result
+        run: pnpm validate:content && pnpm build
+      - name: Open confirmation PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- src/content/dishes; then
+            echo "No dish changes — nothing to confirm." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          branch="menu-sync/$(date +%Y-%m-%d-%H%M)"
+          git checkout -b "$branch"
+          git config user.name "menu-import-bot"
+          git config user.email "actions@github.com"
+          git add src/content/dishes
+          git commit -m "menu: sync from owner's Grab export (needs family review)"
+          git push origin "$branch"
+          gh pr create \
+            --title "Menu sync — review each dish and merge to confirm" \
+            --body "Imported from \`imports/menu.csv\` (owner's Grab Bulk-Update export). One file = one dish: review prices/names, remove any dish you don't want, then merge. Every dish has \`reviewedAt: null\` — set it after checking." \
+            --base main --head "$branch"

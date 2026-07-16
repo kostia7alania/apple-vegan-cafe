@@ -2,12 +2,14 @@
   "category": "mains",
   "price_thb": 120,
   "name": {
-    "en": "Vegan Pad Thai (sample dish)",
-    "th": "ผัดไทยเจ (ตัวอย่าง)",
-    "ru": "Веганский пад тай (образец)"
+    "en": "Vegan Pad Thai",
+    "th": "ผัดไทยเจ",
+    "ru": "Веганский пад тай"
   },
   "description": {
-    "en": "SAMPLE seed dish — replace via the Grab menu import. Rice noodles, tofu, tamarind sauce, peanuts."
+    "en": "Rice noodles wok-fried with tofu, bean sprouts and tamarind sauce, topped with crushed peanuts and lime. No egg, no fish sauce.",
+    "th": "เส้นจันท์ผัดกับเต้าหู้ ถั่วงอก ซอสมะขาม โรยถั่วลิสง เสิร์ฟกับมะนาว ไม่ใส่ไข่ ไม่ใส่น้ำปลา",
+    "ru": "Рисовая лапша, обжаренная с тофу, ростками и тамариндовым соусом, с арахисом и лаймом. Без яйца и рыбного соуса."
   },
   "slug": { "en": "vegan-pad-thai", "th": "ผัดไทยเจ", "ru": "veganskiy-pad-tay" },
   "previousSlugs": [],

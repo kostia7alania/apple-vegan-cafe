@@ -41,8 +41,11 @@ false` removes a dish from the menu (the owner's stop-list button).
   by `translationKey`, with per-language slugs.
 - `src/content/settings.json`, `locations.json` — NAP, hours, links: the single
   source of truth reused by pages, footer and JSON-LD.
-- Sample seed dishes are marked "(sample dish)" — replace them via the import
-  pipeline before launch.
+- The current menu is a realistic **placeholder** (every dish has
+  `source: "retyped"`, `reviewedAt: null`): real dishes/prices come from the
+  owner's Grab export via [imports/README.md](imports/README.md). Until then
+  the whole site is `noindex` — flip `SITE_LAUNCHED` in
+  [src/lib/site.ts](src/lib/site.ts) only at real launch.
 
 ## Menu import (from Grab)
 

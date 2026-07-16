@@ -4,6 +4,7 @@ import Seo from '../components/Seo.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import { type Locale, type PartiallyLocalized } from '../lib/i18n';
 import { localePath } from '../lib/urls';
+import { SITE_LAUNCHED } from '../lib/site';
 import { t } from '../lib/ui';
 import '../styles/global.css';
 
@@ -19,6 +20,9 @@ interface Props {
 }
 
 const { locale, title, description, alternates, noindex, ogType, jsonld = [] } = Astro.props;
+
+// Pre-launch gate: placeholder menu must not get indexed (see src/lib/site.ts)
+const effectiveNoindex = noindex || !SITE_LAUNCHED;
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 if (!settings) throw new Error('settings.json is missing');
@@ -39,7 +43,7 @@ const nav = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <Seo {locale} {title} {description} {alternates} {noindex} {ogType} />
+    <Seo {locale} {title} {description} {alternates} noindex={effectiveNoindex} {ogType} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {
       jsonld.map((obj) => (

@@ -44,7 +44,12 @@ collections:
             ],
         }
       - { name: price_thb, label: 'Price (THB)', widget: number, value_type: float, min: 1 }
-      - { name: category, label: Category, widget: select, options: [mains, drinks] }
+      - {
+          name: category,
+          label: Category,
+          widget: select,
+          options: [breakfast, mains, desserts, drinks],
+        }
       - {
           name: available,
           label: 'Available (uncheck = stop list)',

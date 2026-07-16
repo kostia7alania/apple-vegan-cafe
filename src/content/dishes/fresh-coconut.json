@@ -1,0 +1,24 @@
+{
+  "category": "drinks",
+  "price_thb": 60,
+  "name": {
+    "en": "Fresh young coconut",
+    "th": "มะพร้าวน้ำหอม",
+    "ru": "Свежий молодой кокос"
+  },
+  "description": {
+    "en": "Chilled aromatic young coconut, served whole with a straw.",
+    "th": "มะพร้าวน้ำหอมเย็น ๆ เสิร์ฟทั้งลูกพร้อมหลอด",
+    "ru": "Охлаждённый ароматный молодой кокос, подаётся целиком с трубочкой."
+  },
+  "slug": { "en": "fresh-young-coconut", "th": "มะพร้าวน้ำหอม", "ru": "svezhiy-kokos" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "retyped",
+  "reviewedAt": null
+}

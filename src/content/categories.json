@@ -1,13 +1,29 @@
 [
   {
-    "id": "mains",
+    "id": "breakfast",
     "order": 1,
+    "name": {
+      "en": "Breakfast (from 7:30)",
+      "th": "อาหารเช้า (ตั้งแต่ 7:30)",
+      "ru": "Завтраки (с 7:30)"
+    },
+    "slug": { "en": "breakfast", "th": "อาหารเช้า", "ru": "zavtraki" }
+  },
+  {
+    "id": "mains",
+    "order": 2,
     "name": { "en": "Thai mains", "th": "อาหารจานหลัก", "ru": "Основные блюда" },
     "slug": { "en": "thai-mains", "th": "อาหารจานหลัก", "ru": "osnovnye-blyuda" }
   },
   {
+    "id": "desserts",
+    "order": 3,
+    "name": { "en": "Desserts", "th": "ของหวาน", "ru": "Десерты" },
+    "slug": { "en": "desserts", "th": "ของหวาน", "ru": "deserty" }
+  },
+  {
     "id": "drinks",
-    "order": 2,
+    "order": 4,
     "name": { "en": "Drinks", "th": "เครื่องดื่ม", "ru": "Напитки" },
     "slug": { "en": "drinks", "th": "เครื่องดื่ม", "ru": "napitki" }
   }

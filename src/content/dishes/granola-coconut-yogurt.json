@@ -1,0 +1,28 @@
+{
+  "category": "breakfast",
+  "price_thb": 129,
+  "name": {
+    "en": "Granola bowl with coconut yogurt",
+    "th": "กราโนล่ากับโยเกิร์ตมะพร้าว",
+    "ru": "Гранола с кокосовым йогуртом"
+  },
+  "description": {
+    "en": "House granola with coconut yogurt, seasonal Thai fruit and a drizzle of coconut nectar.",
+    "th": "กราโนล่าโฮมเมด โยเกิร์ตมะพร้าว ผลไม้ตามฤดูกาล ราดน้ำหวานดอกมะพร้าว",
+    "ru": "Домашняя гранола с кокосовым йогуртом, сезонными тайскими фруктами и кокосовым нектаром."
+  },
+  "slug": {
+    "en": "granola-coconut-yogurt",
+    "th": "กราโนล่าโยเกิร์ตมะพร้าว",
+    "ru": "granola-s-kokosovym-yogurtom"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan"],
+  "allergens": ["gluten"],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": true,
+  "source": "retyped",
+  "reviewedAt": null
+}

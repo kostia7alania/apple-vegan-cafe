@@ -1,0 +1,24 @@
+{
+  "category": "breakfast",
+  "price_thb": 109,
+  "name": {
+    "en": "Banana pancakes",
+    "th": "แพนเค้กกล้วยหอม",
+    "ru": "Банановые панкейки"
+  },
+  "description": {
+    "en": "Fluffy egg-free pancakes with caramelized banana and coconut nectar.",
+    "th": "แพนเค้กนุ่มฟู ไม่ใส่ไข่ กล้วยหอมคาราเมล ราดน้ำหวานดอกมะพร้าว",
+    "ru": "Пышные панкейки без яиц с карамелизированным бананом и кокосовым нектаром."
+  },
+  "slug": { "en": "banana-pancakes", "th": "แพนเค้กกล้วย", "ru": "bananovye-pankeyki" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan"],
+  "allergens": ["gluten"],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "retyped",
+  "reviewedAt": null
+}

@@ -2,12 +2,14 @@
   "category": "mains",
   "price_thb": 150,
   "name": {
-    "en": "Vegan Massaman Curry (sample dish)",
-    "th": "แกงมัสมั่นเจ (ตัวอย่าง)",
-    "ru": "Веганский массаман карри (образец)"
+    "en": "Vegan Massaman Curry",
+    "th": "แกงมัสมั่นเจ",
+    "ru": "Веганский массаман карри"
   },
   "description": {
-    "en": "SAMPLE seed dish — replace via the Grab menu import. Coconut milk curry with potato and tofu."
+    "en": "Slow-cooked coconut milk curry with potato, tofu and roasted peanuts. Mild, rich and fragrant — served with jasmine rice.",
+    "th": "แกงกะทิเคี่ยวช้า ๆ กับมันฝรั่ง เต้าหู้ และถั่วลิสงคั่ว รสอ่อน หอมเครื่องเทศ เสิร์ฟพร้อมข้าวหอมมะลิ",
+    "ru": "Карри на кокосовом молоке с картофелем, тофу и жареным арахисом. Мягкий, насыщенный вкус, подаётся с жасминовым рисом."
   },
   "slug": { "en": "vegan-massaman-curry", "th": "แกงมัสมั่นเจ", "ru": "veganskiy-massaman-karri" },
   "previousSlugs": [],

@@ -1,0 +1,24 @@
+{
+  "category": "mains",
+  "price_thb": 119,
+  "name": {
+    "en": "Tom Yum mushroom soup",
+    "th": "ต้มยำเห็ดเจ",
+    "ru": "Том ям с грибами"
+  },
+  "description": {
+    "en": "Hot and sour lemongrass soup with mixed mushrooms, galangal, kaffir lime and chili. No fish sauce, no shrimp paste.",
+    "th": "ต้มยำน้ำใสเห็ดรวม ตะไคร้ ข่า ใบมะกรูด พริก ไม่ใส่น้ำปลา ไม่ใส่กะปิ",
+    "ru": "Острый кисло-пряный суп с грибами, лемонграссом, галангалом и каффир-лаймом. Без рыбного соуса и креветочной пасты."
+  },
+  "slug": { "en": "tom-yum-mushroom", "th": "ต้มยำเห็ดเจ", "ru": "tom-yam-s-gribami" },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "allergens": [],
+  "spicyLevel": 3,
+  "available": true,
+  "featured": false,
+  "source": "retyped",
+  "reviewedAt": null
+}

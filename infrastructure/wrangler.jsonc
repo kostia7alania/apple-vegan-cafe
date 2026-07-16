@@ -5,6 +5,9 @@
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
   "name": "apple-vegan-cafe",
   "compatibility_date": "2026-07-15",
+  // Custom domain attaches automatically on deploy (zone must exist in the account).
+  // www→apex 301 is a zone-level Redirect Rule (dashboard), not configured here.
+  "routes": [{ "pattern": "apple-vegan-cafe.com", "custom_domain": true }],
   "assets": {
     // relative to this config file
     "directory": "../dist",
