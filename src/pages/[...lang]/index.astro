@@ -213,6 +213,35 @@ const openChip = mainHours
   </section>
 
   {
+    /* EN-only: internal link to the vegan-breakfast landing page (backlog R2).
+       Locale-conditional — the TH/RU home pages must not render this block. */
+    locale === 'en' && (
+      <section class="wrap pt-10">
+        <a
+          href="/vegan-breakfast-pattaya/"
+          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
+        >
+          <span class="flex min-w-0 items-center gap-3">
+            <span
+              class="font-display text-2xl leading-none font-bold whitespace-nowrap text-jay-700"
+              aria-hidden="true"
+            >
+              7:30
+            </span>
+            <span class="font-semibold text-ink-900">
+              Early riser? We serve one of the earliest vegan breakfasts in Pattaya — doors open
+              7:30, Mon–Sat
+            </span>
+          </span>
+          <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">
+            Read more →
+          </span>
+        </a>
+      </section>
+    )
+  }
+
+  {
     /* TH-only: internal link to the seasonal เจ landing page (backlog R1).
        Locale-conditional — the EN/RU home pages must not render this block. */
     locale === 'th' && (

@@ -1,0 +1,308 @@
+---
+// EN copy self-reviewed; final proofread before launch — backlog R2.
+// English landing page for the «vegan breakfast pattaya» query cluster.
+// English-only: `alternates` carries a single `en` entry, so Seo emits a
+// self-referential hreflang plus x-default (EN is the default locale) —
+// correct while the page has no TH/RU translation.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import JayBadge from '../components/JayBadge.astro';
+import LeafDivider from '../components/LeafDivider.astro';
+import Sprig from '../components/Sprig.astro';
+import type { Locale } from '../lib/i18n';
+import { absoluteUrl, localePath } from '../lib/urls';
+import { buildBreadcrumb } from '../lib/jsonld';
+import { t, type UiKey } from '../lib/ui';
+
+const locale: Locale = 'en';
+const PAGE_PATH = '/vegan-breakfast-pattaya/';
+
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+const [location] = (await getCollection('locations')).map((e) => e.data);
+if (!settings || !location) throw new Error('settings/locations content is missing');
+
+// Every available breakfast dish, cheapest first.
+const breakfastDishes = (
+  await getCollection('dishes', ({ data }) => data.available && data.category.id === 'breakfast')
+)
+  .map((e) => e.data)
+  .sort((a, b) => a.price_thb - b.price_thb);
+
+// Two morning drinks, hand-picked: the oat milk latte and a fresh coconut.
+const MORNING_DRINK_IDS = ['oat-milk-latte', 'fresh-coconut'];
+const morningDrinks = (
+  await getCollection('dishes', ({ id, data }) => data.available && MORNING_DRINK_IDS.includes(id))
+)
+  .sort((a, b) => MORNING_DRINK_IDS.indexOf(a.id) - MORNING_DRINK_IDS.indexOf(b.id))
+  .map((e) => e.data);
+
+const alternates = { en: PAGE_PATH };
+const site = Astro.site!;
+
+const title = 'Vegan Breakfast in Pattaya from 7:30 — Apple Vegan Cafe';
+const description =
+  'One of the earliest vegan breakfasts in Pattaya — doors open 7:30, Mon–Sat. 100% plant-based pancakes, granola, avocado toast and oat milk coffee.';
+
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: 'Vegan breakfast in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
+  ]),
+];
+
+const menuPath = localePath(locale, '/menu/');
+const breakfastAnchor = `${menuPath}#breakfast`;
+const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
+
+const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
+const daysLabel = (days: readonly string[]) =>
+  days.length > 2
+    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+    : days.map(dayLabel).join(', ');
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <section
+    class="relative overflow-hidden bg-leaf-900 bg-[radial-gradient(60rem_30rem_at_85%_-10%,rgba(232,161,60,0.16),transparent_60%)] text-cream-100"
+  >
+    <Sprig
+      class="pointer-events-none absolute top-4 -right-6 h-64 w-auto rotate-12 text-cream-100/10 sm:-top-4 sm:right-2 sm:h-80"
+    />
+    <Sprig
+      class="pointer-events-none absolute -bottom-14 -left-10 h-52 w-auto -rotate-[30deg] text-mango-500/10"
+    />
+    <div class="wrap relative py-14 sm:py-20">
+      <p class="rise">
+        <JayBadge label={t(locale, 'trust.jay')} />
+      </p>
+      <h1
+        class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
+      >
+        Vegan breakfast in Pattaya — Apple Vegan Cafe &amp; Restaurant
+      </h1>
+      <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
+        A small family kitchen serving one of the earliest vegan breakfasts in town
+      </p>
+      <p
+        class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
+      >
+        <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
+        Doors open 7:30 · Mon–Sat
+      </p>
+      <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
+        <a
+          href={menuPath}
+          class="inline-flex min-h-12 items-center rounded-full bg-mango-500 px-7 text-base font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+        >
+          {t(locale, 'home.viewMenu')}
+        </a>
+        <a
+          href={phoneHref}
+          class="inline-flex min-h-12 items-center rounded-full border border-cream-100/40 px-7 text-base font-semibold text-cream-100 transition-colors hover:border-cream-100 hover:bg-leaf-800 focus-visible:outline-mango-300"
+        >
+          {`${t(locale, 'actions.call')} ${settings.phone}`}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap py-12 sm:py-14">
+    <div class="prose-editorial">
+      <p>
+        Half past seven is a quiet hour in Pattaya. The streets are still cool, the beach crowd
+        hasn't arrived, and most vegan kitchens in town won't open for a while yet. Ours already
+        has. We're <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a small family-run cafe in
+        Bang Lamung, and breakfast here starts at <strong>7:30, Monday to Saturday</strong> — one of the
+        earliest vegan breakfasts in Pattaya.
+      </p>
+      <p>
+        Everything we cook is 100% plant-based — not a vegan corner of a regular menu, but the whole
+        kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> anywhere on the premises,
+        so nothing needs double-checking and nothing is cooked next to meat. The morning coffee is made
+        with our house-made oat milk, and the pancakes rise happily without a single egg.
+      </p>
+      <p>
+        Mornings here are unhurried. It's usually just us and a few regulars — someone reading
+        before work, a couple fuelling up before a dive trip to the islands. Order at the counter,
+        take a table, and breakfast arrives when it's ready. No buffet, no rush, no music turned up
+        too loud.
+      </p>
+    </div>
+    <LeafDivider class="mt-10 max-w-60" />
+  </section>
+
+  <section class="wrap pb-12">
+    <div class="flex items-baseline justify-between gap-4">
+      <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+        What's for breakfast
+      </h2>
+      <a
+        href={breakfastAnchor}
+        class="hidden text-sm font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900 sm:inline"
+      >
+        {t(locale, 'home.viewMenu')} →
+      </a>
+    </div>
+    <p class="mt-3 max-w-[60ch] text-ink-500">
+      The breakfast menu is short on purpose — a few things we make well every morning, at the same
+      prices you'll see on the table.
+    </p>
+    <ul class="mt-4 divide-y divide-cream-200">
+      {
+        breakfastDishes.map((dish) => (
+          <li class="py-5">
+            <div class="flex items-baseline gap-3">
+              <h3 class="font-display text-lg leading-snug font-bold">
+                <a
+                  href={`${menuPath}#${dish.slug[locale]}`}
+                  class="transition-colors hover:text-leaf-800"
+                >
+                  {dish.name[locale]}
+                </a>
+              </h3>
+              <span class="leader" aria-hidden="true" />
+              <span class="text-lg font-bold whitespace-nowrap text-leaf-800 tabular-nums">
+                ฿{dish.price_thb}
+              </span>
+            </div>
+            {dish.description?.[locale] && (
+              <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
+                {dish.description[locale]}
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-6">
+      <a
+        href={breakfastAnchor}
+        class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+      >
+        See breakfast on the full menu
+      </a>
+    </p>
+  </section>
+
+  <section class="wrap pb-12">
+    <div
+      class="relative overflow-hidden rounded-3xl border border-jay-500/20 bg-mango-200/30 px-6 py-8 sm:px-10 sm:py-10"
+    >
+      <Sprig
+        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
+      />
+      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+        Also great in the morning
+      </h2>
+      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
+        No latte art competitions here — just proper espresso with oat milk we make ourselves, and
+        cold young coconuts straight from the fridge.
+      </p>
+      <ul class="relative mt-4 max-w-xl divide-y divide-mango-500/20">
+        {
+          morningDrinks.map((drink) => (
+            <li class="py-4">
+              <div class="flex items-baseline gap-3">
+                <h3 class="font-display text-lg leading-snug font-bold">
+                  <a
+                    href={`${menuPath}#${drink.slug[locale]}`}
+                    class="transition-colors hover:text-leaf-800"
+                  >
+                    {drink.name[locale]}
+                  </a>
+                </h3>
+                <span class="leader" aria-hidden="true" />
+                <span class="text-lg font-bold whitespace-nowrap text-leaf-800 tabular-nums">
+                  ฿{drink.price_thb}
+                </span>
+              </div>
+              {drink.description?.[locale] && (
+                <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-700">
+                  {drink.description[locale]}
+                </p>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap pb-4">
+    <div
+      class="relative overflow-hidden rounded-3xl border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
+    >
+      <Sprig
+        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-leaf-700 opacity-[0.13]"
+      />
+      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+        {t(locale, 'home.findUs')}
+      </h2>
+      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
+        We open at <strong>7:30</strong> — early enough for breakfast before a morning flight, a dive
+        trip or a long beach day. On Sundays we rest with our own family.
+      </p>
+      <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
+        <div>
+          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+            {t(locale, 'contact.address')}
+          </h3>
+          <p class="mt-2 max-w-[36ch] leading-relaxed">{location.address[locale]}</p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a
+              href={phoneHref}
+              class="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                class="h-4.5 w-4.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                ></path>
+              </svg>
+              {settings.phone}
+            </a>
+            <a
+              href={menuPath}
+              class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+            >
+              View full menu
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+            {t(locale, 'contact.hours')}
+          </h3>
+          <table class="mt-2 text-left">
+            <tbody>
+              {
+                location.hours.map((h) => (
+                  <tr>
+                    <th scope="row" class="py-1 pr-6 font-medium">
+                      {daysLabel(h.days)}
+                    </th>
+                    <td class="py-1 tabular-nums">
+                      <strong>{h.open}</strong>–{h.close}
+                    </td>
+                  </tr>
+                ))
+              }
+              <tr class="text-terracotta-700">
+                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'days.sun')}</th>
+                <td class="py-1">{t(locale, 'contact.closed')}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
