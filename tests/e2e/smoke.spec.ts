@@ -26,7 +26,7 @@ test('hreflang set is reciprocal and includes x-default', async ({ page }) => {
   const hreflangs = await links.evaluateAll((els) => els.map((el) => el.getAttribute('hreflang')));
   expect(hreflangs.sort()).toEqual(['en', 'ru', 'th', 'x-default']);
   const xDefault = page.locator('head link[hreflang="x-default"]');
-  await expect(xDefault).toHaveAttribute('href', 'https://applevegancafe.com/');
+  await expect(xDefault).toHaveAttribute('href', 'https://apple-vegan-cafe.com/');
 });
 
 test('language switcher links to translated pages', async ({ page }) => {
@@ -41,7 +41,7 @@ test('canonical is self-referential', async ({ page }) => {
   await page.goto('/th/menu/');
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
     'href',
-    'https://applevegancafe.com/th/menu/',
+    'https://apple-vegan-cafe.com/th/menu/',
   );
 });
 

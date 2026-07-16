@@ -3,8 +3,8 @@ import { buildArticle, buildBreadcrumb, buildRestaurant } from '../../src/lib/js
 
 const restaurantInput = {
   name: 'Apple Vegan Cafe & Restaurant',
-  url: 'https://applevegancafe.com/',
-  menuUrl: 'https://applevegancafe.com/menu/',
+  url: 'https://apple-vegan-cafe.com/',
+  menuUrl: 'https://apple-vegan-cafe.com/menu/',
   telephone: '+66 82 679 7797',
   address: '414/39 Moo 9, Bang Lamung, Chonburi 20150, Thailand',
   geo: null,
@@ -19,7 +19,7 @@ describe('buildRestaurant', () => {
     expect(jsonld['@type']).toBe('Restaurant');
     expect(jsonld.name).toBeTruthy();
     expect(jsonld.address).toBeTruthy();
-    expect(jsonld.menu).toBe('https://applevegancafe.com/menu/');
+    expect(jsonld.menu).toBe('https://apple-vegan-cafe.com/menu/');
     expect(jsonld.servesCuisine).toContain('Vegan');
     expect(jsonld.openingHoursSpecification).toHaveLength(1);
   });
@@ -41,8 +41,8 @@ describe('buildRestaurant', () => {
 describe('buildBreadcrumb', () => {
   it('numbers positions from 1', () => {
     const jsonld = buildBreadcrumb([
-      { name: 'Home', url: 'https://applevegancafe.com/' },
-      { name: 'Menu', url: 'https://applevegancafe.com/menu/' },
+      { name: 'Home', url: 'https://apple-vegan-cafe.com/' },
+      { name: 'Menu', url: 'https://apple-vegan-cafe.com/menu/' },
     ]);
     const items = jsonld.itemListElement as { position: number }[];
     expect(items.map((i) => i.position)).toEqual([1, 2]);
@@ -54,7 +54,7 @@ describe('buildArticle', () => {
     const jsonld = buildArticle({
       title: 'Welcome',
       description: 'Our site is live',
-      url: 'https://applevegancafe.com/blog/welcome/',
+      url: 'https://apple-vegan-cafe.com/blog/welcome/',
       locale: 'en',
       authorName: 'Family',
       publishedAt: new Date('2026-07-15'),

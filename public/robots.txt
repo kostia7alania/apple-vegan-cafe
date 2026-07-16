@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://applevegancafe.com/sitemap-index.xml
+Sitemap: https://apple-vegan-cafe.com/sitemap-index.xml

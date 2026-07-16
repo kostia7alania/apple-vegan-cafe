@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // hreflang lives in <head> only (see src/components/Seo.astro), so the sitemap
 // integration is used without its i18n option — one method, per Google guidance.
 export default defineConfig({
-  site: 'https://applevegancafe.com',
+  site: 'https://apple-vegan-cafe.com',
   output: 'static',
   trailingSlash: 'always',
   i18n: {

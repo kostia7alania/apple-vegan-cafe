@@ -2,7 +2,7 @@
 
 ## The site is down
 
-1. Check https://applevegancafe.com and the UptimeRobot alert (keyword monitor
+1. Check https://apple-vegan-cafe.com and the UptimeRobot alert (keyword monitor
    watches the menu page). The site is static on Cloudflare — real downtime is
    almost always DNS/domain, not "the server".
 2. Check domain expiry in the Cloudflare dashboard (auto-renew must be ON).
