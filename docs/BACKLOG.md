@@ -43,5 +43,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-16: **R8 дизайн «Thai garden table»** — крем/зелень/манго + เจ-бейдж, Playfair (self-hosted latin+cyr), компактная мобильная шапка (111px), CSS-only нижний бар (меню/звонок), dotted-leader меню с бейджами и 🌶, внешняя оценка дизайна: PASS (3/3 design, 3/3 originality) + refine-раунд. Попутно исправлен прод-баг: все блюда схлопывались в одну запись (glob loader брал localized slug-объект как id) — на живом меню было одно блюдо
+
 - 2026-07-15: research (8 агентов) + архитектурное решение, scaffold: Astro 7 SSG, EN/TH/RU, Zod-коллекции, CI (lint/typecheck/vitest/playwright/lighthouse/links), security headers, Sveltia CMS, Renovate
 - 2026-07-16: домен apple-vegan-cafe.com (Cloudflare Registrar) + деплой на Workers Static Assets, репо public, auth-Worker на auth.apple-vegan-cafe.com (юзер поставил OAuth-секреты, логин работает), placeholder-меню 14 блюд ×3 языка, noindex-гейт, legal menu-import workflow (diff→PR), fix: двойной CSP на /admin, шрифты Sveltia, deploy.yml
