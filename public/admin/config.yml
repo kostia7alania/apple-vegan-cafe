@@ -16,7 +16,7 @@ backend:
   name: github
   repo: kostia7alania/apple-vegan-cafe
   branch: main
-  base_url: https://sveltia-cms-auth.EXAMPLE.workers.dev # TODO: deployed auth Worker URL
+  base_url: https://auth.apple-vegan-cafe.com # deployed sveltia-cms-auth Worker
 
 media_folder: public/uploads
 public_folder: /uploads

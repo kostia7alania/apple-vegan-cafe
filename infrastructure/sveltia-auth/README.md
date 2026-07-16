@@ -1,24 +1,41 @@
-# CMS auth Worker (one-time setup)
+# CMS auth Worker
 
-Sveltia CMS authenticates against GitHub through a tiny OAuth proxy Worker:
-https://github.com/sveltia/sveltia-cms-auth (MIT). Nothing from it lives in
-this repo — this doc is the deployment record.
+Sveltia CMS authenticates against GitHub through the OAuth proxy Worker
+https://github.com/sveltia/sveltia-cms-auth (MIT, ~300 lines, reviewed before
+deploy). **Deployed 2026-07-16** to the Cloudflare account as
+`sveltia-cms-auth` at **https://auth.apple-vegan-cafe.com** with these
+additions to its stock `wrangler.toml`:
 
-## Steps
+```toml
+routes = [
+  { pattern = "auth.apple-vegan-cafe.com", custom_domain = true }
+]
 
-1. Create a GitHub **OAuth App** (Settings → Developer settings):
+[vars]
+ALLOWED_DOMAINS = "apple-vegan-cafe.com"
+```
+
+`public/admin/config.yml` → `backend.base_url` already points at it.
+
+## Remaining one-time setup (owner of the GitHub account — 5 minutes)
+
+The Worker is deployed but idle until its two OAuth secrets exist:
+
+1. Create a GitHub **OAuth App**: github.com → Settings → Developer settings →
+   OAuth Apps → New OAuth App:
+   - Application name: `Apple Vegan Cafe CMS`
    - Homepage URL: `https://apple-vegan-cafe.com`
-   - Callback URL: `https://<auth-worker>.workers.dev/callback`
-2. Deploy sveltia-cms-auth to the Cloudflare account (its README:
-   `wrangler deploy`).
-3. Set Worker secrets **in the dashboard only** (never in git):
-   - `GITHUB_CLIENT_ID`
-   - `GITHUB_CLIENT_SECRET`
-   - `ALLOWED_DOMAINS=apple-vegan-cafe.com` (restricts which sites may use it)
-4. Put the Worker URL into `public/admin/config.yml` → `backend.base_url`,
-   and the real `owner/repo` into `backend.repo`.
-5. Give each family member a GitHub account with **write** access to the repo
-   (collaborators) — that is the CMS login.
+   - Authorization callback URL: `https://auth.apple-vegan-cafe.com/callback`
+     Then "Generate a new client secret".
+2. Set both values as Worker secrets — run these yourself and paste the values
+   when prompted (do NOT hand the secret to anyone, including AI assistants):
+   ```bash
+   npx wrangler secret put GITHUB_CLIENT_ID --name sveltia-cms-auth
+   npx wrangler secret put GITHUB_CLIENT_SECRET --name sveltia-cms-auth
+   ```
+3. Open https://apple-vegan-cafe.com/admin — "Sign in with GitHub" should
+   round-trip. Each family member logs in with a GitHub account that has
+   **write** access to the repo (add them as collaborators).
 
 ## Secret boundaries (repo-wide rule)
 

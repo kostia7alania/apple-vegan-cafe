@@ -15,4 +15,4 @@
 # GitHub API + the sveltia-cms-auth Worker. Scoped override, admin only.
 /admin/*
   X-Robots-Tag: noindex
-  Content-Security-Policy: default-src 'none'; script-src 'self' https://unpkg.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://github.com https://*.workers.dev; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'self' https://unpkg.com; connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://github.com https://auth.apple-vegan-cafe.com; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
