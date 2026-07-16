@@ -1,10 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import JayBadge from '../../components/JayBadge.astro';
+import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildRestaurant } from '../../lib/jsonld';
-import { t } from '../../lib/ui';
+import { t, type UiKey } from '../../lib/ui';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -22,6 +24,8 @@ if (!settings || !location) throw new Error('settings/locations content is missi
 const featured = (await getCollection('dishes', ({ data }) => data.featured && data.available)).map(
   (e) => e.data,
 );
+const categories = await getCollection('categories');
+const categoryName = (id: string) => categories.find((c) => c.id === id)?.data.name[locale];
 
 const alternates = structuralAlternates('/');
 const site = Astro.site!;
@@ -53,40 +57,295 @@ const description = {
   th: 'ร้านอาหารเจของครอบครัวในพัทยา เปิด จ.–ส. ตั้งแต่ 7:30 น. อาหารเจ 100% ไม่มีน้ำปลา ไข่ หรือนม',
   ru: 'Семейное 100% веганское тайское кафе в Паттайе. Открыто пн–сб с 7:30. Настоящее меню и цены, только растительная еда.',
 }[locale];
+
+const menuPath = localePath(locale, '/menu/');
+const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
+
+const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
+const daysLabel = (days: readonly string[]) =>
+  days.length > 2
+    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+    : days.map(dayLabel).join(', ');
+
+const [mainHours] = location.hours;
+const dayRange = mainHours ? daysLabel(mainHours.days) : '';
+const openChip = mainHours
+  ? t(locale, 'home.openChip')
+      .replace('{days}', dayRange)
+      .replace('{open}', mainHours.open.replace(/^0/, ''))
+  : '';
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
-  <h1 class="text-3xl font-bold">{settings.nameLocalized[locale]}</h1>
-  <p class="mt-2 text-lg">{settings.tagline[locale]}</p>
-
-  <div class="mt-6 flex flex-wrap gap-4">
-    <a href={localePath(locale, '/menu/')} class="rounded border px-4 py-2 font-semibold underline">
-      {t(locale, 'home.viewMenu')}
-    </a>
-    {
-      location.mapsUrl && (
-        <a href={location.mapsUrl} rel="noopener" class="rounded border px-4 py-2 underline">
-          {t(locale, 'home.getDirections')}
+  <section
+    class="relative overflow-hidden bg-leaf-900 bg-[radial-gradient(60rem_30rem_at_85%_-10%,rgba(232,161,60,0.16),transparent_60%)] text-cream-100"
+  >
+    <Sprig
+      class="pointer-events-none absolute top-4 -right-6 h-64 w-auto rotate-12 text-cream-100/10 sm:-top-6 sm:right-4 sm:h-[26rem]"
+    />
+    <Sprig
+      class="pointer-events-none absolute -bottom-14 -left-10 h-52 w-auto -rotate-[30deg] text-mango-500/10"
+    />
+    <Sprig
+      class="pointer-events-none absolute -bottom-16 right-[30%] hidden h-64 w-auto -rotate-[160deg] text-cream-100/[0.07] lg:block"
+    />
+    {/* เจ stamp watermark — fills the hero's right column on desktop */}
+    <div
+      class="pointer-events-none absolute top-1/2 right-[8%] hidden rotate-12 -translate-y-1/2 md:block"
+      aria-hidden="true"
+    >
+      <div
+        class="flex h-48 w-48 items-center justify-center rounded-full border-2 border-mango-500/40 lg:h-56 lg:w-56"
+      >
+        <div
+          class="flex h-38 w-38 items-center justify-center rounded-full border border-dashed border-mango-500/35 lg:h-44 lg:w-44"
+        >
+          <span lang="th" class="font-display text-7xl font-bold text-mango-500/50 lg:text-8xl">
+            เจ
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap relative py-16 sm:py-24">
+      <p class="rise">
+        <JayBadge label={t(locale, 'trust.jay')} />
+      </p>
+      <h1
+        class="rise rise-1 mt-5 max-w-[17ch] font-display text-4xl leading-[1.08] font-extrabold tracking-tight text-balance text-cream-50 sm:text-6xl"
+      >
+        {settings.nameLocalized[locale]}
+      </h1>
+      <p class="rise rise-2 mt-4 max-w-[46ch] text-lg text-leaf-200 sm:text-xl">
+        {settings.tagline[locale]}
+      </p>
+      {
+        openChip && (
+          <p class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium">
+            <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true" />
+            {openChip}
+          </p>
+        )
+      }
+      <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
+        <a
+          href={menuPath}
+          class="inline-flex min-h-12 items-center rounded-full bg-mango-500 px-7 text-base font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+        >
+          {t(locale, 'home.viewMenu')}
         </a>
-      )
-    }
-  </div>
+        {
+          location.mapsUrl && (
+            <a
+              href={location.mapsUrl}
+              rel="noopener"
+              class="inline-flex min-h-12 items-center rounded-full border border-cream-100/40 px-7 text-base font-semibold text-cream-100 transition-colors hover:border-cream-100 hover:bg-leaf-800 focus-visible:outline-mango-300"
+            >
+              {t(locale, 'home.getDirections')}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-cream-300/80 bg-cream-50">
+    <ul
+      class="wrap grid grid-cols-2 gap-x-6 gap-y-4 py-6 text-sm font-medium text-ink-700 sm:grid-cols-4 sm:py-5"
+    >
+      <li class="flex items-center">
+        <JayBadge label={t(locale, 'trust.jay')} />
+      </li>
+      <li class="flex items-center gap-2">
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4.5 w-4.5 shrink-0 text-terracotta-500"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+          ></path>
+        </svg>
+        {t(locale, 'trust.family')}
+      </li>
+      {
+        settings.reviewLinks.happycow && (
+          <li class="flex items-center">
+            <a
+              href={settings.reviewLinks.happycow}
+              rel="noopener"
+              class="inline-flex items-center gap-2 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-800"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                class="h-4.5 w-4.5 shrink-0 fill-mango-500"
+                aria-hidden="true"
+              >
+                <path d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z" />
+              </svg>
+              {t(locale, 'trust.happycow')}
+            </a>
+          </li>
+        )
+      }
+      <li class="flex items-center gap-2">
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4.5 w-4.5 shrink-0 text-leaf-700"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
+          ></path>
+          <path d="M2 21c0-3 1.85-5.36 5.08-6"></path>
+        </svg>
+        {t(locale, 'trust.honest')}
+      </li>
+    </ul>
+  </section>
 
   {
     featured.length > 0 && (
-      <section class="mt-10">
-        <h2 class="text-xl font-semibold">{t(locale, 'home.featured')}</h2>
-        <ul class="mt-4 space-y-3">
+      <section class="wrap py-14 sm:py-16">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+            {t(locale, 'home.featured')}
+          </h2>
+          <a
+            href={menuPath}
+            class="hidden text-sm font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900 sm:inline"
+          >
+            {t(locale, 'home.viewMenu')} →
+          </a>
+        </div>
+        <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((dish) => (
-            <li class="flex items-baseline justify-between gap-4 border-b border-neutral-100 pb-2">
-              <a href={`${localePath(locale, '/menu/')}#${dish.slug[locale]}`} class="underline">
-                {dish.name[locale]}
-              </a>
-              <span class="whitespace-nowrap font-semibold">฿{dish.price_thb}</span>
+            <li>
+              <article class="group relative flex h-full flex-col rounded-2xl border border-cream-300 bg-cream-50 p-6 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_10px_30px_-12px_rgba(38,34,27,0.25)]">
+                {dish.images[0] && (
+                  <img
+                    src={dish.images[0]}
+                    alt={dish.name[locale]}
+                    loading="lazy"
+                    width="640"
+                    height="480"
+                    class="mb-4 aspect-4/3 w-full rounded-xl border border-cream-300 object-cover"
+                  />
+                )}
+                <p class="text-[11px] font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+                  {categoryName(dish.category.id)}
+                </p>
+                <h3 class="mt-2 font-display text-xl leading-snug font-bold">
+                  <a
+                    href={`${menuPath}#${dish.slug[locale]}`}
+                    class="transition-colors after:absolute after:inset-0 after:rounded-2xl group-hover:text-leaf-800"
+                  >
+                    {dish.name[locale]}
+                  </a>
+                </h3>
+                {dish.description?.[locale] && (
+                  <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                    {dish.description[locale]}
+                  </p>
+                )}
+                <p class="mt-auto flex items-center justify-between pt-5">
+                  <span class="rounded-full bg-leaf-700 px-3.5 py-1 text-sm font-bold text-cream-50 tabular-nums">
+                    ฿{dish.price_thb}
+                  </span>
+                  <span
+                    class="text-sm font-semibold text-leaf-700 opacity-0 transition-opacity group-hover:opacity-100"
+                    aria-hidden="true"
+                  >
+                    {t(locale, 'home.seeInMenu')} →
+                  </span>
+                </p>
+              </article>
             </li>
           ))}
         </ul>
       </section>
     )
   }
+
+  <section class="wrap pb-4">
+    <div
+      class="relative overflow-hidden rounded-3xl border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
+    >
+      <Sprig
+        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-leaf-700 opacity-[0.13]"
+      />
+      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+        {t(locale, 'home.findUs')}
+      </h2>
+      <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
+        <div>
+          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+            {t(locale, 'contact.address')}
+          </h3>
+          <p class="mt-2 max-w-[36ch] leading-relaxed">{location.address[locale]}</p>
+          <a
+            href={phoneHref}
+            class="mt-5 inline-flex min-h-12 items-center gap-2.5 rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="h-4.5 w-4.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
+            </svg>
+            {settings.phone}
+          </a>
+        </div>
+        <div>
+          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+            {t(locale, 'contact.hours')}
+          </h3>
+          <table class="mt-2 text-left">
+            <tbody>
+              {
+                location.hours.map((h) => (
+                  <tr>
+                    <th scope="row" class="py-1 pr-6 font-medium">
+                      {daysLabel(h.days)}
+                    </th>
+                    <td class="py-1 tabular-nums">
+                      {h.open}–{h.close}
+                    </td>
+                  </tr>
+                ))
+              }
+              <tr class="text-terracotta-700">
+                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'days.sun')}</th>
+                <td class="py-1">{t(locale, 'contact.closed')}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="mt-4">
+            <a
+              href={localePath(locale, '/contact/')}
+              class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900"
+            >
+              {t(locale, 'nav.contact')} →
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>

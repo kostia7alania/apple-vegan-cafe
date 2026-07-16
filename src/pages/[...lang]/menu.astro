@@ -1,10 +1,11 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import JayBadge from '../../components/JayBadge.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
-import { t } from '../../lib/ui';
+import { t, type UiKey } from '../../lib/ui';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -18,6 +19,12 @@ const { locale } = Astro.props;
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
+const allergens = await getCollection('allergens');
+const allergenName = (id: string) => allergens.find((a) => a.id === id)?.data.name[locale] ?? id;
+
+const nonEmptyCategories = categories.filter((category) =>
+  dishes.some((d) => d.data.category.id === category.id),
+);
 
 const alternates = structuralAlternates('/menu/');
 const site = Astro.site!;
@@ -42,40 +49,129 @@ const jsonld = [
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
-  <h1 class="text-3xl font-bold">{t(locale, 'menu.title')}</h1>
+  <div class="wrap pt-10 pb-2 sm:pt-14">
+    <JayBadge label={t(locale, 'trust.jay')} />
+    <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight text-leaf-900 sm:text-5xl">
+      {t(locale, 'menu.title')}
+    </h1>
+    <p class="mt-3 max-w-[52ch] text-ink-500">{t(locale, 'trust.honest')}</p>
+  </div>
 
-  {
-    categories.map((category) => {
-      const items = dishes.filter((d) => d.data.category.id === category.id);
-      if (items.length === 0) return null;
-      return (
-        <details open class="mt-8" id={category.data.slug[locale]}>
-          <summary class="cursor-pointer text-xl font-semibold">
-            {category.data.name[locale]}
-          </summary>
-          <ul class="mt-4 space-y-4">
-            {items.map(({ data: dish }) => (
-              <li
-                id={dish.slug[locale]}
-                class="flex items-baseline justify-between gap-4 border-b border-neutral-100 pb-3"
+  <nav
+    aria-label={t(locale, 'menu.categoriesNav')}
+    class="sticky top-0 z-30 border-b border-cream-300/80 bg-cream-100/95"
+  >
+    <div class="wrap">
+      <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
+        {
+          nonEmptyCategories.map((category) => (
+            <li>
+              <a
+                href={`#${category.data.slug[locale]}`}
+                class="inline-flex min-h-11 items-center rounded-full border border-leaf-700/25 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
               >
-                <div>
-                  <h3 class="font-medium">{dish.name[locale]}</h3>
-                  {dish.description?.[locale] && (
-                    <p class="mt-1 text-sm text-neutral-600">{dish.description[locale]}</p>
-                  )}
-                  {dish.spicyLevel > 0 && (
-                    <p class="mt-1 text-sm" aria-label={t(locale, 'menu.spicy')}>
-                      {'🌶'.repeat(dish.spicyLevel)}
-                    </p>
-                  )}
-                </div>
-                <span class="whitespace-nowrap font-semibold">฿{dish.price_thb}</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-      );
-    })
-  }
+                {category.data.name[locale]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrap pb-4">
+    {
+      nonEmptyCategories.map((category) => {
+        const items = dishes.filter((d) => d.data.category.id === category.id);
+        return (
+          <section id={category.data.slug[locale]} class="scroll-mt-24 pt-12">
+            <div class="flex items-center gap-4">
+              <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+                {category.data.name[locale]}
+              </h2>
+              <span class="h-px flex-1 bg-cream-300" aria-hidden="true" />
+              <svg
+                viewBox="0 0 40 22"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-5 w-9 shrink-0 text-leaf-700"
+                aria-hidden="true"
+              >
+                <path d="M20 20 C20 14 20 10 20 5" />
+                <path d="M20 12 C15 11 11 8 10 3 C15 4 19 7 20 12 Z" />
+                <path d="M20 12 C25 11 29 8 30 3 C25 4 21 7 20 12 Z" />
+              </svg>
+            </div>
+            <ul class="mt-1 divide-y divide-cream-200">
+              {items.map(({ data: dish }) => (
+                <li id={dish.slug[locale]} class="scroll-mt-24 py-5">
+                  <div class="flex gap-4">
+                    {dish.images[0] && (
+                      <img
+                        src={dish.images[0]}
+                        alt={dish.name[locale]}
+                        loading="lazy"
+                        width="160"
+                        height="160"
+                        class="h-20 w-20 shrink-0 rounded-xl border border-cream-300 object-cover"
+                      />
+                    )}
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-baseline gap-3">
+                        <h3 class="font-display text-lg leading-snug font-bold">
+                          {dish.name[locale]}
+                        </h3>
+                        <span class="leader" aria-hidden="true" />
+                        <span class="text-lg font-bold whitespace-nowrap text-leaf-800 tabular-nums">
+                          ฿{dish.price_thb}
+                        </span>
+                      </div>
+                      {dish.description?.[locale] && (
+                        <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
+                          {dish.description[locale]}
+                        </p>
+                      )}
+                      {(dish.dietaryTags.length > 0 ||
+                        dish.spicyLevel > 0 ||
+                        dish.allergens.length > 0) && (
+                        <p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                          {dish.dietaryTags.map((tag) =>
+                            tag === 'jay' ? (
+                              <JayBadge size="sm" label={t(locale, 'tag.jay')} />
+                            ) : (
+                              <span class="rounded-full border border-leaf-700/25 bg-leaf-50 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-leaf-800 uppercase">
+                                {t(locale, `tag.${tag}` as UiKey)}
+                              </span>
+                            ),
+                          )}
+                          {dish.spicyLevel > 0 && (
+                            <span
+                              role="img"
+                              aria-label={`${t(locale, 'menu.spicy')} ${dish.spicyLevel}/3`}
+                              class="text-sm"
+                            >
+                              {'🌶'.repeat(dish.spicyLevel)}
+                            </span>
+                          )}
+                          {dish.allergens.length > 0 && (
+                            <span class="text-xs text-ink-500 italic">
+                              {t(locale, 'menu.contains')}:{' '}
+                              {dish.allergens.map((a) => allergenName(a.id)).join(', ')}
+                            </span>
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })
+    }
+  </div>
 </Base>

@@ -76,8 +76,15 @@ const allergens = defineCollection({
 });
 
 const dishes = defineCollection({
-  // one JSON file per dish; the filename is the stable entity id
-  loader: glob({ pattern: '*.json', base: './src/content/dishes' }),
+  // one JSON file per dish; the filename is the stable entity id.
+  // generateId is required: the default glob behavior would use the `slug`
+  // data property as the id, and dish slugs are localized OBJECTS — every
+  // dish would collapse into a single "[object Object]" entry.
+  loader: glob({
+    pattern: '*.json',
+    base: './src/content/dishes',
+    generateId: ({ entry }) => entry.replace(/\.json$/, ''),
+  }),
   schema: z.object({
     category: reference('categories'),
     price_thb: z.number().positive(),

@@ -1,0 +1,33 @@
+---
+/**
+ * Hand-drawn botanical sprig (single-color line art). Purely decorative:
+ * always rendered aria-hidden. Color via currentColor, size via class.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 140 180"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  class:list={[className]}
+>
+  <path d="M70 174 C66 138 74 104 70 62 C68 40 72 22 78 8"></path>
+  <path d="M69 150 C52 146 40 134 37 117 C55 122 66 134 69 150 Z"></path>
+  <path d="M70 118 C54 113 44 100 42 84 C59 90 68 102 70 118 Z"></path>
+  <path d="M70 86 C56 80 48 68 47 53 C62 60 69 71 70 86 Z"></path>
+  <path d="M70 134 C86 130 97 118 100 102 C83 106 72 118 70 134 Z"></path>
+  <path d="M70 102 C85 97 95 85 97 69 C81 75 71 87 70 102 Z"></path>
+  <path d="M71 70 C84 64 91 53 92 38 C78 45 72 56 71 70 Z"></path>
+  <path d="M78 8 C84 15 86 25 83 35 C76 29 74 18 78 8 Z"></path>
+  <circle cx="54" cy="161" r="2.5"></circle>
+  <circle cx="62" cy="169" r="2.5"></circle>
+</svg>

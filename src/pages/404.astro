@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Sprig from '../components/Sprig.astro';
 import { DEFAULT_LOCALE } from '../lib/i18n';
 import { t } from '../lib/ui';
 
@@ -13,8 +14,33 @@ const locale = DEFAULT_LOCALE;
   alternates={{}}
   noindex
 >
-  <h1 class="text-3xl font-bold">404 — {t(locale, 'notFound.title')}</h1>
-  <p class="mt-4">
-    <a href="/" class="underline">{t(locale, 'notFound.back')}</a>
-  </p>
+  <div class="wrap relative py-16 sm:py-24">
+    <Sprig
+      class="pointer-events-none absolute top-8 right-0 h-56 w-auto rotate-12 text-leaf-700 opacity-[0.12] sm:right-10"
+    />
+    <p
+      class="font-display text-[6rem] leading-none font-extrabold text-leaf-700/20 sm:text-[8rem]"
+      aria-hidden="true"
+    >
+      404
+    </p>
+    <h1 class="mt-2 font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+      404 — {t(locale, 'notFound.title')}
+    </h1>
+    <p class="mt-3 max-w-[44ch] leading-relaxed text-ink-500">{t(locale, 'notFound.text')}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href="/"
+        class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+      >
+        {t(locale, 'notFound.back')}
+      </a>
+      <a
+        href="/menu/"
+        class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+      >
+        {t(locale, 'nav.menu')}
+      </a>
+    </div>
+  </div>
 </Base>

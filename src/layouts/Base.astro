@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import Seo from '../components/Seo.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import JayBadge from '../components/JayBadge.astro';
 import { type Locale, type PartiallyLocalized } from '../lib/i18n';
-import { localePath } from '../lib/urls';
+import { localePath, normalizePath } from '../lib/urls';
 import { SITE_LAUNCHED } from '../lib/site';
-import { t } from '../lib/ui';
+import { t, type UiKey } from '../lib/ui';
 import '../styles/global.css';
 
 interface Props {
@@ -36,6 +37,22 @@ const nav = [
   { href: localePath(locale, '/blog/'), label: t(locale, 'nav.blog') },
   { href: localePath(locale, '/contact/'), label: t(locale, 'nav.contact') },
 ];
+const currentPath = normalizePath(Astro.url.pathname);
+const homeHref = localePath(locale, '/');
+// Section-aware active state: /blog/some-article/ still highlights "Blog".
+// Home must match exactly — every localized path starts with it.
+const isCurrent = (href: string) =>
+  href === homeHref ? currentPath === href : currentPath.startsWith(href);
+
+const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
+const [mainHours] = location.hours;
+const dayRange = mainHours
+  ? `${t(locale, `days.${mainHours.days[0]}` as UiKey)}–${t(locale, `days.${mainHours.days[mainHours.days.length - 1]}` as UiKey)}`
+  : '';
+const reviewUrl = settings.reviewLinks.google ?? settings.reviewLinks.happycow;
+
+const actionLink =
+  'flex min-h-14 flex-col items-center justify-center gap-1 px-2 text-[11px] font-semibold tracking-wide text-cream-100 uppercase transition-colors hover:bg-leaf-800 focus-visible:outline-mango-300';
 ---
 
 <!doctype html>
@@ -43,6 +60,8 @@ const nav = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#faf6ed" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <Seo {locale} {title} {description} {alternates} noindex={effectiveNoindex} {ogType} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {
@@ -51,57 +70,231 @@ const nav = [
       ))
     }
   </head>
-  <body class="mx-auto flex min-h-screen max-w-3xl flex-col px-4 font-sans text-neutral-900">
-    <header class="flex flex-wrap items-center justify-between gap-4 py-4">
-      <a href={localePath(locale, '/')} class="text-lg font-bold">
-        {settings.nameLocalized[locale]}
-      </a>
-      <LanguageSwitcher {locale} {alternates} />
-      <nav class="w-full" aria-label="Main">
-        <ul class="flex flex-wrap gap-4 text-sm">
-          {
-            nav.map((item) => (
-              <li>
-                <a href={item.href} class="underline">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+  <body
+    class="flex min-h-screen flex-col bg-cream-100 pb-[calc(4.5rem+env(safe-area-inset-bottom))] font-sans text-ink-900 antialiased md:pb-0"
+  >
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-leaf-900 focus:px-4 focus:py-2 focus:font-semibold focus:text-cream-100"
+    >
+      {t(locale, 'a11y.skipToContent')}
+    </a>
+
+    {/* festival ribbon: leaf → mango → เจ-red */}
+    <div class="h-1 bg-linear-to-r from-leaf-700 via-mango-500 to-jay-500" aria-hidden="true"></div>
+
+    {
+      /* Compact header: brand + switcher on one row, nav as a single
+        horizontally-scrollable row — the hero stays high above the fold. */
+    }
+    <header class="border-b border-cream-300/70 bg-cream-100">
+      <div class="wrap py-3">
+        <div class="flex items-center justify-between gap-3">
+          <a href={homeHref} class="flex min-w-0 items-center gap-2 sm:gap-2.5">
+            <svg viewBox="0 0 32 32" class="h-7 w-7 shrink-0 sm:h-8 sm:w-8" aria-hidden="true">
+              <circle cx="16" cy="19" r="9.5" fill="var(--color-leaf-700)"></circle>
+              <path
+                d="M16.5 9.5C16.5 6.5 18.5 4.5 21.8 3.8C21.8 7 19.8 9 16.5 9.5Z"
+                fill="var(--color-mango-500)"></path>
+              <path
+                d="M16 9.8C15.6 8 15.8 6.6 16.6 5.2"
+                stroke="var(--color-ink-900)"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                fill="none"></path>
+            </svg>
+            <span
+              class="min-w-0 font-display text-base leading-tight font-bold tracking-tight sm:text-xl"
+            >
+              {settings.nameLocalized[locale]}
+            </span>
+          </a>
+          <div class="shrink-0">
+            <LanguageSwitcher {locale} {alternates} />
+          </div>
+        </div>
+        <nav class="mt-1.5" aria-label="Main">
+          <ul
+            class="scrollbar-none -mx-5 flex flex-nowrap gap-x-1 overflow-x-auto px-4 text-sm font-medium sm:-mx-7 sm:px-6"
+          >
+            {
+              nav.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                    class="inline-flex min-h-10 items-center rounded-full px-3 whitespace-nowrap text-ink-700 transition-colors aria-[current=page]:bg-leaf-100 aria-[current=page]:font-semibold aria-[current=page]:text-leaf-900 hover:bg-leaf-50 hover:text-leaf-800"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
     </header>
 
-    <main class="flex-1 py-6">
+    <main id="main" class="flex-1">
       <slot />
     </main>
 
-    <footer class="border-t border-neutral-200 py-6 text-sm text-neutral-700">
-      <p class="font-semibold">{settings.nameLocalized[locale]}</p>
-      <p>{location.address[locale]}</p>
-      <p>
-        <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="underline">{settings.phone}</a>
-      </p>
-      <ul class="mt-2 flex flex-wrap gap-4">
-        {
-          settings.reviewLinks.google && (
-            <li>
-              <a href={settings.reviewLinks.google} rel="noopener" class="underline">
+    <footer class="mt-16 bg-leaf-900 text-cream-100">
+      <div class="wrap grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <p class="font-display text-xl leading-snug font-bold text-cream-50">
+            {settings.nameLocalized[locale]}
+          </p>
+          <p class="mt-3">
+            <JayBadge label={t(locale, 'trust.jay')} />
+          </p>
+          <p class="mt-4 max-w-[36ch] text-sm leading-relaxed text-leaf-200">
+            {settings.tagline[locale]}
+          </p>
+        </div>
+
+        <div class="text-sm leading-relaxed">
+          <h2 class="font-display text-base font-bold text-mango-300">
+            {t(locale, 'nav.contact')}
+          </h2>
+          <p class="mt-3">{location.address[locale]}</p>
+          <p class="mt-2">
+            <a
+              href={phoneHref}
+              class="font-semibold underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
+            >
+              {settings.phone}
+            </a>
+          </p>
+          {
+            mainHours && (
+              <p class="mt-3 text-leaf-200">
+                {t(locale, 'contact.hours')}: {dayRange} {mainHours.open}–{mainHours.close}
+                <br />
+                {t(locale, 'days.sun')} — {t(locale, 'contact.closed').toLowerCase()}
+              </p>
+            )
+          }
+        </div>
+
+        <div class="text-sm">
+          <ul class="space-y-2.5">
+            {
+              settings.reviewLinks.happycow && (
+                <li>
+                  <a
+                    href={settings.reviewLinks.happycow}
+                    rel="noopener"
+                    class="inline-flex items-center gap-2 underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
+                  >
+                    <svg viewBox="0 0 24 24" class="h-4 w-4 fill-mango-400" aria-hidden="true">
+                      <path d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z" />
+                    </svg>
+                    {t(locale, 'trust.happycow')}
+                  </a>
+                </li>
+              )
+            }
+            {
+              settings.social.map((s) => (
+                <li>
+                  <a
+                    href={s.url}
+                    rel="noopener"
+                    class="underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
+                  >
+                    {s.platform}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          {
+            reviewUrl && (
+              <a
+                href={reviewUrl}
+                rel="noopener"
+                class="mt-5 inline-flex min-h-11 items-center rounded-full bg-mango-500 px-5 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+              >
                 {t(locale, 'footer.reviews')}
+              </a>
+            )
+          }
+        </div>
+      </div>
+      <div class="border-t border-leaf-800">
+        <p class="wrap py-4 text-xs text-leaf-200">
+          {`© ${new Date().getFullYear()} ${settings.name}`}
+        </p>
+      </div>
+    </footer>
+
+    {/* Mobile-only fixed action bar (CSS only). Body padding keeps content clear. */}
+    <nav
+      aria-label={t(locale, 'actions.quick')}
+      class="fixed inset-x-0 bottom-0 z-40 bg-leaf-900 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgba(30,61,38,0.35)] md:hidden"
+    >
+      <ul class="flex divide-x divide-leaf-800">
+        <li class="flex-1">
+          <a href={localePath(locale, '/menu/')} class={actionLink}>
+            <svg
+              viewBox="0 0 24 24"
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="5" y="3.5" width="14" height="17" rx="2"></rect>
+              <path d="M9 8h6M9 12h6M9 16h4"></path>
+            </svg>
+            <span>{t(locale, 'nav.menu')}</span>
+          </a>
+        </li>
+        <li class="flex-1">
+          <a href={phoneHref} class={actionLink}>
+            <svg
+              viewBox="0 0 24 24"
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
+            </svg>
+            <span>{t(locale, 'actions.call')}</span>
+          </a>
+        </li>
+        {
+          location.mapsUrl && (
+            <li class="flex-1">
+              <a href={location.mapsUrl} rel="noopener" class={actionLink}>
+                <svg
+                  viewBox="0 0 24 24"
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{t(locale, 'actions.map')}</span>
               </a>
             </li>
           )
         }
-        {
-          settings.social.map((s) => (
-            <li>
-              <a href={s.url} rel="noopener" class="underline">
-                {s.platform}
-              </a>
-            </li>
-          ))
-        }
       </ul>
-    </footer>
+    </nav>
   </body>
 </html>

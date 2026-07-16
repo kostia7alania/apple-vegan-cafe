@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb, buildRestaurant } from '../../lib/jsonld';
@@ -52,62 +53,146 @@ const jsonld = [
 ];
 
 const dayLabel = (day: string) => t(locale, `days.${day}` as UiKey);
+const daysLabel = (days: readonly string[]) =>
+  days.length > 2
+    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+    : days.map(dayLabel).join(', ');
+const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
-  <h1 class="text-3xl font-bold">{t(locale, 'nav.contact')}</h1>
+  <div class="wrap py-10 sm:py-14">
+    <h1 class="font-display text-4xl font-extrabold tracking-tight text-leaf-900 sm:text-5xl">
+      {t(locale, 'nav.contact')}
+    </h1>
 
-  <section class="mt-6">
-    <h2 class="text-lg font-semibold">{t(locale, 'contact.address')}</h2>
-    <p class="mt-1">{location.address[locale]}</p>
     {
-      location.mapsUrl && (
-        <p class="mt-2">
-          <a href={location.mapsUrl} rel="noopener" class="underline">
-            {t(locale, 'contact.findUs')}
-          </a>
-        </p>
-      )
+      /* Balanced two-column composition: address + phone stacked left,
+        full-height hours card right (with a corner sprig). */
     }
-  </section>
+    <div class="mt-8 grid items-start gap-5 sm:grid-cols-2">
+      <div class="grid gap-5">
+        <section class="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-7">
+          <h2
+            class="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            {t(locale, 'contact.address')}
+          </h2>
+          <p class="mt-3 text-lg leading-relaxed">{location.address[locale]}</p>
+          {
+            location.mapsUrl && (
+              <a
+                href={location.mapsUrl}
+                rel="noopener"
+                class="mt-5 inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+              >
+                {t(locale, 'contact.findUs')}
+              </a>
+            )
+          }
+        </section>
 
-  <section class="mt-6">
-    <h2 class="text-lg font-semibold">{t(locale, 'contact.phone')}</h2>
-    <p class="mt-1">
-      <a href={`tel:${settings.phone.replace(/\s/g, '')}`} class="underline">{settings.phone}</a>
-    </p>
-    {
-      settings.whatsapp && (
-        <p class="mt-1">
-          <a href={settings.whatsapp} rel="noopener" class="underline">
-            WhatsApp
+        <section class="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-7">
+          <h2
+            class="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
+            </svg>
+            {t(locale, 'contact.phone')}
+          </h2>
+          <p class="mt-3 text-sm text-ink-500">{t(locale, 'contact.callUs')}</p>
+          <a
+            href={phoneHref}
+            class="mt-4 inline-flex min-h-13 w-full items-center justify-center rounded-full bg-leaf-700 px-6 text-lg font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:w-auto"
+          >
+            {settings.phone}
           </a>
-        </p>
-      )
-    }
-  </section>
+          {
+            settings.whatsapp && (
+              <p class="mt-4">
+                <a
+                  href={settings.whatsapp}
+                  rel="noopener"
+                  class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                >
+                  WhatsApp
+                </a>
+              </p>
+            )
+          }
+        </section>
+      </div>
 
-  <section class="mt-6">
-    <h2 class="text-lg font-semibold">{t(locale, 'contact.hours')}</h2>
-    <table class="mt-2 text-left">
-      <tbody>
-        {
-          location.hours.map((h) => (
-            <tr>
-              <th scope="row" class="pr-6 font-normal">
-                {h.days.map(dayLabel).join(', ')}
-              </th>
-              <td>
-                {h.open}–{h.close}
-              </td>
+      <section
+        class="relative overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:h-full sm:p-7"
+      >
+        <Sprig
+          class="pointer-events-none absolute -right-5 -bottom-7 h-40 w-auto text-leaf-700 opacity-[0.12]"
+        />
+        <h2
+          class="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+          {t(locale, 'contact.hours')}
+        </h2>
+        <table class="mt-4 w-full max-w-md text-base">
+          <tbody class="divide-y divide-cream-200">
+            {
+              location.hours.map((h) => (
+                <tr>
+                  <th scope="row" class="py-2.5 pr-6 text-left font-medium">
+                    {daysLabel(h.days)}
+                  </th>
+                  <td class="py-2.5 font-semibold text-leaf-800 tabular-nums">
+                    {h.open}–{h.close}
+                  </td>
+                </tr>
+              ))
+            }
+            <tr class="text-terracotta-700">
+              <th scope="row" class="py-2.5 pr-6 text-left font-medium">{dayLabel('sun')}</th>
+              <td class="py-2.5 font-semibold">{t(locale, 'contact.closed')}</td>
             </tr>
-          ))
-        }
-        <tr>
-          <th scope="row" class="pr-6 font-normal">{dayLabel('sun')}</th>
-          <td>{t(locale, 'contact.closed')}</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
 </Base>

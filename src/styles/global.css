@@ -1,11 +1,213 @@
 @import 'tailwindcss';
+/*
+ * Self-hosted Playfair Display (variable, wght 400–900).
+ * index.css declares latin + cyrillic (+ latin-ext/vietnamese) subsets with
+ * unicode-range, so browsers download only what a page actually uses:
+ * ~38 KB (latin) + ~21 KB (cyrillic) — within the ≤120 KB font budget.
+ * Thai headings intentionally fall back to the system Thai serif/sans.
+ */
+@import '@fontsource-variable/playfair-display/index.css';
 
 /*
- * System font stack only (performance constraint: no web fonts).
- * Noto/Thonburi cover Thai on the respective platforms.
+ * «Thai garden table» design tokens.
+ * Cream paper + deep leaf green carry the identity; mango/turmeric and
+ * terracotta are accents; เจ-red is reserved for the เจ badge.
+ * All text/background pairs used in components meet WCAG AA on cream #FAF6ED:
+ *   ink-900 (16.4:1), ink-700 (~9:1), ink-500 (5.3:1), leaf-700 (7.1:1),
+ *   terracotta-700 (5.3:1), jay-500 (5.5:1), cream-50 on leaf-700+ (≥7:1).
  */
 @theme {
   --font-sans:
     system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Noto Sans Thai',
     Thonburi, sans-serif;
+  --font-display:
+    'Playfair Display Variable', 'Playfair Display', Georgia, 'Times New Roman', 'Noto Serif Thai',
+    Thonburi, serif;
+
+  /* cream paper */
+  --color-cream-50: #fdfbf5;
+  --color-cream-100: #faf6ed;
+  --color-cream-200: #f2ecdc;
+  --color-cream-300: #e5dcc3;
+  --color-cream-400: #cfc0a0;
+
+  /* ink */
+  --color-ink-500: #6e6656;
+  --color-ink-700: #4a4438;
+  --color-ink-900: #26221b;
+
+  /* deep leaf green (primary) */
+  --color-leaf-50: #f1f6ef;
+  --color-leaf-100: #e3ede0;
+  --color-leaf-200: #b9ccb4;
+  --color-leaf-600: #3b7148;
+  --color-leaf-700: #2f5d3a;
+  --color-leaf-800: #274d30;
+  --color-leaf-900: #1e3d26;
+
+  /* mango / turmeric accent */
+  --color-mango-200: #f3cb6b;
+  --color-mango-300: #efb84e;
+  --color-mango-400: #ecad42;
+  --color-mango-500: #e8a13c;
+
+  /* terracotta touch */
+  --color-terracotta-500: #c4633f;
+  --color-terracotta-700: #a34e30;
+
+  /* เจ red (Thai vegan festival mark) */
+  --color-jay-500: #b3382c;
+  --color-jay-700: #8e2a1f;
+}
+
+@layer base {
+  html {
+    /* keep anchor targets clear of the sticky category nav */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  ::selection {
+    background-color: var(--color-mango-200);
+    color: var(--color-ink-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-leaf-700);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Page container: comfortable editorial measure with full-bleed sections. */
+  .wrap {
+    width: 100%;
+    max-width: 64rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 40rem) {
+    .wrap {
+      padding-inline: 1.75rem;
+    }
+  }
+
+  /* Classic menu typography: dish name … dotted leader … price.
+     An empty span's flex baseline is its bottom margin edge, so inside an
+     items-baseline row the dots sit on the first text baseline — even when
+     a long dish name wraps. */
+  .leader {
+    flex: 1 1 1.25rem;
+    min-width: 1.25rem;
+    margin-bottom: 3px;
+    border-bottom: 2px dotted var(--color-cream-400);
+  }
+
+  /* Editorial prose for rendered Markdown (about page, blog articles). */
+  .prose-editorial {
+    max-width: 65ch;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-ink-700);
+  }
+  .prose-editorial p {
+    margin-block: 1.1em;
+  }
+  .prose-editorial > :first-child {
+    margin-top: 0;
+  }
+  .prose-editorial strong {
+    color: var(--color-ink-900);
+  }
+  .prose-editorial em {
+    color: var(--color-ink-500);
+  }
+  .prose-editorial h2,
+  .prose-editorial h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-leaf-900);
+    margin-top: 1.8em;
+    margin-bottom: 0.6em;
+  }
+  .prose-editorial h2 {
+    font-size: 1.6em;
+  }
+  .prose-editorial h3 {
+    font-size: 1.25em;
+  }
+  .prose-editorial a {
+    font-weight: 600;
+    color: var(--color-leaf-700);
+    text-decoration: underline;
+    text-decoration-color: var(--color-mango-500);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .prose-editorial a:hover {
+    color: var(--color-leaf-900);
+  }
+  .prose-editorial ul,
+  .prose-editorial ol {
+    margin-block: 1.1em;
+    padding-inline-start: 1.4em;
+  }
+  .prose-editorial ul {
+    list-style: disc;
+  }
+  .prose-editorial ol {
+    list-style: decimal;
+  }
+  .prose-editorial li {
+    margin-block: 0.35em;
+  }
+  .prose-editorial blockquote {
+    margin-block: 1.4em;
+    border-inline-start: 3px solid var(--color-mango-500);
+    padding-inline-start: 1em;
+    font-style: italic;
+    color: var(--color-ink-500);
+  }
+
+  /* Horizontal category nav: scrollable without a visible scrollbar. */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Staggered page-load reveal (hero). No-ops under reduced motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rise {
+      animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    }
+    .rise-1 {
+      animation-delay: 0.08s;
+    }
+    .rise-2 {
+      animation-delay: 0.16s;
+    }
+    .rise-3 {
+      animation-delay: 0.24s;
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }

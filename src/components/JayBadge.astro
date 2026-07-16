@@ -1,0 +1,42 @@
+---
+/**
+ * เจ badge — the brand mark. Yellow chip with the red เจ character, echoing
+ * the traditional Thai vegan-festival flag (yellow field, red เจ).
+ * jay-700 on mango-200 is 5.4:1 (WCAG AA).
+ */
+interface Props {
+  /** localized label rendered next to the เจ character */
+  label?: string;
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { label, size = 'md', class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    'inline-flex items-center rounded-full border border-jay-500/30 bg-mango-200 text-jay-700',
+    size === 'md' ? 'gap-1.5 px-2.5 py-1' : 'gap-1 px-2 py-0.5',
+    className,
+  ]}
+>
+  <span
+    lang="th"
+    class:list={['font-display leading-none font-bold', size === 'md' ? 'text-sm' : 'text-xs']}
+  >
+    เจ
+  </span>
+  {
+    label && (
+      <span
+        class:list={[
+          'leading-none font-bold tracking-[0.08em] uppercase',
+          size === 'md' ? 'text-[0.7rem]' : 'text-[0.65rem]',
+        ]}
+      >
+        {label}
+      </span>
+    )
+  }
+</span>

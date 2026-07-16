@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import LeafDivider from '../../components/LeafDivider.astro';
+import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
@@ -35,10 +37,22 @@ const jsonld = [
 ---
 
 <Base {locale} title={entry.data.title} description={entry.data.description} {alternates} {jsonld}>
-  <article class="prose">
-    <h1 class="text-3xl font-bold">{entry.data.title}</h1>
-    <div class="mt-4 space-y-4">
-      <Content />
+  <article class="wrap relative py-10 sm:py-14">
+    <Sprig
+      class="pointer-events-none absolute top-10 right-0 hidden h-72 w-auto rotate-12 text-leaf-700 opacity-[0.1] lg:block"
+    />
+    <div class="mx-auto max-w-[65ch]">
+      <header>
+        <h1
+          class="font-display text-4xl leading-tight font-extrabold tracking-tight text-balance text-leaf-900 sm:text-5xl"
+        >
+          {entry.data.title}
+        </h1>
+        <LeafDivider class="mt-7 max-w-60" />
+      </header>
+      <div class="prose-editorial mt-8">
+        <Content />
+      </div>
     </div>
   </article>
 </Base>

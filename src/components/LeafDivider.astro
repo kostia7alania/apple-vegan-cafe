@@ -1,0 +1,29 @@
+---
+/**
+ * Editorial section divider: hairline — three-leaf sprig — hairline.
+ * Decorative only (aria-hidden).
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['flex items-center gap-3 text-leaf-700', className]} aria-hidden="true">
+  <span class="h-px flex-1 bg-cream-300"></span>
+  <svg
+    viewBox="0 0 40 22"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="h-5 w-9 shrink-0"
+  >
+    <path d="M20 20 C20 14 20 10 20 5"></path>
+    <path d="M20 12 C15 11 11 8 10 3 C15 4 19 7 20 12 Z"></path>
+    <path d="M20 12 C25 11 29 8 30 3 C25 4 21 7 20 12 Z"></path>
+  </svg>
+  <span class="h-px flex-1 bg-cream-300"></span>
+</div>
