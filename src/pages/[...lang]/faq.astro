@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import LeafDivider from '../../components/LeafDivider.astro';
+import Sprig from '../../components/Sprig.astro';
+import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { buildBreadcrumb } from '../../lib/jsonld';
+import { t } from '../../lib/ui';
+
+export function getStaticPaths() {
+  return localeStaticPaths();
+}
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const faqs = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+
+const alternates = structuralAlternates('/faq/');
+const site = Astro.site!;
+
+const title = {
+  en: 'FAQ — Apple Vegan Cafe Pattaya',
+  th: 'คำถามที่พบบ่อย — ร้านอาหารเจ คาเฟ่เจ พัทยา',
+  ru: 'Вопросы и ответы — Apple Vegan Cafe, Паттайя',
+}[locale];
+const description = {
+  en: 'Answers to common questions about Apple Vegan Cafe & Restaurant in Pattaya: vegan kitchen, gluten-free dishes, delivery, opening hours and payment.',
+  th: 'คำตอบสำหรับคำถามที่พบบ่อยเกี่ยวกับร้านอาหารเจ คาเฟ่เจ พัทยา: ครัวเจ เมนูไร้กลูเตน บริการส่ง เวลาเปิด-ปิด และการชำระเงิน',
+  ru: 'Ответы на частые вопросы об Apple Vegan Cafe в Паттайе: веганская кухня, блюда без глютена, доставка, часы работы и оплата.',
+}[locale];
+const heading = {
+  en: 'Frequently asked questions',
+  th: 'คำถามที่พบบ่อย',
+  ru: 'Вопросы и ответы',
+}[locale];
+
+// No FAQPage JSON-LD on purpose: Google retired FAQ rich results (see src/lib/jsonld.ts).
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: t(locale, 'nav.faq'), url: absoluteUrl(site, localePath(locale, '/faq/')) },
+  ]),
+];
+---
+
+<Base {locale} {title} {description} {alternates} {jsonld}>
+  <div class="wrap relative py-10 sm:py-14">
+    <Sprig
+      class="pointer-events-none absolute top-10 right-0 hidden h-72 w-auto rotate-12 text-leaf-700 opacity-[0.1] lg:block"
+    />
+    <div class="mx-auto max-w-[65ch]">
+      <header>
+        <h1
+          class="font-display text-4xl leading-tight font-extrabold tracking-tight text-balance text-leaf-900 sm:text-5xl"
+        >
+          {heading}
+        </h1>
+        <LeafDivider class="mt-7 max-w-60" />
+      </header>
+
+      {/* CSS-only accordions: native details/summary, zero client JS. */}
+      <div class="mt-8 space-y-3">
+        {
+          faqs.map(({ data: faq }) => (
+            <details class="group rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40">
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-display text-lg leading-snug font-bold text-leaf-900 [&::-webkit-details-marker]:hidden">
+                {faq.question[locale]}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  class="h-5 w-5 shrink-0 text-leaf-700 transition-transform group-open:rotate-180"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <p class="px-6 pb-5 leading-relaxed text-ink-700">{faq.answer[locale]}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Base>

@@ -16,13 +16,26 @@ interface Props {
   alternates: PartiallyLocalized;
   noindex?: boolean;
   ogType?: 'website' | 'article';
+  /** site-relative path to the Open Graph image (1200×630) */
+  ogImage?: string;
 }
 
-const { locale, title, description, alternates, noindex = false, ogType = 'website' } = Astro.props;
+const {
+  locale,
+  title,
+  description,
+  alternates,
+  noindex = false,
+  ogType = 'website',
+  ogImage = '/og-default.png',
+} = Astro.props;
 
 const site = Astro.site!;
 const currentPath = alternates[locale] ?? normalizePath(Astro.url.pathname);
 const canonical = absoluteUrl(site, currentPath);
+// Not absoluteUrl(): that helper normalizes to a trailing slash, which would
+// mangle a file path like /og-default.png into /og-default.png/.
+const ogImageUrl = new URL(ogImage, site).href;
 const defaultAlternate = alternates[DEFAULT_LOCALE];
 const alternateEntries = Object.entries(alternates).filter(([, path]) => Boolean(path)) as [
   Locale,
@@ -48,6 +61,10 @@ const alternateEntries = Object.entries(alternates).filter(([, path]) => Boolean
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
 <meta property="og:locale" content={OG_LOCALES[locale]} />
 {
   alternateEntries

@@ -1,0 +1,8 @@
+{
+  "name": "Apple Vegan Cafe & Restaurant",
+  "short_name": "Apple Vegan Cafe",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }],
+  "theme_color": "#faf6ed",
+  "background_color": "#faf6ed",
+  "display": "browser"
+}

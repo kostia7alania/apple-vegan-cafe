@@ -35,6 +35,7 @@ const nav = [
   { href: localePath(locale, '/menu/'), label: t(locale, 'nav.menu') },
   { href: localePath(locale, '/about/'), label: t(locale, 'nav.about') },
   { href: localePath(locale, '/blog/'), label: t(locale, 'nav.blog') },
+  { href: localePath(locale, '/faq/'), label: t(locale, 'nav.faq') },
   { href: localePath(locale, '/contact/'), label: t(locale, 'nav.contact') },
 ];
 const currentPath = normalizePath(Astro.url.pathname);
@@ -62,6 +63,7 @@ const actionLink =
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#faf6ed" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
     <Seo {locale} {title} {description} {alternates} noindex={effectiveNoindex} {ogType} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     {

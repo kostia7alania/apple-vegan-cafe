@@ -28,5 +28,80 @@
       "th": "ไม่ใช้เลย เราปรุงด้วยซีอิ๊ว เกลือ และสมุนไพรไทยเท่านั้น",
       "ru": "Никогда. Мы готовим только на соевом соусе, соли и тайских травах — вся кухня растительная."
     }
+  },
+  {
+    "id": "cross-contact",
+    "topic": "food",
+    "order": 3,
+    "question": {
+      "en": "Is there any cross-contact with animal products?",
+      "th": "มีการปนเปื้อนกับผลิตภัณฑ์จากสัตว์ไหม?",
+      "ru": "Есть ли риск контакта с продуктами животного происхождения?"
+    },
+    "answer": {
+      "en": "No. Ours is a single, fully plant-based kitchen — no meat, dairy, eggs or fish products are ever on the premises, so there is nothing to cross-contact with.",
+      "th": "ไม่มี ครัวของเราเป็นครัวเจล้วนเพียงครัวเดียว ไม่มีเนื้อสัตว์ นม ไข่ หรือผลิตภัณฑ์จากปลาเข้ามาในร้านเลย จึงไม่มีอะไรให้ปนเปื้อน",
+      "ru": "Нет. У нас одна, полностью растительная кухня: мясо, молочные продукты, яйца и рыба вообще не попадают в заведение, поэтому контактировать просто не с чем."
+    }
+  },
+  {
+    "id": "gluten-free",
+    "topic": "food",
+    "order": 4,
+    "question": {
+      "en": "Do you have gluten-free dishes?",
+      "th": "มีเมนูปราศจากกลูเตนไหม?",
+      "ru": "Есть ли у вас блюда без глютена?"
+    },
+    "answer": {
+      "en": "Yes — several dishes are gluten-free and marked on the menu. To be honest with you: we are not a certified gluten-free kitchen, so we cannot guarantee zero traces. Tell us when you order and we will help you choose.",
+      "th": "มีหลายจานที่ไม่มีกลูเตน และมีป้ายกำกับไว้ในเมนู แต่ขอบอกตามตรงว่าครัวของเราไม่ได้รับการรับรองปลอดกลูเตน จึงรับประกันไม่ได้ว่าไม่มีการปนเปื้อนเลย แจ้งเราตอนสั่งอาหารได้เลย เรายินดีช่วยเลือก",
+      "ru": "Да, несколько блюд без глютена — они отмечены в меню. Честно скажем: наша кухня не сертифицирована как безглютеновая, поэтому полное отсутствие следов гарантировать не можем. Скажите нам при заказе — поможем выбрать."
+    }
+  },
+  {
+    "id": "delivery",
+    "topic": "ordering",
+    "order": 5,
+    "question": {
+      "en": "Do you deliver?",
+      "th": "มีบริการส่งอาหารไหม?",
+      "ru": "Есть ли у вас доставка?"
+    },
+    "answer": {
+      "en": "Yes — we deliver via GrabFood: search for Apple Vegan Cafe in the app. You can also call us and pick your order up at the cafe.",
+      "th": "มีค่ะ เราส่งผ่าน GrabFood ค้นหา Apple Vegan Cafe ในแอปได้เลย หรือจะโทรสั่งแล้วมารับที่ร้านก็ได้",
+      "ru": "Да — мы доставляем через GrabFood: найдите Apple Vegan Cafe в приложении. Можно также позвонить нам и забрать заказ в кафе."
+    }
+  },
+  {
+    "id": "hours",
+    "topic": "visit",
+    "order": 6,
+    "question": {
+      "en": "What are your opening hours? When are you closed?",
+      "th": "ร้านเปิดกี่โมง และหยุดวันไหน?",
+      "ru": "Какие у вас часы работы? Когда выходной?"
+    },
+    "answer": {
+      "en": "We are open Monday to Saturday, 7:30–22:30. On Sunday we are closed — it is our family day.",
+      "th": "เราเปิดวันจันทร์ถึงเสาร์ เวลา 7:30–22:30 น. ส่วนวันอาทิตย์ร้านปิด เพราะเป็นวันครอบครัวของเรา",
+      "ru": "Мы работаем с понедельника по субботу с 7:30 до 22:30. В воскресенье закрыто — это наш семейный день."
+    }
+  },
+  {
+    "id": "payment",
+    "topic": "visit",
+    "order": 7,
+    "question": {
+      "en": "Do you take cards?",
+      "th": "รับบัตรเครดิตไหม?",
+      "ru": "Можно ли расплатиться картой?"
+    },
+    "answer": {
+      "en": "We currently accept cash. Payment options may change, so please check with us about bank transfers or QR payment before your visit.",
+      "th": "ตอนนี้เรารับเงินสด ช่องทางชำระเงินอาจเปลี่ยนแปลงได้ หากต้องการโอนหรือสแกน QR รบกวนสอบถามทางร้านก่อนมานะคะ",
+      "ru": "Сейчас мы принимаем наличные. Способы оплаты могут меняться, поэтому насчёт перевода или оплаты по QR-коду лучше уточнить у нас заранее."
+    }
   }
 ]
