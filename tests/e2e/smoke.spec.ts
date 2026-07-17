@@ -37,6 +37,17 @@ test('language switcher links to translated pages', async ({ page }) => {
   await expect(ruLink).toHaveAttribute('href', '/ru/menu/');
 });
 
+test('language toggle opens without JS and navigates', async ({ page }) => {
+  await page.goto('/menu/');
+  const thLink = page.locator('header a[hreflang="th"]');
+  await expect(thLink).toBeHidden(); // collapsed <details>
+  await page.locator('header details summary').click();
+  await expect(thLink).toBeVisible();
+  await thLink.click();
+  await expect(page).toHaveURL('/th/menu/');
+  await expect(page.locator('html[lang="th"]')).toHaveCount(1);
+});
+
 test('language switcher never disappears: untranslated pages fall back to locale home', async ({
   page,
 }) => {
