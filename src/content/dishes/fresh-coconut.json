@@ -11,10 +11,14 @@
     "th": "มะพร้าวน้ำหอมเย็น ๆ เสิร์ฟทั้งลูกพร้อมหลอด",
     "ru": "Охлаждённый ароматный молодой кокос, подаётся целиком с трубочкой."
   },
-  "slug": { "en": "fresh-young-coconut", "th": "มะพร้าวน้ำหอม", "ru": "svezhiy-kokos" },
+  "slug": {
+    "en": "fresh-young-coconut",
+    "th": "มะพร้าวน้ำหอม",
+    "ru": "svezhiy-kokos"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "dietaryTags": ["vegan", "jay", "gluten-free", "jain-friendly"],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -7,14 +7,18 @@
     "ru": "Веганский массаман карри"
   },
   "description": {
-    "en": "Slow-cooked coconut milk curry with potato, tofu and roasted peanuts. Mild, rich and fragrant — served with jasmine rice.",
-    "th": "แกงกะทิเคี่ยวช้า ๆ กับมันฝรั่ง เต้าหู้ และถั่วลิสงคั่ว รสอ่อน หอมเครื่องเทศ เสิร์ฟพร้อมข้าวหอมมะลิ",
-    "ru": "Карри на кокосовом молоке с картофелем, тофу и жареным арахисом. Мягкий, насыщенный вкус, подаётся с жасминовым рисом."
+    "en": "Slow-cooked coconut milk curry with tofu and roasted peanuts. Mild, rich and fragrant — served with jasmine rice.",
+    "th": "แกงกะทิเคี่ยวช้า ๆ กับเต้าหู้และถั่วลิสงคั่ว รสอ่อน หอมเครื่องเทศ เสิร์ฟพร้อมข้าวหอมมะลิ",
+    "ru": "Карри на кокосовом молоке с тофу и жареным арахисом. Мягкий, насыщенный вкус, подаётся с жасминовым рисом."
   },
-  "slug": { "en": "vegan-massaman-curry", "th": "แกงมัสมั่นเจ", "ru": "veganskiy-massaman-karri" },
+  "slug": {
+    "en": "vegan-massaman-curry",
+    "th": "แกงมัสมั่นเจ",
+    "ru": "veganskiy-massaman-karri"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": ["vegan", "jay", "jain-friendly"],
   "allergens": ["peanut"],
   "spicyLevel": 1,
   "available": true,

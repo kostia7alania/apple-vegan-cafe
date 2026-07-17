@@ -16,6 +16,13 @@ interface Props {
 }
 const { locale } = Astro.props;
 
+// small visual anchors for cross-cultural guests (เจ has its own JayBadge)
+const TAG_ICONS: Partial<Record<string, string>> = {
+  vegan: '🌱',
+  'jain-friendly': '🪷',
+  'gluten-free': '🌾',
+};
+
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
@@ -143,6 +150,7 @@ const jsonld = [
                               <JayBadge size="sm" label={t(locale, 'tag.jay')} />
                             ) : (
                               <span class="rounded-full border border-leaf-700/25 bg-leaf-50 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-leaf-800 uppercase">
+                                {TAG_ICONS[tag] && `${TAG_ICONS[tag]} `}
                                 {t(locale, `tag.${tag}` as UiKey)}
                               </span>
                             ),

@@ -103,5 +103,35 @@
       "th": "ตอนนี้เรารับเงินสด ช่องทางชำระเงินอาจเปลี่ยนแปลงได้ หากต้องการโอนหรือสแกน QR รบกวนสอบถามทางร้านก่อนมานะคะ",
       "ru": "Сейчас мы принимаем наличные. Способы оплаты могут меняться, поэтому насчёт перевода или оплаты по QR-коду лучше уточнить у нас заранее."
     }
+  },
+  {
+    "id": "fasting",
+    "topic": "food",
+    "order": 8,
+    "question": {
+      "en": "Is the food suitable for religious fasting (Buddhist เจ, Orthodox Lent)?",
+      "th": "อาหารเหมาะกับช่วงถือศีลกินเจไหม?",
+      "ru": "Подходит ли еда для православного поста?"
+    },
+    "answer": {
+      "en": "Yes. Everything we cook is 100% plant-based all year — no meat, fish, egg or dairy — so it fits the Thai เจ observance and meat-free fasting traditions such as Orthodox Lent by definition.",
+      "th": "เหมาะค่ะ อาหารของเราเป็นเจแท้ 100% ตลอดทั้งปี ไม่ใช่เฉพาะช่วงเทศกาลกินเจ ทานเจได้อย่างสบายใจทุกวันค่ะ",
+      "ru": "Да. Вся наша еда круглый год на 100% растительная — без мяса, рыбы, яиц и молочного, — поэтому по определению подходит для православного поста, включая строгие дни."
+    }
+  },
+  {
+    "id": "halal",
+    "topic": "food",
+    "order": 9,
+    "question": {
+      "en": "Is the food halal?",
+      "th": "อาหารฮาลาลไหม?",
+      "ru": "Ваша еда халяльная?"
+    },
+    "answer": {
+      "en": "We don't hold a halal certificate, so we won't claim the word. What we can promise: the kitchen is 100% plant-based — no meat of any kind, no pork, no lard, and nothing shares a pan with them, because they are simply never here. Many Muslim guests are comfortable with that; the choice is always yours.",
+      "th": "ร้านเราไม่มีใบรับรองฮาลาล จึงไม่ขอกล่าวอ้างคำนั้น แต่ที่รับรองได้คือ ครัวของเราเป็นพืช 100% ไม่มีเนื้อสัตว์ใด ๆ ไม่มีหมู ไม่มีน้ำมันหมูในร้านเลย แขกมุสลิมหลายท่านสบายใจที่จะทาน แล้วแต่ท่านพิจารณาค่ะ",
+      "ru": "Халяль-сертификата у нас нет, поэтому этим словом мы не разбрасываемся. Что можем обещать твёрдо: кухня на 100% растительная — никакого мяса, свинины и смальца в заведении просто не бывает. Многим гостям-мусульманам этого достаточно; решение всегда за вами."
+    }
   }
 ]

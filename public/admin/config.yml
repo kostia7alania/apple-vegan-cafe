@@ -99,7 +99,7 @@ collections:
           widget: select,
           multiple: true,
           default: [vegan],
-          options: [vegan, jay, gluten-free, raw, nut-free],
+          options: [vegan, jay, jain-friendly, gluten-free, raw, nut-free],
         }
       - {
           name: allergens,

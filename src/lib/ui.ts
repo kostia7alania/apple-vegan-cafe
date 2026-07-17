@@ -36,6 +36,7 @@ const strings = {
   'menu.contains': { en: 'Contains', th: 'มีส่วนผสม', ru: 'Содержит' },
   'tag.vegan': { en: 'vegan', th: 'วีแกน', ru: 'веган' },
   'tag.jay': { en: 'jay', th: 'อาหารเจ', ru: 'джей' },
+  'tag.jain-friendly': { en: 'jain-friendly', th: 'เหมาะกับแขกเชน', ru: 'джайн-френдли' },
   'tag.gluten-free': { en: 'gluten-free', th: 'ไร้กลูเตน', ru: 'без глютена' },
   'tag.raw': { en: 'raw', th: 'โรว์ฟู้ด', ru: 'raw' },
   'tag.nut-free': { en: 'nut-free', th: 'ไม่มีถั่ว', ru: 'без орехов' },

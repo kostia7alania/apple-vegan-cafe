@@ -11,10 +11,14 @@
     "th": "กล้วยน้ำว้าต้มในน้ำกะทิหวานหอม ของหวานไทยแท้",
     "ru": "Клуай буат чи — нежный тайский десерт: банан, томлённый в сладком кокосовом молоке."
   },
-  "slug": { "en": "banana-in-coconut-milk", "th": "กล้วยบวชชี", "ru": "banan-v-kokosovom-moloke" },
+  "slug": {
+    "en": "banana-in-coconut-milk",
+    "th": "กล้วยบวชชี",
+    "ru": "banan-v-kokosovom-moloke"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "dietaryTags": ["vegan", "jay", "gluten-free", "jain-friendly"],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

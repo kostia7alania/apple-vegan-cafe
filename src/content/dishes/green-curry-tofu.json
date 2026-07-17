@@ -11,10 +11,14 @@
     "th": "แกงเขียวหวานเต้าหู้ มะเขือเปราะ ใบโหระพา ในน้ำกะทิ เสิร์ฟพร้อมข้าวหอมมะลิ",
     "ru": "Классический тайский зелёный карри с тофу, тайскими баклажанами и базиликом на кокосовом молоке. С жасминовым рисом."
   },
-  "slug": { "en": "green-curry-tofu", "th": "แกงเขียวหวานเจ", "ru": "zelyonyy-karri-s-tofu" },
+  "slug": {
+    "en": "green-curry-tofu",
+    "th": "แกงเขียวหวานเจ",
+    "ru": "zelyonyy-karri-s-tofu"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": ["vegan", "jay", "jain-friendly"],
   "allergens": ["soy"],
   "spicyLevel": 2,
   "available": true,

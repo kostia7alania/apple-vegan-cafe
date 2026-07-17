@@ -11,10 +11,14 @@
     "th": "เส้นจันท์ผัดกับเต้าหู้ ถั่วงอก ซอสมะขาม โรยถั่วลิสง เสิร์ฟกับมะนาว ไม่ใส่ไข่ ไม่ใส่น้ำปลา",
     "ru": "Рисовая лапша, обжаренная с тофу, ростками и тамариндовым соусом, с арахисом и лаймом. Без яйца и рыбного соуса."
   },
-  "slug": { "en": "vegan-pad-thai", "th": "ผัดไทยเจ", "ru": "veganskiy-pad-tay" },
+  "slug": {
+    "en": "vegan-pad-thai",
+    "th": "ผัดไทยเจ",
+    "ru": "veganskiy-pad-tay"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": ["vegan", "jay", "jain-friendly"],
   "allergens": ["peanut", "soy"],
   "spicyLevel": 1,
   "available": true,

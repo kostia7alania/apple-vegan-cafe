@@ -11,10 +11,14 @@
     "th": "มะละกอสดตำกับมะเขือเทศ ถั่วฝักยาว พริก และมะนาว น้ำปรุงเจ ไม่ใส่น้ำปลา ไม่ใส่กุ้งแห้ง",
     "ru": "Свежая зелёная папайя с томатами, стручковой фасолью, чили и лаймом. Веганская заправка — без рыбного соуса и креветок."
   },
-  "slug": { "en": "som-tam-papaya-salad", "th": "ส้มตำเจ", "ru": "som-tam-salat-iz-papayi" },
+  "slug": {
+    "en": "som-tam-papaya-salad",
+    "th": "ส้มตำเจ",
+    "ru": "som-tam-salat-iz-papayi"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay", "gluten-free"],
+  "dietaryTags": ["vegan", "jay", "gluten-free", "jain-friendly"],
   "allergens": ["peanut"],
   "spicyLevel": 3,
   "available": true,

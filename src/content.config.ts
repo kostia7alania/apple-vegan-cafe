@@ -94,7 +94,7 @@ const dishes = defineCollection({
     previousSlugs: z.array(z.string()).default([]),
     images: z.array(z.string()).default([]),
     dietaryTags: z
-      .array(z.enum(['vegan', 'jay', 'gluten-free', 'raw', 'nut-free']))
+      .array(z.enum(['vegan', 'jay', 'jain-friendly', 'gluten-free', 'raw', 'nut-free']))
       .default(['vegan']),
     allergens: z.array(reference('allergens')).default([]),
     spicyLevel: z.number().int().min(0).max(3).default(0),
