@@ -1,13 +1,15 @@
 ---
 import { LOCALES, LOCALE_LABELS, type Locale, type PartiallyLocalized } from '../lib/i18n';
+import { localePath } from '../lib/urls';
 import { t } from '../lib/ui';
 
 /**
  * Plain crawlable links to the same page in other locales.
- * A locale without an existing translation is simply not rendered —
- * no fallback redirects, no duplicate pages.
- * Ordering follows LOCALES so the switcher is identical on every page
- * (alternates objects are built in different orders per route).
+ * If a page has no translation in a locale, the link falls back to that
+ * locale's home page — the switcher must never disappear (a Thai visitor on
+ * an English-only landing would otherwise hit a dead end; language-selector
+ * UX guides call this out explicitly). Ordering follows LOCALES so the
+ * switcher is identical on every page.
  */
 interface Props {
   locale: Locale;
@@ -15,28 +17,26 @@ interface Props {
 }
 
 const { locale, alternates } = Astro.props;
-const others = LOCALES.filter((l) => l !== locale && Boolean(alternates[l])).map(
-  (l) => [l, alternates[l]!] as [Locale, string],
+const others = LOCALES.filter((l) => l !== locale).map(
+  (l) => [l, alternates[l] ?? localePath(l, '/')] as [Locale, string],
 );
 ---
 
-{
-  others.length > 0 && (
-    <nav aria-label={t(locale, 'lang.switch')}>
-      <ul class="flex gap-1.5">
-        {others.map(([l, path]) => (
-          <li>
-            <a
-              href={path}
-              lang={l}
-              hreflang={l}
-              class="inline-flex min-h-9 items-center rounded-full border border-cream-300 bg-cream-50 px-3 text-xs font-semibold text-ink-700 transition-colors hover:border-leaf-600 hover:bg-leaf-50 hover:text-leaf-800"
-            >
-              {LOCALE_LABELS[l]}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  )
-}
+<nav aria-label={t(locale, 'lang.switch')}>
+  <ul class="flex gap-1.5">
+    {
+      others.map(([l, path]) => (
+        <li>
+          <a
+            href={path}
+            lang={l}
+            hreflang={l}
+            class="inline-flex min-h-9 items-center rounded-full border border-cream-300 bg-cream-50 px-3 text-xs font-semibold text-ink-700 transition-colors hover:border-leaf-600 hover:bg-leaf-50 hover:text-leaf-800"
+          >
+            {LOCALE_LABELS[l]}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>

@@ -58,6 +58,11 @@ const strings = {
   'contact.phone': { en: 'Phone', th: 'โทร', ru: 'Телефон' },
   'contact.closed': { en: 'Closed', th: 'ปิด', ru: 'Закрыто' },
   'contact.findUs': { en: 'Find us on the map', th: 'ดูแผนที่', ru: 'Мы на карте' },
+  'contact.nightOrders': {
+    en: 'Late-night delivery: we often keep Grab orders on around the clock — the app shows our live status.',
+    th: 'ส่งดึก: ใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ',
+    ru: 'Ночная доставка: заказы в Grab мы часто принимаем почти круглосуточно — актуальный статус виден в приложении.',
+  },
   'blog.readMore': { en: 'Read more', th: 'อ่านต่อ', ru: 'Читать далее' },
   'footer.reviews': { en: 'Leave us a review', th: 'รีวิวร้านเรา', ru: 'Оставить отзыв' },
   'lang.switch': { en: 'Language', th: 'ภาษา', ru: 'Язык' },

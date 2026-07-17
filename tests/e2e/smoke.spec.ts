@@ -37,6 +37,21 @@ test('language switcher links to translated pages', async ({ page }) => {
   await expect(ruLink).toHaveAttribute('href', '/ru/menu/');
 });
 
+test('language switcher never disappears: untranslated pages fall back to locale home', async ({
+  page,
+}) => {
+  await page.goto('/vegan-breakfast-pattaya/');
+  await expect(page.locator('header a[hreflang="th"]')).toHaveAttribute('href', '/th/');
+  await expect(page.locator('header a[hreflang="ru"]')).toHaveAttribute('href', '/ru/');
+  // partially translated article: RU twin exists, TH falls back to home
+  await page.goto('/blog/how-to-order-vegan-food-in-thailand/');
+  await expect(page.locator('header a[hreflang="ru"]')).toHaveAttribute(
+    'href',
+    '/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/',
+  );
+  await expect(page.locator('header a[hreflang="th"]')).toHaveAttribute('href', '/th/');
+});
+
 test('canonical is self-referential', async ({ page }) => {
   await page.goto('/th/menu/');
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
