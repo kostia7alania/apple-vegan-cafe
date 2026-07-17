@@ -1,5 +1,6 @@
 ---
 import { LOCALES, LOCALE_LABELS, type Locale, type PartiallyLocalized } from '../lib/i18n';
+import Flag from './Flag.astro';
 import { localePath } from '../lib/urls';
 import { t } from '../lib/ui';
 
@@ -12,8 +13,9 @@ import { t } from '../lib/ui';
  *   (details content is parsed regardless of open state);
  * - a page with no translation falls back to that locale's HOME — the
  *   switcher never disappears and never dead-ends;
- * - endonyms only (ไทย, Русский), never flags; order = LOCALES, identical
- *   on every page;
+ * - endonyms always present (ไทย, Русский); flags are a visual anchor ONLY,
+ *   next to the endonym, never replacing it; order = LOCALES, identical on
+ *   every page;
  * - the panel closes itself on navigation; with CSS-only <details> it stays
  *   open until re-tap otherwise — acceptable, selection always navigates.
  */
@@ -35,20 +37,7 @@ const items = LOCALES.map((l) => ({
     class="flex min-h-9 cursor-pointer list-none items-center gap-1.5 rounded-full border border-cream-300 bg-cream-50 px-3 text-xs font-semibold text-ink-700 transition-colors select-none group-open:border-leaf-600 group-open:bg-leaf-50 hover:border-leaf-600 hover:bg-leaf-50 hover:text-leaf-800 [&::-webkit-details-marker]:hidden"
     aria-label={t(locale, 'lang.switch')}
   >
-    <svg
-      viewBox="0 0 24 24"
-      class="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      aria-hidden="true"
-    >
-      <circle cx="12" cy="12" r="10"></circle>
-      <path
-        d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-      ></path>
-    </svg>
+    <Flag {locale} />
     {LOCALE_LABELS[locale]}
     <svg
       viewBox="0 0 24 24"
@@ -77,8 +66,9 @@ const items = LOCALES.map((l) => ({
                 href={item.href}
                 lang={item.locale}
                 hreflang={item.locale}
-                class="flex min-h-10 items-center px-4 text-sm font-medium text-ink-700 transition-colors hover:bg-leaf-50 hover:text-leaf-900"
+                class="flex min-h-10 items-center gap-2.5 px-4 text-sm font-medium text-ink-700 transition-colors hover:bg-leaf-50 hover:text-leaf-900"
               >
+                <Flag locale={item.locale} />
                 {item.label}
               </a>
             </li>
@@ -86,8 +76,9 @@ const items = LOCALES.map((l) => ({
             <li>
               <span
                 aria-current="true"
-                class="flex min-h-10 items-center gap-2 px-4 text-sm font-semibold text-leaf-900"
+                class="flex min-h-10 items-center gap-2.5 px-4 text-sm font-semibold text-leaf-900"
               >
+                <Flag locale={item.locale} />
                 <svg
                   viewBox="0 0 24 24"
                   class="h-3.5 w-3.5 text-leaf-700"

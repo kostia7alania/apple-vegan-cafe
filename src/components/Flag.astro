@@ -1,0 +1,48 @@
+---
+import type { Locale } from '../lib/i18n';
+
+/**
+ * Tiny inline-SVG flags for the language switcher (user preference: flags as
+ * a visual anchor NEXT TO endonyms, never instead of them — flags denote
+ * countries, not languages, so the text label stays authoritative).
+ * SVG, not emoji: Windows renders flag emoji as letter pairs ("TH").
+ * Adding a locale later = add one <svg> case here.
+ */
+interface Props {
+  locale: Locale;
+  class?: string;
+}
+const { locale, class: className = 'h-3.5 w-5' } = Astro.props;
+const common = `${className} shrink-0 rounded-[2px] ring-1 ring-ink-900/10`;
+---
+
+{
+  locale === 'th' && (
+    <svg viewBox="0 0 60 40" class={common} aria-hidden="true">
+      <rect width="60" height="40" fill="#fff" />
+      <rect width="60" height="6.7" y="0" fill="#a51931" />
+      <rect width="60" height="13.3" y="13.3" fill="#2d2a4a" />
+      <rect width="60" height="6.7" y="33.3" fill="#a51931" />
+    </svg>
+  )
+}
+{
+  locale === 'ru' && (
+    <svg viewBox="0 0 60 40" class={common} aria-hidden="true">
+      <rect width="60" height="40" fill="#fff" />
+      <rect width="60" height="13.3" y="13.3" fill="#0036a7" />
+      <rect width="60" height="13.4" y="26.6" fill="#d62718" />
+    </svg>
+  )
+}
+{
+  locale === 'en' && (
+    <svg viewBox="0 0 60 40" class={common} aria-hidden="true">
+      <rect width="60" height="40" fill="#012169" />
+      <path d="M0 0 60 40M60 0 0 40" stroke="#fff" stroke-width="8" />
+      <path d="M0 0 60 40M60 0 0 40" stroke="#c8102e" stroke-width="4" />
+      <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="13" />
+      <path d="M30 0v40M0 20h60" stroke="#c8102e" stroke-width="8" />
+    </svg>
+  )
+}
