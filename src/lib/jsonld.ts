@@ -23,6 +23,8 @@ export interface RestaurantInput {
   images: string[];
   sameAs: string[];
   hours: HoursSpec[];
+  /** direct ordering URL (e.g. GrabFood); emits a machine-actionable OrderAction */
+  orderUrl?: string | null;
 }
 
 const DAY_MAP: Record<string, string> = {
@@ -62,6 +64,9 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
   }
   if (input.images.length > 0) jsonld.image = input.images;
   if (input.sameAs.length > 0) jsonld.sameAs = input.sameAs;
+  if (input.orderUrl) {
+    jsonld.potentialAction = { '@type': 'OrderAction', target: input.orderUrl };
+  }
   return jsonld;
 }
 

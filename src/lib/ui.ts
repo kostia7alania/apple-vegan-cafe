@@ -77,6 +77,16 @@ const strings = {
   'days.sat': { en: 'Sat', th: 'ส.', ru: 'Сб' },
   'days.sun': { en: 'Sun', th: 'อา.', ru: 'Вс' },
   'days.daily': { en: 'Every day', th: 'ทุกวัน', ru: 'Ежедневно' },
+  'hours.delivery': {
+    en: '🌙 Delivery (Grab)',
+    th: '🌙 ส่งอาหาร (Grab)',
+    ru: '🌙 Доставка (Grab)',
+  },
+  'hours.deliveryValue': {
+    en: 'usually around the clock*',
+    th: 'เกือบตลอดเวลา*',
+    ru: 'почти круглосуточно*',
+  },
 } satisfies Record<string, Record<Locale, string>>;
 
 export type UiKey = keyof typeof strings;

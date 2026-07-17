@@ -45,6 +45,7 @@ const jsonld = [
     images: [],
     sameAs: settings.social.map((s) => s.url),
     hours: location.hours,
+    orderUrl: settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'))?.url,
   }),
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
@@ -188,6 +189,14 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
                 </tr>
               ))
             }
+            <tr>
+              <th scope="row" class="py-2.5 pr-6 text-left font-medium">
+                {t(locale, 'hours.delivery')}
+              </th>
+              <td class="py-2.5 font-semibold text-leaf-800">
+                {t(locale, 'hours.deliveryValue')}
+              </td>
+            </tr>
           </tbody>
         </table>
         <p class="mt-4 max-w-[46ch] text-sm leading-relaxed text-ink-500">

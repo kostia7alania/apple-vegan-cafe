@@ -178,6 +178,8 @@ const actionLink =
             mainHours && (
               <p class="mt-3 text-leaf-200">
                 {t(locale, 'contact.hours')}: {dayRange} {mainHours.open}–{mainHours.close}
+                <br />
+                {t(locale, 'hours.delivery')}: {t(locale, 'hours.deliveryValue')}
                 {closedDays.length > 0 && (
                   <>
                     <br />
