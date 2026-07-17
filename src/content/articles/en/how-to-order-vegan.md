@@ -67,8 +67,8 @@ usually reveal whether a kitchen really understands "no fish sauce".
 ## And a note from us
 
 At our cafe, none of this vigilance is needed. The whole kitchen is plant-based: no fish sauce, no
-egg, no dairy anywhere on the premises, every day of the year. The pad thai (฿120) is made without
-egg or fish sauce by design, and the Thai iced tea (฿75) uses our house-made oat milk instead of
+egg, no dairy anywhere on the premises, every day of the year. The pad thai (฿149) is made without
+egg or fish sauce by design, and the Thai iced tea uses our house-made oat milk instead of
 condensed milk. Come practise your "mai sai nam pla" on us — we will smile, because there was
 never any nam pla here to begin with.
 

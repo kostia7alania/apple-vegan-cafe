@@ -16,9 +16,17 @@
     "lineId": null,
     "email": null,
     "social": [
-      { "platform": "Instagram", "url": "https://www.instagram.com/apple.vegan.restaurant/" }
+      {
+        "platform": "Instagram",
+        "url": "https://www.instagram.com/apple.vegan.restaurant/"
+      }
     ],
-    "orderingLinks": [],
+    "orderingLinks": [
+      {
+        "provider": "GrabFood",
+        "url": "https://r.grab.com/o/Fj6Zvya2"
+      }
+    ],
     "reviewLinks": {
       "google": null,
       "happycow": "https://www.happycow.net/reviews/apple-vegan-cafe-and-restaurant-pattaya-386893",

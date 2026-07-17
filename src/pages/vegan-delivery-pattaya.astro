@@ -29,11 +29,11 @@ if (!settings || !location) throw new Error('settings/locations content is missi
 
 // Hand-picked dishes from mains + desserts that survive the ride well.
 const DELIVERY_DISH_IDS = [
-  'pad-thai-vegan',
-  'massaman-curry',
-  'khao-soi',
-  'som-tam',
-  'mango-sticky-rice',
+  'vegan-pad-thai',
+  'pad-see-ew-vegan',
+  'red-curry-vegan',
+  'vegan-hamburger',
+  'vegan-som-tum-thai',
 ];
 const deliveryDishes = (
   await getCollection('dishes', ({ id, data }) => data.available && DELIVERY_DISH_IDS.includes(id))
@@ -48,7 +48,7 @@ const site = Astro.site!;
 
 const title = 'Vegan Food Delivery in Pattaya — Apple Vegan Cafe (Grab & pickup)';
 const description =
-  '100% vegan Thai food delivered in Pattaya via GrabFood, or call and pick up at in-cafe prices. Family kitchen — no egg, no dairy, no fish sauce.';
+  '100% vegan Thai food delivered in Pattaya via GrabFood, or call and pick up at the counter. Family kitchen — no egg, no dairy, no fish sauce.';
 
 const jsonld = [
   buildBreadcrumb([
@@ -195,9 +195,10 @@ const daysLabel = (days: readonly string[]) =>
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
         Dishes in delivery apps usually cost a little more than they do at our tables — that's
-        simply how the apps work. The menu on this website shows our <strong>in-cafe prices</strong
-        >, and <strong>pickup is always at cafe prices</strong>. So if you're nearby, collecting
-        your order yourself is the friendliest deal — and you get to say hello.
+        simply how the apps work. The menu on this website matches our <strong>GrabFood menu</strong
+        >, and <strong>pickup at the counter is often a little cheaper — just ask us</strong>. So if
+        you're nearby, collecting your order yourself is the friendliest deal — and you get to say
+        hello.
       </p>
     </div>
   </section>
@@ -216,7 +217,7 @@ const daysLabel = (days: readonly string[]) =>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
       A few dishes that travel especially well — curries and noodles arrive just as happy as they
-      left the kitchen. Prices shown are our in-cafe prices.
+      left the kitchen. Prices shown match our GrabFood menu.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -266,8 +267,8 @@ const daysLabel = (days: readonly string[]) =>
         {t(locale, 'home.findUs')}
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        The kitchen cooks from <strong>7:00 to 22:00, Monday to Saturday</strong> — early breakfast boxes
-        and late dinners both welcome.
+        The kitchen cooks from <strong>7:00 to 22:00, every day</strong> — early breakfast boxes and late
+        dinners both welcome.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>

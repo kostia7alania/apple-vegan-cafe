@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan seaweed fish roll",
+    "th": "ปลาม้วนสาหร่ายเจ",
+    "ru": "Vegan seaweed fish roll"
+  },
+  "slug": {
+    "en": "vegan-seaweed-fish-roll",
+    "th": "ปลาม้วนสาหร่ายเจ",
+    "ru": "vegan-seaweed-fish-roll"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

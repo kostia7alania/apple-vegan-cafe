@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan sukiyaki",
+    "th": "สุกี้เจ",
+    "ru": "Vegan sukiyaki"
+  },
+  "slug": {
+    "en": "vegan-sukiyaki",
+    "th": "สุกี้เจ",
+    "ru": "vegan-sukiyaki"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

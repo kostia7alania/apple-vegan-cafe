@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Fresh vegetable salad",
+    "th": "สลัดผัก",
+    "ru": "Fresh vegetable salad"
+  },
+  "slug": {
+    "en": "fresh-vegetable-salad",
+    "th": "สลัดผัก",
+    "ru": "fresh-vegetable-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

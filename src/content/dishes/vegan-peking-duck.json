@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 229,
+  "name": {
+    "en": "Vegan Peking Duck",
+    "th": "เป็ดฮ่องเต้เจ",
+    "ru": "Vegan Peking Duck"
+  },
+  "slug": {
+    "en": "vegan-peking-duck",
+    "th": "เป็ดฮ่องเต้เจ",
+    "ru": "vegan-peking-duck"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

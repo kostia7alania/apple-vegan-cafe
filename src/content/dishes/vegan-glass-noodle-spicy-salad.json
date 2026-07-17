@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan glass noodle spicy salad",
+    "th": "ยำวุ้นเส้นเจ",
+    "ru": "Vegan glass noodle spicy salad"
+  },
+  "slug": {
+    "en": "vegan-glass-noodle-spicy-salad",
+    "th": "ยำวุ้นเส้นเจ",
+    "ru": "vegan-glass-noodle-spicy-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

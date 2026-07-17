@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan som tum (vegan papaya salad) with fermented soybean sauce",
+    "th": "ส้มตำปลาร้าเจ",
+    "ru": "Vegan som tum (vegan papaya salad) with fermented soybean sauce"
+  },
+  "slug": {
+    "en": "vegan-som-tum-vegan-papaya-salad-with-fermented-soybean-sauce",
+    "th": "ส้มตำปลาร้าเจ",
+    "ru": "vegan-som-tum-vegan-papaya-salad-with-fermented-soybean-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

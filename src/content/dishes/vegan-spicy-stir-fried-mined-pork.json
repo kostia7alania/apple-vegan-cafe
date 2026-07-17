@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 169,
+  "name": {
+    "en": "Vegan spicy Stir-fried mined pork",
+    "th": "คั่วกลิ้งหมูสับเจ",
+    "ru": "Vegan spicy Stir-fried mined pork"
+  },
+  "slug": {
+    "en": "vegan-spicy-stir-fried-mined-pork",
+    "th": "คั่วกลิ้งหมูสับเจ",
+    "ru": "vegan-spicy-stir-fried-mined-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

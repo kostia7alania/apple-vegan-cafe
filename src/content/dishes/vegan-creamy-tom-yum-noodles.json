@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan Creamy Tom  Yum  Noodles",
+    "th": "ก๋วยเตี๋ยวต้มยำน้ำจ้นเจ",
+    "ru": "Vegan Creamy Tom  Yum  Noodles"
+  },
+  "slug": {
+    "en": "vegan-creamy-tom-yum-noodles",
+    "th": "ก๋วยเตี๋ยวต้มยำน้ำจ้นเจ",
+    "ru": "vegan-creamy-tom-yum-noodles"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

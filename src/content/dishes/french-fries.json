@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 129,
+  "name": {
+    "en": "French fries",
+    "th": "French fries",
+    "ru": "French fries"
+  },
+  "slug": {
+    "en": "french-fries",
+    "th": "French-fries",
+    "ru": "french-fries"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

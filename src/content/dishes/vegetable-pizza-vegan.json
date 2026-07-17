@@ -1,0 +1,23 @@
+{
+  "category": "pizza-fastfood",
+  "price_thb": 439,
+  "name": {
+    "en": "Vegetable Pizza vegan",
+    "th": "Vegetable Pizza vegan",
+    "ru": "Vegetable Pizza vegan"
+  },
+  "slug": {
+    "en": "vegetable-pizza-vegan",
+    "th": "Vegetable-Pizza-vegan",
+    "ru": "vegetable-pizza-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Strawberry smoothie",
+    "th": "สตอเบอรี่ปั่น",
+    "ru": "Strawberry smoothie"
+  },
+  "slug": {
+    "en": "strawberry-smoothie",
+    "th": "สตอเบอรี่ปั่น",
+    "ru": "strawberry-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

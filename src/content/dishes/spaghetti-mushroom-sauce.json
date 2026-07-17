@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Spaghetti Mushroom  sauce",
+    "th": "สปาเก็ตตี้ซอสเห็ด",
+    "ru": "Spaghetti Mushroom  sauce"
+  },
+  "slug": {
+    "en": "spaghetti-mushroom-sauce",
+    "th": "สปาเก็ตตี้ซอสเห็ด-2",
+    "ru": "spaghetti-mushroom-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

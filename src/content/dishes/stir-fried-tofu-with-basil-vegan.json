@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried tofu with basil vegan",
+    "th": "ผัดกระเพราเต้าหู้เจ",
+    "ru": "Stir-fried tofu with basil vegan"
+  },
+  "slug": {
+    "en": "stir-fried-tofu-with-basil-vegan",
+    "th": "ผัดกระเพราเต้าหู้เจ",
+    "ru": "stir-fried-tofu-with-basil-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Stir-fried kale with crispy vegan pork",
+    "th": "คะน้าหมูกรอบเจ",
+    "ru": "Stir-fried kale with crispy vegan pork"
+  },
+  "slug": {
+    "en": "stir-fried-kale-with-crispy-vegan-pork",
+    "th": "คะน้าหมูกรอบเจ",
+    "ru": "stir-fried-kale-with-crispy-vegan-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

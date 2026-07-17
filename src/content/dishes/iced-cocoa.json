@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 105,
+  "name": {
+    "en": "Iced cocoa",
+    "th": "โกโก้เย็น",
+    "ru": "Iced cocoa"
+  },
+  "slug": {
+    "en": "iced-cocoa",
+    "th": "โกโก้เย็น",
+    "ru": "iced-cocoa"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 110,
+  "name": {
+    "en": "Iced latte",
+    "th": "ลาเต้เย็น",
+    "ru": "Iced latte"
+  },
+  "slug": {
+    "en": "iced-latte",
+    "th": "ลาเต้เย็น",
+    "ru": "iced-latte"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

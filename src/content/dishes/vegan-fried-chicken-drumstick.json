@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan fried chicken (drumstick)",
+    "th": "น่องไก่เจทอด",
+    "ru": "Vegan fried chicken (drumstick)"
+  },
+  "slug": {
+    "en": "vegan-fried-chicken-drumstick",
+    "th": "น่องไก่เจทอด",
+    "ru": "vegan-fried-chicken-drumstick"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

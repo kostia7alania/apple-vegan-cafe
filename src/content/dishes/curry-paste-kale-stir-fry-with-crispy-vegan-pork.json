@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 179,
+  "name": {
+    "en": "Curry-paste kale stir-fry with crispy vegan pork",
+    "th": "ผัดเครื่องแกงคะน้าหมูกรอบเจ",
+    "ru": "Curry-paste kale stir-fry with crispy vegan pork"
+  },
+  "slug": {
+    "en": "curry-paste-kale-stir-fry-with-crispy-vegan-pork",
+    "th": "ผัดเครื่องแกงคะน้าหมูกรอบเจ",
+    "ru": "curry-paste-kale-stir-fry-with-crispy-vegan-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

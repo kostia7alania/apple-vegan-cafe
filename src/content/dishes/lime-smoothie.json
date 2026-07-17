@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 80,
+  "name": {
+    "en": "Lime smoothie",
+    "th": "มะนาวปั่น",
+    "ru": "Lime smoothie"
+  },
+  "slug": {
+    "en": "lime-smoothie",
+    "th": "มะนาวปั่น",
+    "ru": "lime-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

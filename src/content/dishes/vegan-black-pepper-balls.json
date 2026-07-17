@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan black pepper balls",
+    "th": "ลูกชิ้นพริกไทยดำเจ",
+    "ru": "Vegan black pepper balls"
+  },
+  "slug": {
+    "en": "vegan-black-pepper-balls",
+    "th": "ลูกชิ้นพริกไทยดำเจ",
+    "ru": "vegan-black-pepper-balls"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

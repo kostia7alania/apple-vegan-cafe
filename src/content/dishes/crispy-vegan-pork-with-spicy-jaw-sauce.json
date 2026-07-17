@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Crispy vegan pork with spicy jaw sauce",
+    "th": "หมูกรอบเจน้ำจิ้มแจ่ว",
+    "ru": "Crispy vegan pork with spicy jaw sauce"
+  },
+  "slug": {
+    "en": "crispy-vegan-pork-with-spicy-jaw-sauce",
+    "th": "หมูกรอบเจน้ำจิ้มแจ่ว",
+    "ru": "crispy-vegan-pork-with-spicy-jaw-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

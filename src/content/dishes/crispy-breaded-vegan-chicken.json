@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 329,
+  "name": {
+    "en": "Crispy breaded vegan chicken",
+    "th": "ไก่ชุปแป้งทอด",
+    "ru": "Crispy breaded vegan chicken"
+  },
+  "slug": {
+    "en": "crispy-breaded-vegan-chicken",
+    "th": "ไก่ชุปแป้งทอด",
+    "ru": "crispy-breaded-vegan-chicken"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan larb moo (vegan spicy salad)",
+    "th": "ลาบหมูเจ",
+    "ru": "Vegan larb moo (vegan spicy salad)"
+  },
+  "slug": {
+    "en": "vegan-larb-moo-vegan-spicy-salad",
+    "th": "ลาบหมูเจ",
+    "ru": "vegan-larb-moo-vegan-spicy-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Deep-fried evoking Mushrooms in batter",
+    "th": "เห็ดเข็มทองทอด",
+    "ru": "Deep-fried evoking Mushrooms in batter"
+  },
+  "slug": {
+    "en": "deep-fried-evoking-mushrooms-in-batter",
+    "th": "เห็ดเข็มทองทอด",
+    "ru": "deep-fried-evoking-mushrooms-in-batter"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

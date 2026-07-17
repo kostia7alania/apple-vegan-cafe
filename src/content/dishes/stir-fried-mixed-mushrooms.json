@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 159,
+  "name": {
+    "en": "Stir-fried mixed mushrooms",
+    "th": "ผัดเห็ดรวม",
+    "ru": "Stir-fried mixed mushrooms"
+  },
+  "slug": {
+    "en": "stir-fried-mixed-mushrooms",
+    "th": "ผัดเห็ดรวม",
+    "ru": "stir-fried-mixed-mushrooms"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

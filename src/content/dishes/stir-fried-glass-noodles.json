@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried glass noodles",
+    "th": "ผัดวุ้นเส้น",
+    "ru": "Stir-fried glass noodles"
+  },
+  "slug": {
+    "en": "stir-fried-glass-noodles",
+    "th": "ผัดวุ้นเส้น",
+    "ru": "stir-fried-glass-noodles"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

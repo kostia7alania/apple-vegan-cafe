@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan fried rice  with vegetables & vegan egg",
+    "th": "ข้าวผัดผักไข่ดาวเจ",
+    "ru": "Vegan fried rice  with vegetables & vegan egg"
+  },
+  "slug": {
+    "en": "vegan-fried-rice-with-vegetables-vegan-egg",
+    "th": "ข้าวผัดผักไข่ดาวเจ",
+    "ru": "vegan-fried-rice-with-vegetables-vegan-egg"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

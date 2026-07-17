@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Khao kluk kapi — vegan shrimp-paste style rice",
+    "th": "ข้าวคลุกกะปิเจ",
+    "ru": "Khao kluk kapi — vegan shrimp-paste style rice"
+  },
+  "slug": {
+    "en": "khao-kluk-kapi-vegan-shrimp-paste-style-rice",
+    "th": "ข้าวคลุกกะปิเจ",
+    "ru": "khao-kluk-kapi-vegan-shrimp-paste-style-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

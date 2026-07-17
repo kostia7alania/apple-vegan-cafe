@@ -1,30 +1,72 @@
 [
   {
-    "id": "breakfast",
+    "id": "one-plate",
     "order": 1,
     "name": {
-      "en": "Breakfast (from 7:00)",
-      "th": "อาหารเช้า (ตั้งแต่ 7:00)",
-      "ru": "Завтраки (с 7:00)"
+      "en": "One-plate dishes",
+      "th": "อาหารจานเดียว",
+      "ru": "Основные блюда (одна тарелка)"
     },
-    "slug": { "en": "breakfast", "th": "อาหารเช้า", "ru": "zavtraki" }
+    "slug": {
+      "en": "one-plate",
+      "th": "อาหารจานเดียว",
+      "ru": "osnovnye-blyuda"
+    }
   },
   {
-    "id": "mains",
+    "id": "mains-share",
     "order": 2,
-    "name": { "en": "Thai mains", "th": "อาหารจานหลัก", "ru": "Основные блюда" },
-    "slug": { "en": "thai-mains", "th": "อาหารจานหลัก", "ru": "osnovnye-blyuda" }
+    "name": {
+      "en": "Mains to share (with rice)",
+      "th": "กับข้าว",
+      "ru": "Блюда к рису (для компании)"
+    },
+    "slug": {
+      "en": "mains-to-share",
+      "th": "กับข้าว",
+      "ru": "blyuda-k-risu"
+    }
   },
   {
-    "id": "desserts",
+    "id": "snacks",
     "order": 3,
-    "name": { "en": "Desserts", "th": "ของหวาน", "ru": "Десерты" },
-    "slug": { "en": "desserts", "th": "ของหวาน", "ru": "deserty" }
+    "name": {
+      "en": "Snacks & starters",
+      "th": "ของทานเล่น",
+      "ru": "Закуски"
+    },
+    "slug": {
+      "en": "snacks",
+      "th": "ของทานเล่น",
+      "ru": "zakuski"
+    }
+  },
+  {
+    "id": "pizza-fastfood",
+    "order": 4,
+    "name": {
+      "en": "Pizza & fast food",
+      "th": "ฟาสต์ฟู้ด",
+      "ru": "Пицца и фастфуд"
+    },
+    "slug": {
+      "en": "pizza-fast-food",
+      "th": "ฟาสต์ฟู้ด",
+      "ru": "picca-i-fastfud"
+    }
   },
   {
     "id": "drinks",
-    "order": 4,
-    "name": { "en": "Drinks", "th": "เครื่องดื่ม", "ru": "Напитки" },
-    "slug": { "en": "drinks", "th": "เครื่องดื่ม", "ru": "napitki" }
+    "order": 5,
+    "name": {
+      "en": "Drinks",
+      "th": "เครื่องดื่ม",
+      "ru": "Напитки"
+    },
+    "slug": {
+      "en": "drinks",
+      "th": "เครื่องดื่ม",
+      "ru": "napitki"
+    }
   }
 ]

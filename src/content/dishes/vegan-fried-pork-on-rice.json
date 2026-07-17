@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan fried pork on rice",
+    "th": "หมูทอดเจราดข้าว",
+    "ru": "Vegan fried pork on rice"
+  },
+  "slug": {
+    "en": "vegan-fried-pork-on-rice",
+    "th": "หมูทอดเจราดข้าว",
+    "ru": "vegan-fried-pork-on-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

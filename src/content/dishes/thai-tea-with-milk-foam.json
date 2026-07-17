@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Thai tea with milk foam",
+    "th": "ชาไทยฟองนม",
+    "ru": "Thai tea with milk foam"
+  },
+  "slug": {
+    "en": "thai-tea-with-milk-foam",
+    "th": "ชาไทยฟองนม",
+    "ru": "thai-tea-with-milk-foam"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

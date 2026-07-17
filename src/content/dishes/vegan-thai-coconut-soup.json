@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan thai coconut soup",
+    "th": "ต้มข่าเจ",
+    "ru": "Vegan thai coconut soup"
+  },
+  "slug": {
+    "en": "vegan-thai-coconut-soup",
+    "th": "ต้มข่าเจ",
+    "ru": "vegan-thai-coconut-soup"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

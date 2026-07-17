@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Green apple smoothie",
+    "th": "แอปเปิ้ลเขียวปั่น",
+    "ru": "Green apple smoothie"
+  },
+  "slug": {
+    "en": "green-apple-smoothie",
+    "th": "แอปเปิ้ลเขียวปั่น",
+    "ru": "green-apple-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

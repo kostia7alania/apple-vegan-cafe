@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 40,
+  "name": {
+    "en": "Steamed rice",
+    "th": "ข้าวสวย",
+    "ru": "Steamed rice"
+  },
+  "slug": {
+    "en": "steamed-rice",
+    "th": "ข้าวสวย",
+    "ru": "steamed-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

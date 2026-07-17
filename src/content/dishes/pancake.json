@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 159,
+  "name": {
+    "en": "Pancake",
+    "th": "Pancake",
+    "ru": "Pancake"
+  },
+  "slug": {
+    "en": "pancake",
+    "th": "Pancake",
+    "ru": "pancake"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

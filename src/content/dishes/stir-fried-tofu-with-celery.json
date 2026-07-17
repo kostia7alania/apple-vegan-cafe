@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried tofu with celery",
+    "th": "เต้าหู้ผัดขึ้นฉ่าย",
+    "ru": "Stir-fried tofu with celery"
+  },
+  "slug": {
+    "en": "stir-fried-tofu-with-celery",
+    "th": "เต้าหู้ผัดขึ้นฉ่าย",
+    "ru": "stir-fried-tofu-with-celery"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

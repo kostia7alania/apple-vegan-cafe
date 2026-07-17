@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Passion fruit smoothie",
+    "th": "เสาวรสปั่น",
+    "ru": "Passion fruit smoothie"
+  },
+  "slug": {
+    "en": "passion-fruit-smoothie",
+    "th": "เสาวรสปั่น",
+    "ru": "passion-fruit-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan Chiang chun fried rice",
+    "th": "ข้าวผัดเชียงชุน",
+    "ru": "Vegan Chiang chun fried rice"
+  },
+  "slug": {
+    "en": "vegan-chiang-chun-fried-rice",
+    "th": "ข้าวผัดเชียงชุน",
+    "ru": "vegan-chiang-chun-fried-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

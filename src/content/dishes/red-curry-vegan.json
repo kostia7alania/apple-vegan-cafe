@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Red curry vegan",
+    "th": "แกงเผ็ดเจ",
+    "ru": "Red curry vegan"
+  },
+  "slug": {
+    "en": "red-curry-vegan",
+    "th": "แกงเผ็ดเจ",
+    "ru": "red-curry-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": true,
+  "source": "grab_export",
+  "reviewedAt": null
+}

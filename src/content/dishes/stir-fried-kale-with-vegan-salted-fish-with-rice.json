@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Stir-Fried kale with  vegan salted fish with rice",
+    "th": "ผัดคะน้าปลาเค็มราดข้าว",
+    "ru": "Stir-Fried kale with  vegan salted fish with rice"
+  },
+  "slug": {
+    "en": "stir-fried-kale-with-vegan-salted-fish-with-rice",
+    "th": "ผัดคะน้าปลาเค็มราดข้าว",
+    "ru": "stir-fried-kale-with-vegan-salted-fish-with-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

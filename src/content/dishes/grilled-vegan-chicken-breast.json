@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 209,
+  "name": {
+    "en": "Grilled vegan chicken breast",
+    "th": "อกไก่ย่างเจ",
+    "ru": "Grilled vegan chicken breast"
+  },
+  "slug": {
+    "en": "grilled-vegan-chicken-breast",
+    "th": "อกไก่ย่างเจ",
+    "ru": "grilled-vegan-chicken-breast"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

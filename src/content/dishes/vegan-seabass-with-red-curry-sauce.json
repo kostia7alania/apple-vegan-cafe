@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Vegan seabass with red curry sauce",
+    "th": "ปลากะพงเจราดพริกแกง",
+    "ru": "Vegan seabass with red curry sauce"
+  },
+  "slug": {
+    "en": "vegan-seabass-with-red-curry-sauce",
+    "th": "ปลากะพงเจราดพริกแกง",
+    "ru": "vegan-seabass-with-red-curry-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

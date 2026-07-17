@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Fried vegetables tofu",
+    "th": "เต้าหู้ผักทอด",
+    "ru": "Fried vegetables tofu"
+  },
+  "slug": {
+    "en": "fried-vegetables-tofu",
+    "th": "เต้าหู้ผักทอด",
+    "ru": "fried-vegetables-tofu"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan spicy mama noodle salad",
+    "th": "ยำมาม่า",
+    "ru": "Vegan spicy mama noodle salad"
+  },
+  "slug": {
+    "en": "vegan-spicy-mama-noodle-salad",
+    "th": "ยำมาม่า",
+    "ru": "vegan-spicy-mama-noodle-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

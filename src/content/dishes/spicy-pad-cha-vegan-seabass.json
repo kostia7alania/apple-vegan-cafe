@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 169,
+  "name": {
+    "en": "Spicy pad cha vegan seabass",
+    "th": "ปลากระพงเจผัดฉ่า",
+    "ru": "Spicy pad cha vegan seabass"
+  },
+  "slug": {
+    "en": "spicy-pad-cha-vegan-seabass",
+    "th": "ปลากระพงเจผัดฉ่า",
+    "ru": "spicy-pad-cha-vegan-seabass"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

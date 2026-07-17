@@ -64,8 +64,8 @@ the building to begin with.
 
 That last kind is us. We are a small family cafe in Pattaya, and our kitchen is 100% plant-based
 every day of the year — no fish sauce, no egg, no dairy on the premises, festival or no festival.
-Dishes on our menu that carry the เจ badge — the vegan massaman curry (฿150), the pad thai (฿120),
-the tom yum with mushrooms (฿119) — are cooked jay-style. If you keep the observance strictly and
+Dishes on our menu that carry the เจ badge — the red curry (฿179), the pad thai (฿149),
+the mushroom pad krapao (฿159) — are cooked jay-style. If you keep the observance strictly and
 avoid pungent vegetables: our whole kitchen skips them year round, so every dish already qualifies.
 
 If you read Thai, we have written a fuller page about jay food in Pattaya:

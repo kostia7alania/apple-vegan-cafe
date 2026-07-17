@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Pink milk with milk foam",
+    "th": "นมชมพูฟองนม",
+    "ru": "Pink milk with milk foam"
+  },
+  "slug": {
+    "en": "pink-milk-with-milk-foam",
+    "th": "นมชมพูฟองนม",
+    "ru": "pink-milk-with-milk-foam"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

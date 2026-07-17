@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 120,
+  "name": {
+    "en": "Iced mocha",
+    "th": "มอคค่าเย็น",
+    "ru": "Iced mocha"
+  },
+  "slug": {
+    "en": "iced-mocha",
+    "th": "มอคค่าเย็น",
+    "ru": "iced-mocha"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan som tum thai",
+    "th": "ส้มตำไทย",
+    "ru": "Vegan som tum thai"
+  },
+  "slug": {
+    "en": "vegan-som-tum-thai",
+    "th": "ส้มตำไทย",
+    "ru": "vegan-som-tum-thai"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

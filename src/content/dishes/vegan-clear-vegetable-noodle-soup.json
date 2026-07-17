@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan clear vegetable noodle soup",
+    "th": "Vegan clear vegetable noodle soup",
+    "ru": "Vegan clear vegetable noodle soup"
+  },
+  "slug": {
+    "en": "vegan-clear-vegetable-noodle-soup",
+    "th": "Vegan-clear-vegetable-noodle-soup",
+    "ru": "vegan-clear-vegetable-noodle-soup"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Eryngii mushroom pad krapao over rice",
+    "th": "กระเพราเห็ดออรินจิราดข้าว",
+    "ru": "Eryngii mushroom pad krapao over rice"
+  },
+  "slug": {
+    "en": "eryngii-mushroom-pad-krapao-over-rice",
+    "th": "กระเพราเห็ดออรินจิราดข้าว",
+    "ru": "eryngii-mushroom-pad-krapao-over-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": true,
+  "source": "grab_export",
+  "reviewedAt": null
+}

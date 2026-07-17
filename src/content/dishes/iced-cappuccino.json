@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 110,
+  "name": {
+    "en": "Iced cappuccino",
+    "th": "คาปูชิโน่เย็น",
+    "ru": "Iced cappuccino"
+  },
+  "slug": {
+    "en": "iced-cappuccino",
+    "th": "คาปูชิโน่เย็น",
+    "ru": "iced-cappuccino"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

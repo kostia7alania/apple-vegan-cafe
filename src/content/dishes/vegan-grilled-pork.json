@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 179,
+  "name": {
+    "en": "Vegan grilled pork",
+    "th": "หมูย่างเจ",
+    "ru": "Vegan grilled pork"
+  },
+  "slug": {
+    "en": "vegan-grilled-pork",
+    "th": "หมูย่างเจ",
+    "ru": "vegan-grilled-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

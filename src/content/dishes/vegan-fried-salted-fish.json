@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan fried salted fish",
+    "th": "ปลาเค็มทอด",
+    "ru": "Vegan fried salted fish"
+  },
+  "slug": {
+    "en": "vegan-fried-salted-fish",
+    "th": "ปลาเค็มทอด",
+    "ru": "vegan-fried-salted-fish"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

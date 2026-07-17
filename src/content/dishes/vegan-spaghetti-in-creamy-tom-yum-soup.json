@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Vegan spaghetti in creamy tom yum soup",
+    "th": "สปาเก็ตตี้ต้มยำเจ",
+    "ru": "Vegan spaghetti in creamy tom yum soup"
+  },
+  "slug": {
+    "en": "vegan-spaghetti-in-creamy-tom-yum-soup",
+    "th": "สปาเก็ตตี้ต้มยำเจ",
+    "ru": "vegan-spaghetti-in-creamy-tom-yum-soup"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

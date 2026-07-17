@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 150,
+  "name": {
+    "en": "Stir-fried kale with vegan seabass",
+    "th": "ผัดคะน้าปลากะพงเจ",
+    "ru": "Stir-fried kale with vegan seabass"
+  },
+  "slug": {
+    "en": "stir-fried-kale-with-vegan-seabass",
+    "th": "ผัดคะน้าปลากะพงเจ",
+    "ru": "stir-fried-kale-with-vegan-seabass"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

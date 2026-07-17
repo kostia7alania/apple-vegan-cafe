@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Mango smoothie",
+    "th": "มะม่วงปั่น",
+    "ru": "Mango smoothie"
+  },
+  "slug": {
+    "en": "mango-smoothie",
+    "th": "มะม่วงปั่น",
+    "ru": "mango-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": true,
+  "source": "grab_export",
+  "reviewedAt": null
+}

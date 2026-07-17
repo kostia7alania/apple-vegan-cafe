@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan fried chicken with rice",
+    "th": "อกไก่ทอดเจกับข้าว",
+    "ru": "Vegan fried chicken with rice"
+  },
+  "slug": {
+    "en": "vegan-fried-chicken-with-rice",
+    "th": "อกไก่ทอดเจกับข้าว",
+    "ru": "vegan-fried-chicken-with-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

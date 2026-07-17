@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan chu cheese mackerel",
+    "th": "ฉู่ฉี่ปลาทูเจ",
+    "ru": "Vegan chu cheese mackerel"
+  },
+  "slug": {
+    "en": "vegan-chu-cheese-mackerel",
+    "th": "ฉู่ฉี่ปลาทูเจ",
+    "ru": "vegan-chu-cheese-mackerel"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

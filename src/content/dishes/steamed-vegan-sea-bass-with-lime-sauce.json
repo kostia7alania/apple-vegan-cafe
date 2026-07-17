@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 219,
+  "name": {
+    "en": "Steamed vegan sea bass with lime sauce",
+    "th": "ปลากะพงเจนึงมะนาว",
+    "ru": "Steamed vegan sea bass with lime sauce"
+  },
+  "slug": {
+    "en": "steamed-vegan-sea-bass-with-lime-sauce",
+    "th": "ปลากะพงเจนึงมะนาว",
+    "ru": "steamed-vegan-sea-bass-with-lime-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

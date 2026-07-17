@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan clear soup with soft tofu and minced pork",
+    "th": "แกงจืดเต้าหู้หมูสับเจ",
+    "ru": "Vegan clear soup with soft tofu and minced pork"
+  },
+  "slug": {
+    "en": "vegan-clear-soup-with-soft-tofu-and-minced-pork",
+    "th": "แกงจืดเต้าหู้หมูสับเจ",
+    "ru": "vegan-clear-soup-with-soft-tofu-and-minced-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

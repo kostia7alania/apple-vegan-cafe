@@ -1,0 +1,23 @@
+{
+  "category": "pizza-fastfood",
+  "price_thb": 160,
+  "name": {
+    "en": "Vegan tuna sandwich with fries",
+    "th": "ทูน่าแซนวิชเจกับมันทอด",
+    "ru": "Vegan tuna sandwich with fries"
+  },
+  "slug": {
+    "en": "vegan-tuna-sandwich-with-fries",
+    "th": "ทูน่าแซนวิชเจกับมันทอด",
+    "ru": "vegan-tuna-sandwich-with-fries"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

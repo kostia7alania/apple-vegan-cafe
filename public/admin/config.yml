@@ -48,7 +48,7 @@ collections:
           name: category,
           label: Category,
           widget: select,
-          options: [breakfast, mains, desserts, drinks],
+          options: [one-plate, mains-share, snacks, pizza-fastfood, drinks],
         }
       - {
           name: available,

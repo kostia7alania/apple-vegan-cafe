@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan Tom Yum Soup",
+    "th": "ต้มยำเจ",
+    "ru": "Vegan Tom Yum Soup"
+  },
+  "slug": {
+    "en": "vegan-tom-yum-soup",
+    "th": "ต้มยำเจ",
+    "ru": "vegan-tom-yum-soup"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Vegan spicy pork salad",
+    "th": "น้ำตกหมูเจ",
+    "ru": "Vegan spicy pork salad"
+  },
+  "slug": {
+    "en": "vegan-spicy-pork-salad",
+    "th": "น้ำตกหมูเจ",
+    "ru": "vegan-spicy-pork-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

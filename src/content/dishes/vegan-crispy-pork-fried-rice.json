@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan crispy pork fried rice",
+    "th": "ข้าวผัดหมูกรอบ",
+    "ru": "Vegan crispy pork fried rice"
+  },
+  "slug": {
+    "en": "vegan-crispy-pork-fried-rice",
+    "th": "ข้าวผัดหมูกรอบ",
+    "ru": "vegan-crispy-pork-fried-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

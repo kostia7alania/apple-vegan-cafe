@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Vegan Stir-fried sea bass with ginger",
+    "th": "ปลากะพงเจผัดขิง",
+    "ru": "Vegan Stir-fried sea bass with ginger"
+  },
+  "slug": {
+    "en": "vegan-stir-fried-sea-bass-with-ginger",
+    "th": "ปลากะพงเจผัดขิง",
+    "ru": "vegan-stir-fried-sea-bass-with-ginger"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

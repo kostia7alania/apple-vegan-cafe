@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan red pork noodles soup",
+    "th": "ก๋วยเตี๋ยวหมูแดงเจ",
+    "ru": "Vegan red pork noodles soup"
+  },
+  "slug": {
+    "en": "vegan-red-pork-noodles-soup",
+    "th": "ก๋วยเตี๋ยวหมูแดงเจ",
+    "ru": "vegan-red-pork-noodles-soup"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

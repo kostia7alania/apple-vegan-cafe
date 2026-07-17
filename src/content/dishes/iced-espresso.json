@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 110,
+  "name": {
+    "en": "Iced espresso",
+    "th": "เอสเพสโซ่เย็น",
+    "ru": "Iced espresso"
+  },
+  "slug": {
+    "en": "iced-espresso",
+    "th": "เอสเพสโซ่เย็น",
+    "ru": "iced-espresso"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

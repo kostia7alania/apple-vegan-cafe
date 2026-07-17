@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 150,
+  "name": {
+    "en": "Pad Mama — stir-fried instant noodles",
+    "th": "ผัดมาม่าเจ",
+    "ru": "Pad Mama — stir-fried instant noodles"
+  },
+  "slug": {
+    "en": "pad-mama-stir-fried-instant-noodles",
+    "th": "ผัดมาม่าเจ",
+    "ru": "pad-mama-stir-fried-instant-noodles"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

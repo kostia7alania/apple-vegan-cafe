@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Vegan Mushroom hainanase rice",
+    "th": "ข้าวมันเห็ด",
+    "ru": "Vegan Mushroom hainanase rice"
+  },
+  "slug": {
+    "en": "vegan-mushroom-hainanase-rice",
+    "th": "ข้าวมันเห็ด",
+    "ru": "vegan-mushroom-hainanase-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

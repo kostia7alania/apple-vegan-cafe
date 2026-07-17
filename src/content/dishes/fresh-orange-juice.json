@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 90,
+  "name": {
+    "en": "Fresh orange juice",
+    "th": "น้ำส้มคั้น",
+    "ru": "Fresh orange juice"
+  },
+  "slug": {
+    "en": "fresh-orange-juice",
+    "th": "น้ำส้มคั้น",
+    "ru": "fresh-orange-juice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

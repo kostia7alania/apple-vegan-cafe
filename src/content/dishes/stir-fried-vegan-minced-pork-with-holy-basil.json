@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried vegan minced pork with holy basil",
+    "th": "ผัดกระเพราหมูสับเจ",
+    "ru": "Stir-fried vegan minced pork with holy basil"
+  },
+  "slug": {
+    "en": "stir-fried-vegan-minced-pork-with-holy-basil",
+    "th": "ผัดกระเพราหมูสับเจ",
+    "ru": "stir-fried-vegan-minced-pork-with-holy-basil"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

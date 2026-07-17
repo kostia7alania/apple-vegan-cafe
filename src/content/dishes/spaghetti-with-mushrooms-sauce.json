@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Spaghetti with mushrooms sauce",
+    "th": "สปาเก็ตตี้ซอสเห็ด",
+    "ru": "Spaghetti with mushrooms sauce"
+  },
+  "slug": {
+    "en": "spaghetti-with-mushrooms-sauce",
+    "th": "สปาเก็ตตี้ซอสเห็ด",
+    "ru": "spaghetti-with-mushrooms-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

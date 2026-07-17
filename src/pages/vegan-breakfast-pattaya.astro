@@ -23,14 +23,20 @@ const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
 // Every available breakfast dish, cheapest first.
+const BREAKFAST_PICK_IDS = [
+  'vegan-tuna-sandwich-with-fries',
+  'fried-banana-fritters',
+  'eryngii-mushroom-pad-krapao-over-rice',
+  'vegan-pad-thai',
+];
 const breakfastDishes = (
-  await getCollection('dishes', ({ data }) => data.available && data.category.id === 'breakfast')
+  await getCollection('dishes', ({ id, data }) => data.available && BREAKFAST_PICK_IDS.includes(id))
 )
   .map((e) => e.data)
   .sort((a, b) => a.price_thb - b.price_thb);
 
 // Two morning drinks, hand-picked: the oat milk latte and a fresh coconut.
-const MORNING_DRINK_IDS = ['oat-milk-latte', 'fresh-coconut'];
+const MORNING_DRINK_IDS = ['iced-latte', 'mango-smoothie'];
 const morningDrinks = (
   await getCollection('dishes', ({ id, data }) => data.available && MORNING_DRINK_IDS.includes(id))
 )
@@ -42,7 +48,7 @@ const site = Astro.site!;
 
 const title = 'Vegan Breakfast in Pattaya from 7:00 — Apple Vegan Cafe';
 const description =
-  'One of the earliest vegan breakfasts in Pattaya — doors open 7:00, every day. 100% plant-based pancakes, granola, avocado toast and oat milk coffee.';
+  'One of the earliest vegan breakfasts in Pattaya — doors open 7:00, every day. 100% plant-based Thai breakfast plates, smoothies and fresh coffee.';
 
 const jsonld = [
   buildBreadcrumb([
@@ -52,7 +58,7 @@ const jsonld = [
 ];
 
 const menuPath = localePath(locale, '/menu/');
-const breakfastAnchor = `${menuPath}#breakfast`;
+const breakfastAnchor = `${menuPath}#one-plate`;
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
@@ -122,7 +128,7 @@ const daysLabel = (days: readonly string[]) =>
         Everything we cook is 100% plant-based — not a vegan corner of a regular menu, but the whole
         kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> anywhere on the premises,
         so nothing needs double-checking and nothing is cooked next to meat. The morning coffee is made
-        with our house-made oat milk, and the pancakes rise happily without a single egg.
+        with our house-made oat milk, and every single dish is plant-based — no egg anywhere.
       </p>
       <p>
         Mornings here are unhurried. It's usually just us and a few regulars — someone reading

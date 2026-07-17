@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Spaghetti with tomato sauce vegan",
+    "th": "สปาเก็ตตี้ซอสมะเขือเทศเจ",
+    "ru": "Spaghetti with tomato sauce vegan"
+  },
+  "slug": {
+    "en": "spaghetti-with-tomato-sauce-vegan",
+    "th": "สปาเก็ตตี้ซอสมะเขือเทศเจ",
+    "ru": "spaghetti-with-tomato-sauce-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

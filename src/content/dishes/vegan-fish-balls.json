@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan  fish  balls",
+    "th": "ลูกชิ้นปลา",
+    "ru": "Vegan  fish  balls"
+  },
+  "slug": {
+    "en": "vegan-fish-balls",
+    "th": "ลูกชิ้นปลา",
+    "ru": "vegan-fish-balls"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

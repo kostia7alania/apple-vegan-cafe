@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 189,
+  "name": {
+    "en": "Crispy vegan shrimp",
+    "th": "Crispy vegan shrimp",
+    "ru": "Crispy vegan shrimp"
+  },
+  "slug": {
+    "en": "crispy-vegan-shrimp",
+    "th": "Crispy-vegan-shrimp",
+    "ru": "crispy-vegan-shrimp"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

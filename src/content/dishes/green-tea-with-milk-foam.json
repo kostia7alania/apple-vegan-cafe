@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Green tea with milk foam",
+    "th": "ชาเขียวฟองนม",
+    "ru": "Green tea with milk foam"
+  },
+  "slug": {
+    "en": "green-tea-with-milk-foam",
+    "th": "ชาเขียวฟองนม",
+    "ru": "green-tea-with-milk-foam"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 90,
+  "name": {
+    "en": "Coconut smoothie",
+    "th": "มะพร้าวปั่น",
+    "ru": "Coconut smoothie"
+  },
+  "slug": {
+    "en": "coconut-smoothie",
+    "th": "มะพร้าวปั่น",
+    "ru": "coconut-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

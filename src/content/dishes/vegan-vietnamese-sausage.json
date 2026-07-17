@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan Vietnamese sausage",
+    "th": "ยำหมูยอ",
+    "ru": "Vegan Vietnamese sausage"
+  },
+  "slug": {
+    "en": "vegan-vietnamese-sausage",
+    "th": "ยำหมูยอ",
+    "ru": "vegan-vietnamese-sausage"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

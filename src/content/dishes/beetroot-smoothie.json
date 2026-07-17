@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Beetroot smoothie",
+    "th": "บิทรูทปั่น",
+    "ru": "Beetroot smoothie"
+  },
+  "slug": {
+    "en": "beetroot-smoothie",
+    "th": "บิทรูทปั่น",
+    "ru": "beetroot-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

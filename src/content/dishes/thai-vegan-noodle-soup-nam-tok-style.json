@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 159,
+  "name": {
+    "en": "Thai vegan noodle soup (nam tok style)",
+    "th": "Thai vegan noodle soup (nam tok style)",
+    "ru": "Thai vegan noodle soup (nam tok style)"
+  },
+  "slug": {
+    "en": "thai-vegan-noodle-soup-nam-tok-style",
+    "th": "Thai-vegan-noodle-soup-(nam-tok-style)",
+    "ru": "thai-vegan-noodle-soup-nam-tok-style"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 120,
+  "name": {
+    "en": "Orange americano",
+    "th": "อเมริกาโน่ส้ม",
+    "ru": "Orange americano"
+  },
+  "slug": {
+    "en": "orange-americano",
+    "th": "อเมริกาโน่ส้ม",
+    "ru": "orange-americano"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

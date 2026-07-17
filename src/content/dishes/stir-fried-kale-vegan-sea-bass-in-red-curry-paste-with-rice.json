@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 169,
+  "name": {
+    "en": "Stir-fried kale & vegan sea bass in red curry paste with rice",
+    "th": "พริกแกงปลาราดข้าว",
+    "ru": "Stir-fried kale & vegan sea bass in red curry paste with rice"
+  },
+  "slug": {
+    "en": "stir-fried-kale-vegan-sea-bass-in-red-curry-paste-with-rice",
+    "th": "พริกแกงปลาราดข้าว",
+    "ru": "stir-fried-kale-vegan-sea-bass-in-red-curry-paste-with-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

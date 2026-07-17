@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 179,
+  "name": {
+    "en": "Vegan panaeng pork",
+    "th": "แผนงหมูเจ",
+    "ru": "Vegan panaeng pork"
+  },
+  "slug": {
+    "en": "vegan-panaeng-pork",
+    "th": "แผนงหมูเจ",
+    "ru": "vegan-panaeng-pork"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

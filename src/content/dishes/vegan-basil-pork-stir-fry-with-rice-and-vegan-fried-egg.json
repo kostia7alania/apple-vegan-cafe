@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan basil pork stir-fry with rice and vegan fried egg",
+    "th": "กะเพราราดข้าวไข่ดาวเจ",
+    "ru": "Vegan basil pork stir-fry with rice and vegan fried egg"
+  },
+  "slug": {
+    "en": "vegan-basil-pork-stir-fry-with-rice-and-vegan-fried-egg",
+    "th": "กะเพราราดข้าวไข่ดาวเจ",
+    "ru": "vegan-basil-pork-stir-fry-with-rice-and-vegan-fried-egg"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 120,
+  "name": {
+    "en": "Fresh carrot juice",
+    "th": "แครอทคั้น",
+    "ru": "Fresh carrot juice"
+  },
+  "slug": {
+    "en": "fresh-carrot-juice",
+    "th": "แครอทคั้น",
+    "ru": "fresh-carrot-juice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

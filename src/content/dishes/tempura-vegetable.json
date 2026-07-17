@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Tempura vegetable",
+    "th": "ผักชุปแป้งทอด",
+    "ru": "Tempura vegetable"
+  },
+  "slug": {
+    "en": "tempura-vegetable",
+    "th": "ผักชุปแป้งทอด",
+    "ru": "tempura-vegetable"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

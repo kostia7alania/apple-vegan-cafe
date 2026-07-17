@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan American fried rice",
+    "th": "ข้าวผัดอเมริกันเจ",
+    "ru": "Vegan American fried rice"
+  },
+  "slug": {
+    "en": "vegan-american-fried-rice",
+    "th": "ข้าวผัดอเมริกันเจ",
+    "ru": "vegan-american-fried-rice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 159,
+  "name": {
+    "en": "Stir-fried mixed vegetables",
+    "th": "ผัดผักรวม",
+    "ru": "Stir-fried mixed vegetables"
+  },
+  "slug": {
+    "en": "stir-fried-mixed-vegetables",
+    "th": "ผัดผักรวม",
+    "ru": "stir-fried-mixed-vegetables"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

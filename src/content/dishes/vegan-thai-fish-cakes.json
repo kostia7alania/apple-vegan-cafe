@@ -1,0 +1,23 @@
+{
+  "category": "snacks",
+  "price_thb": 169,
+  "name": {
+    "en": "Vegan Thai fish cakes",
+    "th": "ทอดมันเจ",
+    "ru": "Vegan Thai fish cakes"
+  },
+  "slug": {
+    "en": "vegan-thai-fish-cakes",
+    "th": "ทอดมันเจ",
+    "ru": "vegan-thai-fish-cakes"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

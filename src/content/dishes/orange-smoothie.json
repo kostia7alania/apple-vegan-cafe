@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 90,
+  "name": {
+    "en": "Orange smoothie",
+    "th": "ส้มปั่น",
+    "ru": "Orange smoothie"
+  },
+  "slug": {
+    "en": "orange-smoothie",
+    "th": "ส้มปั่น",
+    "ru": "orange-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

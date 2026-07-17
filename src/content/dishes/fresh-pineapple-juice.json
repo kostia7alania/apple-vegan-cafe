@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 100,
+  "name": {
+    "en": "Fresh pineapple juice",
+    "th": "สับปะรดคั้น",
+    "ru": "Fresh pineapple juice"
+  },
+  "slug": {
+    "en": "fresh-pineapple-juice",
+    "th": "สับปะรดคั้น",
+    "ru": "fresh-pineapple-juice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

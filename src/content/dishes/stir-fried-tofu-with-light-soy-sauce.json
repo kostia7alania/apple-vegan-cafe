@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried tofu with light soy sauce",
+    "th": "เต้าหู้คั่วซีอิ้วขาว",
+    "ru": "Stir-fried tofu with light soy sauce"
+  },
+  "slug": {
+    "en": "stir-fried-tofu-with-light-soy-sauce",
+    "th": "เต้าหู้คั่วซีอิ้วขาว",
+    "ru": "stir-fried-tofu-with-light-soy-sauce"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

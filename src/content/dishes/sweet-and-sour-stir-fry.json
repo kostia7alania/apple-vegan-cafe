@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Sweet and sour stir-fry",
+    "th": "ผัดเปรี้ยวหวาน",
+    "ru": "Sweet and sour stir-fry"
+  },
+  "slug": {
+    "en": "sweet-and-sour-stir-fry",
+    "th": "ผัดเปรี้ยวหวาน",
+    "ru": "sweet-and-sour-stir-fry"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

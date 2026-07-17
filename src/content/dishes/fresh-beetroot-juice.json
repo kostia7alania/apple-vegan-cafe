@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 110,
+  "name": {
+    "en": "Fresh beetroot juice",
+    "th": "บิทรูทคั้น",
+    "ru": "Fresh beetroot juice"
+  },
+  "slug": {
+    "en": "fresh-beetroot-juice",
+    "th": "บิทรูทคั้น",
+    "ru": "fresh-beetroot-juice"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

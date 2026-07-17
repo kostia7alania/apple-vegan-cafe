@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Massaman curry vegan",
+    "th": "แกงมัสมันเจ",
+    "ru": "Massaman curry vegan"
+  },
+  "slug": {
+    "en": "massaman-curry-vegan",
+    "th": "แกงมัสมันเจ",
+    "ru": "massaman-curry-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Vegan spaghetti carbonara",
+    "th": "สปาเก็ตตี้ราโบนาร่าเจ",
+    "ru": "Vegan spaghetti carbonara"
+  },
+  "slug": {
+    "en": "vegan-spaghetti-carbonara",
+    "th": "สปาเก็ตตี้ราโบนาร่าเจ",
+    "ru": "vegan-spaghetti-carbonara"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

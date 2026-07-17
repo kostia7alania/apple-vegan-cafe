@@ -1,0 +1,23 @@
+{
+  "category": "pizza-fastfood",
+  "price_thb": 419,
+  "name": {
+    "en": "Margarita Pizza vegan",
+    "th": "Margarita Pizza vegan",
+    "ru": "Margarita Pizza vegan"
+  },
+  "slug": {
+    "en": "margarita-pizza-vegan",
+    "th": "Margarita-Pizza-vegan",
+    "ru": "margarita-pizza-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

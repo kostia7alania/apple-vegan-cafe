@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 149,
+  "name": {
+    "en": "Pad see ew vegan",
+    "th": "ผัดซีอิ้วเจ",
+    "ru": "Pad see ew vegan"
+  },
+  "slug": {
+    "en": "pad-see-ew-vegan",
+    "th": "ผัดซีอิ้วเจ",
+    "ru": "pad-see-ew-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": true,
+  "source": "grab_export",
+  "reviewedAt": null
+}

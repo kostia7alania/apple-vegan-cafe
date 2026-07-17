@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 159,
+  "name": {
+    "en": "Stir-fried Chinese kale with vegan salted fish",
+    "th": "ผัดคะน้าปลาเค็มเจ",
+    "ru": "Stir-fried Chinese kale with vegan salted fish"
+  },
+  "slug": {
+    "en": "stir-fried-chinese-kale-with-vegan-salted-fish",
+    "th": "ผัดคะน้าปลาเค็มเจ",
+    "ru": "stir-fried-chinese-kale-with-vegan-salted-fish"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

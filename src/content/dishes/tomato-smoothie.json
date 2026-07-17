@@ -1,0 +1,23 @@
+{
+  "category": "drinks",
+  "price_thb": 90,
+  "name": {
+    "en": "Tomato smoothie",
+    "th": "มะเขือเทศปั่น",
+    "ru": "Tomato smoothie"
+  },
+  "slug": {
+    "en": "tomato-smoothie",
+    "th": "มะเขือเทศปั่น",
+    "ru": "tomato-smoothie"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

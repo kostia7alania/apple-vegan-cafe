@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 199,
+  "name": {
+    "en": "Spaghetti pad kee mao",
+    "th": "สปาเก็ตตี้ผัดจี้เมาเจ",
+    "ru": "Spaghetti pad kee mao"
+  },
+  "slug": {
+    "en": "spaghetti-pad-kee-mao",
+    "th": "สปาเก็ตตี้ผัดจี้เมาเจ",
+    "ru": "spaghetti-pad-kee-mao"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

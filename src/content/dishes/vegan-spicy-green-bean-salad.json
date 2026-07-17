@@ -1,0 +1,23 @@
+{
+  "category": "one-plate",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan spicy green bean salad",
+    "th": "ตำถั่วเจ",
+    "ru": "Vegan spicy green bean salad"
+  },
+  "slug": {
+    "en": "vegan-spicy-green-bean-salad",
+    "th": "ตำถั่วเจ",
+    "ru": "vegan-spicy-green-bean-salad"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

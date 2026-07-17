@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 149,
+  "name": {
+    "en": "Stir-fried tofu with vegetables",
+    "th": "Stir-fried tofu with vegetables",
+    "ru": "Stir-fried tofu with vegetables"
+  },
+  "slug": {
+    "en": "stir-fried-tofu-with-vegetables",
+    "th": "Stir-fried-tofu-with-vegetables",
+    "ru": "stir-fried-tofu-with-vegetables"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

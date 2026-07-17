@@ -1,0 +1,23 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Red curry with roasted duck vegan",
+    "th": "แกงเผ็ดเป็ดย่างเจ",
+    "ru": "Red curry with roasted duck vegan"
+  },
+  "slug": {
+    "en": "red-curry-with-roasted-duck-vegan",
+    "th": "แกงเผ็ดเป็ดย่างเจ",
+    "ru": "red-curry-with-roasted-duck-vegan"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "allergens": [],
+  "spicyLevel": 0,
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}
