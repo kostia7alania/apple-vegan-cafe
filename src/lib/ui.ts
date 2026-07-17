@@ -34,6 +34,16 @@ const strings = {
   'menu.spicy': { en: 'spicy', th: 'เผ็ด', ru: 'острое' },
   'menu.categoriesNav': { en: 'Menu categories', th: 'หมวดเมนู', ru: 'Разделы меню' },
   'menu.contains': { en: 'Contains', th: 'มีส่วนผสม', ru: 'Содержит' },
+  'menu.orderGrab': {
+    en: 'Order delivery on GrabFood',
+    th: 'สั่งเดลิเวอรีผ่าน GrabFood',
+    ru: 'Заказать доставку в GrabFood',
+  },
+  'menu.orderClosing': {
+    en: 'Hungry already? The whole menu is on GrabFood too.',
+    th: 'หิวแล้วใช่ไหม เมนูทั้งหมดสั่งผ่าน GrabFood ได้เลย',
+    ru: 'Уже проголодались? Всё это меню есть и в GrabFood.',
+  },
   'tag.vegan': { en: 'vegan', th: 'วีแกน', ru: 'веган' },
   'tag.jay': { en: 'jay', th: 'อาหารเจ', ru: 'джей' },
   'tag.jain-friendly': { en: 'jain-friendly', th: 'เหมาะกับแขกเชน', ru: 'джайн-френдли' },

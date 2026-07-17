@@ -23,6 +23,10 @@ const TAG_ICONS: Partial<Record<string, string>> = {
   'gluten-free': '🌾',
 };
 
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+// Ordering links live in the CMS; the buttons appear once a «grab» provider exists.
+const grabLink = settings?.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
+
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
@@ -62,6 +66,19 @@ const jsonld = [
       {t(locale, 'menu.title')}
     </h1>
     <p class="mt-3 max-w-[52ch] text-ink-500">{t(locale, 'trust.honest')}</p>
+    {
+      grabLink && (
+        <p class="mt-5">
+          <a
+            href={grabLink.url}
+            rel="noopener"
+            class="inline-flex min-h-12 items-center rounded-full bg-mango-500 px-7 text-base font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+          >
+            {t(locale, 'menu.orderGrab')}
+          </a>
+        </p>
+      )
+    }
   </div>
 
   <nav
@@ -180,6 +197,24 @@ const jsonld = [
           </section>
         );
       })
+    }
+    {
+      grabLink && (
+        <section class="mt-14 mb-10 rounded-3xl border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10">
+          <p class="font-display text-xl font-bold text-leaf-900">
+            {t(locale, 'menu.orderClosing')}
+          </p>
+          <p class="mt-4">
+            <a
+              href={grabLink.url}
+              rel="noopener"
+              class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+            >
+              {t(locale, 'menu.orderGrab')}
+            </a>
+          </p>
+        </section>
+      )
     }
   </div>
 </Base>
