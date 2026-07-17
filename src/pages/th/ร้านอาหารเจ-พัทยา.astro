@@ -33,7 +33,7 @@ const site = Astro.site!;
 
 const title = 'ร้านอาหารเจ พัทยา — Apple Vegan Cafe เปิด 7:00 น.';
 const description =
-  'ร้านอาหารเจของครอบครัวในพัทยา อาหารเจ 100% ทุกวันตลอดปี ไม่ใส่น้ำปลา ไข่ นม เปิด จ.–ส. 7:00–22:00 น. ย่านบางละมุง ชลบุรี ดูเมนูเจพร้อมราคาได้เลย';
+  'ร้านอาหารเจของครอบครัวในพัทยา อาหารเจ 100% ทุกวันตลอดปี ไม่ใส่น้ำปลา ไข่ นม เปิดทุกวัน 7:00–22:00 น. ย่านบางละมุง ชลบุรี ดูเมนูเจพร้อมราคาได้เลย';
 
 const jsonld = [
   buildBreadcrumb([
@@ -47,9 +47,11 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
 const daysLabel = (days: readonly string[]) =>
-  days.length > 2
-    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
-    : days.map(dayLabel).join(', ');
+  days.length === 7
+    ? t(locale, 'days.daily')
+    : days.length > 2
+      ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+      : days.map(dayLabel).join(', ');
 
 const [mainHours] = location.hours;
 const openChip = mainHours
@@ -295,10 +297,6 @@ const openChip = mainHours
                   </tr>
                 ))
               }
-              <tr class="text-terracotta-700">
-                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'days.sun')}</th>
-                <td class="py-1">{t(locale, 'contact.closed')}</td>
-              </tr>
             </tbody>
           </table>
         </div>

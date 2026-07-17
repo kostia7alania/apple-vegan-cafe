@@ -75,6 +75,7 @@ const strings = {
   'days.fri': { en: 'Fri', th: 'ศ.', ru: 'Пт' },
   'days.sat': { en: 'Sat', th: 'ส.', ru: 'Сб' },
   'days.sun': { en: 'Sun', th: 'อา.', ru: 'Вс' },
+  'days.daily': { en: 'Every day', th: 'ทุกวัน', ru: 'Ежедневно' },
 } satisfies Record<string, Record<Locale, string>>;
 
 export type UiKey = keyof typeof strings;

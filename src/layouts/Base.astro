@@ -48,8 +48,14 @@ const isCurrent = (href: string) =>
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 const [mainHours] = location.hours;
 const dayRange = mainHours
-  ? `${t(locale, `days.${mainHours.days[0]}` as UiKey)}–${t(locale, `days.${mainHours.days[mainHours.days.length - 1]}` as UiKey)}`
+  ? mainHours.days.length === 7
+    ? t(locale, 'days.daily')
+    : `${t(locale, `days.${mainHours.days[0]}` as UiKey)}–${t(locale, `days.${mainHours.days[mainHours.days.length - 1]}` as UiKey)}`
   : '';
+const ALL_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
+const closedDays = ALL_DAYS.filter(
+  (d) => !location.hours.some((h) => (h.days as readonly string[]).includes(d)),
+);
 const reviewUrl = settings.reviewLinks.google ?? settings.reviewLinks.happycow;
 
 const actionLink =
@@ -172,8 +178,13 @@ const actionLink =
             mainHours && (
               <p class="mt-3 text-leaf-200">
                 {t(locale, 'contact.hours')}: {dayRange} {mainHours.open}–{mainHours.close}
-                <br />
-                {t(locale, 'days.sun')} — {t(locale, 'contact.closed').toLowerCase()}
+                {closedDays.length > 0 && (
+                  <>
+                    <br />
+                    {closedDays.map((d) => t(locale, `days.${d}` as UiKey)).join(', ')} —{' '}
+                    {t(locale, 'contact.closed').toLowerCase()}
+                  </>
+                )}
               </p>
             )
           }

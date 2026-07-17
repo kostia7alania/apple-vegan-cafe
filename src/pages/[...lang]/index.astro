@@ -53,8 +53,8 @@ const title = {
   ru: 'Apple Vegan Cafe — 100% веганское кафе в Паттайе',
 }[locale];
 const description = {
-  en: 'Family-run 100% vegan Thai cafe in Pattaya. Open Mon–Sat from 7:00. Real menu, real prices, plant-based only — no fish sauce, no egg, no dairy.',
-  th: 'ร้านอาหารเจของครอบครัวในพัทยา เปิด จ.–ส. ตั้งแต่ 7:00 น. อาหารเจ 100% ไม่มีน้ำปลา ไข่ หรือนม',
+  en: 'Family-run 100% vegan Thai cafe in Pattaya. Open every day from 7:00. Real menu, real prices, plant-based only — no fish sauce, no egg, no dairy.',
+  th: 'ร้านอาหารเจของครอบครัวในพัทยา เปิดทุกวัน ตั้งแต่ 7:00 น. อาหารเจ 100% ไม่มีน้ำปลา ไข่ หรือนม',
   ru: 'Семейное 100% веганское тайское кафе в Паттайе. Открыто пн–сб с 7:00. Настоящее меню и цены, только растительная еда.',
 }[locale];
 
@@ -63,9 +63,11 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
 const daysLabel = (days: readonly string[]) =>
-  days.length > 2
-    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
-    : days.map(dayLabel).join(', ');
+  days.length === 7
+    ? t(locale, 'days.daily')
+    : days.length > 2
+      ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+      : days.map(dayLabel).join(', ');
 
 const [mainHours] = location.hours;
 const dayRange = mainHours ? daysLabel(mainHours.days) : '';
@@ -230,7 +232,7 @@ const openChip = mainHours
             </span>
             <span class="font-semibold text-ink-900">
               Early riser? We serve one of the earliest vegan breakfasts in Pattaya — doors open
-              7:00, Mon–Sat
+              7:00, every day
             </span>
           </span>
           <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">

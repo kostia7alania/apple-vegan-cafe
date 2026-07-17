@@ -54,9 +54,11 @@ const jsonld = [
 
 const dayLabel = (day: string) => t(locale, `days.${day}` as UiKey);
 const daysLabel = (days: readonly string[]) =>
-  days.length > 2
-    ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
-    : days.map(dayLabel).join(', ');
+  days.length === 7
+    ? t(locale, 'days.daily')
+    : days.length > 2
+      ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
+      : days.map(dayLabel).join(', ');
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 ---
 
@@ -186,10 +188,6 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
                 </tr>
               ))
             }
-            <tr class="text-terracotta-700">
-              <th scope="row" class="py-2.5 pr-6 text-left font-medium">{dayLabel('sun')}</th>
-              <td class="py-2.5 font-semibold">{t(locale, 'contact.closed')}</td>
-            </tr>
           </tbody>
         </table>
         <p class="mt-4 max-w-[46ch] text-sm leading-relaxed text-ink-500">
