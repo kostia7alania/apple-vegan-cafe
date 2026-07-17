@@ -69,9 +69,9 @@
       "ru": "Есть ли у вас доставка?"
     },
     "answer": {
-      "en": "Yes — via GrabFood: search for Apple Vegan Cafe in the app. The cafe itself runs 7:30–22:30, but we often keep Grab orders on around the clock — the app always shows our live status. You can also call us and pick your order up at the cafe.",
-      "th": "มีค่ะ ส่งผ่าน GrabFood ค้นหา Apple Vegan Cafe ในแอปได้เลย หน้าร้านเปิด 7:30–22:30 แต่ใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ หรือจะโทรสั่งแล้วมารับที่ร้านก็ได้",
-      "ru": "Да — через GrabFood: найдите Apple Vegan Cafe в приложении. Само кафе работает 7:30–22:30, но заказы в Grab мы часто принимаем почти круглосуточно — актуальный статус всегда виден в приложении. Можно также позвонить и забрать заказ в кафе."
+      "en": "Yes — via GrabFood: search for Apple Vegan Cafe in the app. The cafe itself runs 7:00–22:00, but we often keep Grab orders on around the clock — the app always shows our live status. You can also call us and pick your order up at the cafe.",
+      "th": "มีค่ะ ส่งผ่าน GrabFood ค้นหา Apple Vegan Cafe ในแอปได้เลย หน้าร้านเปิด 7:00–22:00 แต่ใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ หรือจะโทรสั่งแล้วมารับที่ร้านก็ได้",
+      "ru": "Да — через GrabFood: найдите Apple Vegan Cafe в приложении. Само кафе работает 7:00–22:00, но заказы в Grab мы часто принимаем почти круглосуточно — актуальный статус всегда виден в приложении. Можно также позвонить и забрать заказ в кафе."
     }
   },
   {
@@ -84,9 +84,9 @@
       "ru": "Какие у вас часы работы? Когда выходной?"
     },
     "answer": {
-      "en": "We are open Monday to Saturday, 7:30–22:30. On Sunday we are closed — it is our family day.",
-      "th": "เราเปิดวันจันทร์ถึงเสาร์ เวลา 7:30–22:30 น. ส่วนวันอาทิตย์ร้านปิด เพราะเป็นวันครอบครัวของเรา",
-      "ru": "Мы работаем с понедельника по субботу с 7:30 до 22:30. В воскресенье закрыто — это наш семейный день."
+      "en": "We are open Monday to Saturday, 7:00–22:00. On Sunday we are closed — it is our family day.",
+      "th": "เราเปิดวันจันทร์ถึงเสาร์ เวลา 7:00–22:00 น. ส่วนวันอาทิตย์ร้านปิด เพราะเป็นวันครอบครัวของเรา",
+      "ru": "Мы работаем с понедельника по субботу с 7:00 до 22:00. В воскресенье закрыто — это наш семейный день."
     }
   },
   {

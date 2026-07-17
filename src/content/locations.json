@@ -10,8 +10,8 @@
     "hours": [
       {
         "days": ["mon", "tue", "wed", "thu", "fri", "sat"],
-        "open": "07:30",
-        "close": "22:30"
+        "open": "07:00",
+        "close": "22:00"
       }
     ],
     "specialHours": []

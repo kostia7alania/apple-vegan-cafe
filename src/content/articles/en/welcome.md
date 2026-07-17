@@ -10,7 +10,7 @@ draft: false
 ---
 
 Hello! We are a small family cafe in Pattaya cooking 100% vegan (เจ) Thai food every day
-from 7:30 in the morning.
+from 7:00 in the morning.
 
 This website is our official home on the internet: the menu with real prices, our opening
 hours and how to find us. Everything here is written by our family and checked by hand.

@@ -3,9 +3,9 @@
     "id": "breakfast",
     "order": 1,
     "name": {
-      "en": "Breakfast (from 7:30)",
-      "th": "อาหารเช้า (ตั้งแต่ 7:30)",
-      "ru": "Завтраки (с 7:30)"
+      "en": "Breakfast (from 7:00)",
+      "th": "อาหารเช้า (ตั้งแต่ 7:00)",
+      "ru": "Завтраки (с 7:00)"
     },
     "slug": { "en": "breakfast", "th": "อาหารเช้า", "ru": "zavtraki" }
   },

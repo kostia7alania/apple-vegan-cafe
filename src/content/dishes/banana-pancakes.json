@@ -11,10 +11,14 @@
     "th": "แพนเค้กนุ่มฟู ไม่ใส่ไข่ กล้วยหอมคาราเมล ราดน้ำหวานดอกมะพร้าว",
     "ru": "Пышные панкейки без яиц с карамелизированным бананом и кокосовым нектаром."
   },
-  "slug": { "en": "banana-pancakes", "th": "แพนเค้กกล้วย", "ru": "bananovye-pankeyki" },
+  "slug": {
+    "en": "banana-pancakes",
+    "th": "แพนเค้กกล้วย",
+    "ru": "bananovye-pankeyki"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan"],
+  "dietaryTags": ["vegan", "jay"],
   "allergens": ["gluten"],
   "spicyLevel": 0,
   "available": true,

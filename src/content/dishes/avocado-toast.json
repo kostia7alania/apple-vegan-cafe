@@ -11,10 +11,14 @@
     "th": "ขนมปังซาวร์โดว์ อะโวคาโดบด มะเขือเทศเชอร์รี่ มะนาว และพริกป่น",
     "ru": "Тост на закваске с авокадо, черри, лаймом и хлопьями чили."
   },
-  "slug": { "en": "avocado-toast", "th": "โทสต์อะโวคาโด", "ru": "tost-s-avokado" },
+  "slug": {
+    "en": "avocado-toast",
+    "th": "โทสต์อะโวคาโด",
+    "ru": "tost-s-avokado"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan"],
+  "dietaryTags": ["vegan", "jay"],
   "allergens": ["gluten"],
   "spicyLevel": 0,
   "available": true,

@@ -7,8 +7,8 @@
 // correct while the page has no TH/RU translation.
 //
 // Honesty policy: we guarantee a 100% pure vegetarian (vegan/เจ) kitchen,
-// but we do NOT claim a fully Jain menu — garlic, onion and root vegetables
-// appear in some dishes, and the copy says so plainly.
+// no garlic/onion ever (the family keeps เจ year-round). Root vegetables do
+// appear in some dishes, so a fully Jain menu is NOT claimed — copy says so.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import JayBadge from '../components/JayBadge.astro';
@@ -39,7 +39,7 @@ const site = Astro.site!;
 
 const title = 'Pure Veg & Jain-Friendly Restaurant in Pattaya — Apple Vegan Cafe';
 const description =
-  '100% pure veg kitchen in Pattaya — no meat, fish, egg or dairy anywhere on site. Jain guests welcome: staff will point out no-garlic, no-onion dishes.';
+  '100% pure veg kitchen in Pattaya — no meat, fish, egg or dairy on site, and the whole kitchen cooks without garlic or onion, year round. Jain guests welcome.';
 
 const jsonld = [
   buildBreadcrumb([
@@ -84,7 +84,7 @@ const daysLabel = (days: readonly string[]) =>
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Open from 7:30 · Mon–Sat
+        Open from 7:00 · Mon–Sat
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -141,13 +141,14 @@ const daysLabel = (days: readonly string[]) =>
         An honest word for our Jain guests
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        The Thai เจ tradition our kitchen follows also avoids pungent vegetables — garlic, onion,
-        chives — during the festival, and several of our เจ dishes are naturally free of them. But
-        we won't pretend to offer more than we do: <strong
-          >root vegetables, garlic and onion do appear in some dishes</strong
-        >. Please tell the staff you eat Jain — the kitchen will gladly point out what truly fits
-        and adapt a dish where it honestly can. We don't have a fully Jain menu, and we'd rather say
-        that plainly than guess with your faith.
+        Our family follows the เจ tradition <strong>all year round, as a matter of faith</strong> — not
+        just during the festival. That means the kitchen cooks{' '}
+        <strong>without garlic, onion, chives or other pungent vegetables, every day</strong>, and
+        of course without any animal products. One honest caveat remains: <strong
+          >root vegetables (potato, carrot, ginger) do appear in some dishes</strong
+        >, so we don't claim a fully Jain menu. Tell the staff you eat Jain — the family knows
+        exactly what is in every pot and will point you right. We'd rather be precise than guess
+        with your faith.
       </p>
     </div>
   </section>
@@ -165,8 +166,8 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      These are the dishes the family cooks เจ-style — the tradition that skips pungent vegetables.
-      For strict Jain requirements, always confirm the details with the staff before ordering.
+      The whole kitchen is เจ year round — no garlic, no onion, no animal products in any dish. For
+      strict Jain requirements (root vegetables), confirm details with the staff before ordering.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -216,7 +217,7 @@ const daysLabel = (days: readonly string[]) =>
         {t(locale, 'home.findUs')}
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        We open at <strong>7:30, Monday to Saturday</strong> — early enough for breakfast before a day
+        We open at <strong>7:00, Monday to Saturday</strong> — early enough for breakfast before a day
         trip. On Sundays we rest with our own family.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">

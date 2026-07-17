@@ -11,10 +11,14 @@
     "th": "ข้าวเหนียวมูนกับมะม่วงสุก ราดกะทิ ตามฤดูกาล สอบถามได้ว่าวันนี้มีมะม่วงไหม",
     "ru": "Сладкий клейкий рис со спелым манго и кокосовыми сливками. Сезонное блюдо — спросите о наличии манго."
   },
-  "slug": { "en": "mango-sticky-rice", "th": "ข้าวเหนียวมะม่วง", "ru": "mango-s-kleykim-risom" },
+  "slug": {
+    "en": "mango-sticky-rice",
+    "th": "ข้าวเหนียวมะม่วง",
+    "ru": "mango-s-kleykim-risom"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "gluten-free"],
+  "dietaryTags": ["vegan", "jay", "gluten-free"],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

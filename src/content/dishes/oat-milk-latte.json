@@ -11,10 +11,14 @@
     "th": "เอสเพรสโซ่ช็อตคู่กับนมข้าวโอ๊ตโฮมเมด สั่งเย็นได้",
     "ru": "Двойной эспрессо с домашним овсяным молоком. Есть и холодный вариант."
   },
-  "slug": { "en": "oat-milk-latte", "th": "ลาเต้นมข้าวโอ๊ต", "ru": "latte-na-ovsyanom-moloke" },
+  "slug": {
+    "en": "oat-milk-latte",
+    "th": "ลาเต้นมข้าวโอ๊ต",
+    "ru": "latte-na-ovsyanom-moloke"
+  },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan"],
+  "dietaryTags": ["vegan", "jay"],
   "allergens": ["gluten"],
   "spicyLevel": 0,
   "available": true,

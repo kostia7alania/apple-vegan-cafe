@@ -73,4 +73,4 @@ condensed milk. Come practise your "mai sai nam pla" on us — we will smile, be
 never any nam pla here to begin with.
 
 The [full menu with prices](/menu/) is online, and if you are an early riser, so is
-[breakfast from 7:30](/vegan-breakfast-pattaya/).
+[breakfast from 7:00](/vegan-breakfast-pattaya/).
