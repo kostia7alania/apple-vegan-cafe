@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan spicy drunken mama noodle",
     "th": "มาม่าผัดขี้เมาเจ",
-    "ru": "Vegan spicy drunken mama noodle"
+    "ru": "Острая «пьяная» лапша мама (веган)"
   },
   "slug": {
     "en": "vegan-spicy-drunken-mama-noodle",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan fried chicken (drumstick)",
     "th": "น่องไก่เจทอด",
-    "ru": "Vegan fried chicken (drumstick)"
+    "ru": "Жареная веган-курица (голень)"
   },
   "slug": {
     "en": "vegan-fried-chicken-drumstick",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

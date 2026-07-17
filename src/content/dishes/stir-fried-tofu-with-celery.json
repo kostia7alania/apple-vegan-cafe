@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried tofu with celery",
     "th": "เต้าหู้ผัดขึ้นฉ่าย",
-    "ru": "Stir-fried tofu with celery"
+    "ru": "Тофу, жаренный с сельдереем"
   },
   "slug": {
     "en": "stir-fried-tofu-with-celery",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

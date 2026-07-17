@@ -4,7 +4,7 @@
   "name": {
     "en": "Pink milk with milk foam",
     "th": "นมชมพูฟองนม",
-    "ru": "Pink milk with milk foam"
+    "ru": "Розовое молоко с молочной пенкой"
   },
   "slug": {
     "en": "pink-milk-with-milk-foam",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

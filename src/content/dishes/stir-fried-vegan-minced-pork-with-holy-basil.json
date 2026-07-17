@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried vegan minced pork with holy basil",
     "th": "ผัดกระเพราหมูสับเจ",
-    "ru": "Stir-fried vegan minced pork with holy basil"
+    "ru": "Веган-фарш со священным базиликом"
   },
   "slug": {
     "en": "stir-fried-vegan-minced-pork-with-holy-basil",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

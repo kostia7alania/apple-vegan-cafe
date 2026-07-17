@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan radna",
     "th": "ราดหน้าเจ",
-    "ru": "Vegan radna"
+    "ru": "Рад на — лапша в густом соусе (веган)"
   },
   "slug": {
     "en": "vegan-radna",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Pancake",
     "th": "Pancake",
-    "ru": "Pancake"
+    "ru": "Панкейк"
   },
   "slug": {
     "en": "pancake",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

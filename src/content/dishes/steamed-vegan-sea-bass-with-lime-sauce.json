@@ -4,7 +4,7 @@
   "name": {
     "en": "Steamed vegan sea bass with lime sauce",
     "th": "ปลากะพงเจนึงมะนาว",
-    "ru": "Steamed vegan sea bass with lime sauce"
+    "ru": "Веган-сибас на пару с лаймовым соусом"
   },
   "slug": {
     "en": "steamed-vegan-sea-bass-with-lime-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

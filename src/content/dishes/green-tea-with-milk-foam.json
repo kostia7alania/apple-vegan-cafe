@@ -4,7 +4,7 @@
   "name": {
     "en": "Green tea with milk foam",
     "th": "ชาเขียวฟองนม",
-    "ru": "Green tea with milk foam"
+    "ru": "Зелёный чай с молочной пенкой"
   },
   "slug": {
     "en": "green-tea-with-milk-foam",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Tom Yum Soup",
     "th": "ต้มยำเจ",
-    "ru": "Vegan Tom Yum Soup"
+    "ru": "Суп том ям (веган)"
   },
   "slug": {
     "en": "vegan-tom-yum-soup",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

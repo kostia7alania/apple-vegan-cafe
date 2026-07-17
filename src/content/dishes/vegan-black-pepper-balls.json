@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan black pepper balls",
     "th": "ลูกชิ้นพริกไทยดำเจ",
-    "ru": "Vegan black pepper balls"
+    "ru": "Веган-шарики с чёрным перцем"
   },
   "slug": {
     "en": "vegan-black-pepper-balls",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

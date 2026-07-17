@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan fried rice  with vegetables & vegan egg",
     "th": "ข้าวผัดผักไข่ดาวเจ",
-    "ru": "Vegan fried rice  with vegetables & vegan egg"
+    "ru": "Жареный рис с овощами и веган-яйцом"
   },
   "slug": {
     "en": "vegan-fried-rice-with-vegetables-vegan-egg",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

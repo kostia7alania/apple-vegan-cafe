@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried Chinese kale with vegan salted fish",
     "th": "ผัดคะน้าปลาเค็มเจ",
-    "ru": "Stir-fried Chinese kale with vegan salted fish"
+    "ru": "Жареный кайлан с веган-солёной рыбой"
   },
   "slug": {
     "en": "stir-fried-chinese-kale-with-vegan-salted-fish",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

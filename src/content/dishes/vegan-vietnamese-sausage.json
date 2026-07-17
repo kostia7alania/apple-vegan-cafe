@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Vietnamese sausage",
     "th": "ยำหมูยอ",
-    "ru": "Vegan Vietnamese sausage"
+    "ru": "Вьетнамская веган-колбаса"
   },
   "slug": {
     "en": "vegan-vietnamese-sausage",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

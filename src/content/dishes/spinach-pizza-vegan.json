@@ -4,7 +4,7 @@
   "name": {
     "en": "Spinach pizza vegan",
     "th": "Spinach pizza vegan",
-    "ru": "Spinach pizza vegan"
+    "ru": "Пицца со шпинатом (веган)"
   },
   "slug": {
     "en": "spinach-pizza-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

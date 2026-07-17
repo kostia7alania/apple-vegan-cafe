@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan clear vegetable noodle soup",
     "th": "Vegan clear vegetable noodle soup",
-    "ru": "Vegan clear vegetable noodle soup"
+    "ru": "Прозрачный овощной суп с лапшой (веган)"
   },
   "slug": {
     "en": "vegan-clear-vegetable-noodle-soup",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

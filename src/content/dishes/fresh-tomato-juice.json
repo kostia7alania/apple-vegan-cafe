@@ -4,7 +4,7 @@
   "name": {
     "en": "Fresh tomato juice",
     "th": "มะเขือเทศคั้น",
-    "ru": "Fresh tomato juice"
+    "ru": "Свежевыжатый томатный сок"
   },
   "slug": {
     "en": "fresh-tomato-juice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

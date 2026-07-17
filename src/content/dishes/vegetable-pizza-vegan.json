@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegetable Pizza vegan",
     "th": "Vegetable Pizza vegan",
-    "ru": "Vegetable Pizza vegan"
+    "ru": "Овощная пицца (веган)"
   },
   "slug": {
     "en": "vegetable-pizza-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Fresh carrot juice",
     "th": "แครอทคั้น",
-    "ru": "Fresh carrot juice"
+    "ru": "Свежевыжатый морковный сок"
   },
   "slug": {
     "en": "fresh-carrot-juice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

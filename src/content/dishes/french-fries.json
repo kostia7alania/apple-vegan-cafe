@@ -4,7 +4,7 @@
   "name": {
     "en": "French fries",
     "th": "French fries",
-    "ru": "French fries"
+    "ru": "Картофель фри"
   },
   "slug": {
     "en": "french-fries",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

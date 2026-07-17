@@ -4,7 +4,7 @@
   "name": {
     "en": "Lime smoothie",
     "th": "มะนาวปั่น",
-    "ru": "Lime smoothie"
+    "ru": "Лаймовый смузи"
   },
   "slug": {
     "en": "lime-smoothie",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

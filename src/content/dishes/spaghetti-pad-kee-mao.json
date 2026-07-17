@@ -4,7 +4,7 @@
   "name": {
     "en": "Spaghetti pad kee mao",
     "th": "สปาเก็ตตี้ผัดจี้เมาเจ",
-    "ru": "Spaghetti pad kee mao"
+    "ru": "Спагетти пад ки мао"
   },
   "slug": {
     "en": "spaghetti-pad-kee-mao",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

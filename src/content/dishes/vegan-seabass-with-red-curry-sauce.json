@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan seabass with red curry sauce",
     "th": "ปลากะพงเจราดพริกแกง",
-    "ru": "Vegan seabass with red curry sauce"
+    "ru": "Веган-сибас в соусе красный карри"
   },
   "slug": {
     "en": "vegan-seabass-with-red-curry-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

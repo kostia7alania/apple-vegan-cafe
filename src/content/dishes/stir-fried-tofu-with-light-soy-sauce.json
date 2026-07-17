@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried tofu with light soy sauce",
     "th": "เต้าหู้คั่วซีอิ้วขาว",
-    "ru": "Stir-fried tofu with light soy sauce"
+    "ru": "Тофу в светлом соевом соусе"
   },
   "slug": {
     "en": "stir-fried-tofu-with-light-soy-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

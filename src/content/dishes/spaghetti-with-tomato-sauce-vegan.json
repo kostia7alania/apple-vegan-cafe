@@ -4,7 +4,7 @@
   "name": {
     "en": "Spaghetti with tomato sauce vegan",
     "th": "สปาเก็ตตี้ซอสมะเขือเทศเจ",
-    "ru": "Spaghetti with tomato sauce vegan"
+    "ru": "Спагетти с томатным соусом (веган)"
   },
   "slug": {
     "en": "spaghetti-with-tomato-sauce-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried kale with vegan seabass",
     "th": "ผัดคะน้าปลากะพงเจ",
-    "ru": "Stir-fried kale with vegan seabass"
+    "ru": "Жареный кайлан с веган-сибасом"
   },
   "slug": {
     "en": "stir-fried-kale-with-vegan-seabass",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

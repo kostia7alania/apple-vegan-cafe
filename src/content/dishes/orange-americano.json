@@ -4,7 +4,7 @@
   "name": {
     "en": "Orange americano",
     "th": "อเมริกาโน่ส้ม",
-    "ru": "Orange americano"
+    "ru": "Апельсиновый американо"
   },
   "slug": {
     "en": "orange-americano",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

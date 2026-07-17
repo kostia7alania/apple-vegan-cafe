@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan hamburger",
     "th": "แฮมเบอร์เกอ",
-    "ru": "Vegan hamburger"
+    "ru": "Веган-гамбургер"
   },
   "slug": {
     "en": "vegan-hamburger",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan chu chee sea bass",
     "th": "ฉู่ฉี่ ปลากะพงเจ",
-    "ru": "Vegan chu chee sea bass"
+    "ru": "Чу чи с веган-сибасом"
   },
   "slug": {
     "en": "vegan-chu-chee-sea-bass",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

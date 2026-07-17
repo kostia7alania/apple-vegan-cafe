@@ -4,7 +4,7 @@
   "name": {
     "en": "Pad Mama — stir-fried instant noodles",
     "th": "ผัดมาม่าเจ",
-    "ru": "Pad Mama — stir-fried instant noodles"
+    "ru": "Пад мама — жареная лапша быстрого приготовления"
   },
   "slug": {
     "en": "pad-mama-stir-fried-instant-noodles",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

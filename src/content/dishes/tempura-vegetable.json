@@ -4,7 +4,7 @@
   "name": {
     "en": "Tempura vegetable",
     "th": "ผักชุปแป้งทอด",
-    "ru": "Tempura vegetable"
+    "ru": "Овощи темпура"
   },
   "slug": {
     "en": "tempura-vegetable",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

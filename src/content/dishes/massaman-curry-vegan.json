@@ -4,7 +4,7 @@
   "name": {
     "en": "Massaman curry vegan",
     "th": "แกงมัสมันเจ",
-    "ru": "Massaman curry vegan"
+    "ru": "Карри массаман (веган)"
   },
   "slug": {
     "en": "massaman-curry-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan spaghetti in creamy tom yum soup",
     "th": "สปาเก็ตตี้ต้มยำเจ",
-    "ru": "Vegan spaghetti in creamy tom yum soup"
+    "ru": "Спагетти в сливочном супе том ям (веган)"
   },
   "slug": {
     "en": "vegan-spaghetti-in-creamy-tom-yum-soup",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

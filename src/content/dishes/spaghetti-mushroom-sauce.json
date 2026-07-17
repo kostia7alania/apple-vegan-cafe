@@ -4,7 +4,7 @@
   "name": {
     "en": "Spaghetti Mushroom  sauce",
     "th": "สปาเก็ตตี้ซอสเห็ด",
-    "ru": "Spaghetti Mushroom  sauce"
+    "ru": "Спагетти с грибным соусом"
   },
   "slug": {
     "en": "spaghetti-mushroom-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

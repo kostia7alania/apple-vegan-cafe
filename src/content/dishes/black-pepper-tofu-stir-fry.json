@@ -4,7 +4,7 @@
   "name": {
     "en": "Black pepper tofu Stir-fry",
     "th": "เต้าหู้ผัดพริกไทยดำ",
-    "ru": "Black pepper tofu Stir-fry"
+    "ru": "Тофу, обжаренный с чёрным перцем"
   },
   "slug": {
     "en": "black-pepper-tofu-stir-fry",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

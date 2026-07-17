@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan grilled pork",
     "th": "หมูย่างเจ",
-    "ru": "Vegan grilled pork"
+    "ru": "Веган-свинина на гриле"
   },
   "slug": {
     "en": "vegan-grilled-pork",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

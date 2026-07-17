@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan seafood curry fried rice",
     "th": "ข้าวผัดผงกะหรี่ทะเลเจ",
-    "ru": "Vegan seafood curry fried rice"
+    "ru": "Жареный рис с карри и веган-морепродуктами"
   },
   "slug": {
     "en": "vegan-seafood-curry-fried-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

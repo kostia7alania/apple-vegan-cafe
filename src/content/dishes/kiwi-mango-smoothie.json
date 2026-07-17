@@ -4,7 +4,7 @@
   "name": {
     "en": "Kiwi mango smoothie",
     "th": "กีวี่มะม่วงปั่น",
-    "ru": "Kiwi mango smoothie"
+    "ru": "Смузи киви-манго"
   },
   "slug": {
     "en": "kiwi-mango-smoothie",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

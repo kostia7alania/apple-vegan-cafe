@@ -4,7 +4,7 @@
   "name": {
     "en": "Thai vegan noodle soup (nam tok style)",
     "th": "Thai vegan noodle soup (nam tok style)",
-    "ru": "Thai vegan noodle soup (nam tok style)"
+    "ru": "Тайский суп с лапшой нам ток (веган)"
   },
   "slug": {
     "en": "thai-vegan-noodle-soup-nam-tok-style",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

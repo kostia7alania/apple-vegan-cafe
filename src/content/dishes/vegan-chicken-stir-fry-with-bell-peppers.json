@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan chicken Stir-fry with bell peppers",
     "th": "ไก่เจผัดพริกหวาน",
-    "ru": "Vegan chicken Stir-fry with bell peppers"
+    "ru": "Веган-курица, жаренная с болгарским перцем"
   },
   "slug": {
     "en": "vegan-chicken-stir-fry-with-bell-peppers",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

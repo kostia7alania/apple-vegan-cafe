@@ -4,7 +4,7 @@
   "name": {
     "en": "Passion fruit smoothie",
     "th": "เสาวรสปั่น",
-    "ru": "Passion fruit smoothie"
+    "ru": "Смузи из маракуйи"
   },
   "slug": {
     "en": "passion-fruit-smoothie",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

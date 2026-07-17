@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan seaweed balls",
     "th": "ลูกชิ้นสาหร่ายเจ",
-    "ru": "Vegan seaweed balls"
+    "ru": "Веган-шарики с водорослями"
   },
   "slug": {
     "en": "vegan-seaweed-balls",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

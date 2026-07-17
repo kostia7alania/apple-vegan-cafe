@@ -4,7 +4,7 @@
   "name": {
     "en": "Deep-fried evoking Mushrooms in batter",
     "th": "เห็ดเข็มทองทอด",
-    "ru": "Deep-fried evoking Mushrooms in batter"
+    "ru": "Грибы в кляре во фритюре"
   },
   "slug": {
     "en": "deep-fried-evoking-mushrooms-in-batter",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan fried salted fish",
     "th": "ปลาเค็มทอด",
-    "ru": "Vegan fried salted fish"
+    "ru": "Жареная веган-солёная рыба"
   },
   "slug": {
     "en": "vegan-fried-salted-fish",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

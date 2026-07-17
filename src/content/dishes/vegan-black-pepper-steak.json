@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan black pepper steak",
     "th": "สเต็กซอสพริกไทยดำ",
-    "ru": "Vegan black pepper steak"
+    "ru": "Веган-стейк с чёрным перцем"
   },
   "slug": {
     "en": "vegan-black-pepper-steak",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Banana smoothie",
     "th": "กล้วยปั่น",
-    "ru": "Banana smoothie"
+    "ru": "Банановый смузи"
   },
   "slug": {
     "en": "banana-smoothie",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

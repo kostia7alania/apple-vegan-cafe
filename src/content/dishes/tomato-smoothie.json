@@ -4,7 +4,7 @@
   "name": {
     "en": "Tomato smoothie",
     "th": "มะเขือเทศปั่น",
-    "ru": "Tomato smoothie"
+    "ru": "Томатный смузи"
   },
   "slug": {
     "en": "tomato-smoothie",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

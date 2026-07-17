@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan fried pork on rice",
     "th": "หมูทอดเจราดข้าว",
-    "ru": "Vegan fried pork on rice"
+    "ru": "Жареная веган-свинина с рисом"
   },
   "slug": {
     "en": "vegan-fried-pork-on-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

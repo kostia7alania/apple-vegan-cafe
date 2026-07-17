@@ -4,7 +4,7 @@
   "name": {
     "en": "Pad see ew vegan",
     "th": "ผัดซีอิ้วเจ",
-    "ru": "Pad see ew vegan"
+    "ru": "Пад си ю (веган)"
   },
   "slug": {
     "en": "pad-see-ew-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

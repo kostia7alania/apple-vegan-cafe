@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan pineapple fried rice",
     "th": "ข้าวผัดสับปะรดเจ",
-    "ru": "Vegan pineapple fried rice"
+    "ru": "Жареный рис с ананасом (веган)"
   },
   "slug": {
     "en": "vegan-pineapple-fried-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

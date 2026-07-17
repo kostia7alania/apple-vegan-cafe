@@ -4,7 +4,7 @@
   "name": {
     "en": "Crispy vegan shrimp",
     "th": "Crispy vegan shrimp",
-    "ru": "Crispy vegan shrimp"
+    "ru": "Хрустящие веган-креветки"
   },
   "slug": {
     "en": "crispy-vegan-shrimp",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

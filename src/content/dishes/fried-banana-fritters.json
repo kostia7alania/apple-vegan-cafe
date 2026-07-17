@@ -4,7 +4,7 @@
   "name": {
     "en": "Fried banana fritters",
     "th": "กล้วยทอด",
-    "ru": "Fried banana fritters"
+    "ru": "Жареные бананы в кляре"
   },
   "slug": {
     "en": "fried-banana-fritters",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

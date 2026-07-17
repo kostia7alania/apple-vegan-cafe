@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Thai fish cakes",
     "th": "ทอดมันเจ",
-    "ru": "Vegan Thai fish cakes"
+    "ru": "Тайские веган-рыбные котлетки"
   },
   "slug": {
     "en": "vegan-thai-fish-cakes",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

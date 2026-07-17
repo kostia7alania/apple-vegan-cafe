@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Chiang chun fried rice",
     "th": "ข้าวผัดเชียงชุน",
-    "ru": "Vegan Chiang chun fried rice"
+    "ru": "Жареный рис чианг-чун (веган)"
   },
   "slug": {
     "en": "vegan-chiang-chun-fried-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

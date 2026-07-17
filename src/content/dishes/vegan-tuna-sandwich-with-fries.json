@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan tuna sandwich with fries",
     "th": "ทูน่าแซนวิชเจกับมันทอด",
-    "ru": "Vegan tuna sandwich with fries"
+    "ru": "Сэндвич с веган-тунцом и картофелем фри"
   },
   "slug": {
     "en": "vegan-tuna-sandwich-with-fries",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

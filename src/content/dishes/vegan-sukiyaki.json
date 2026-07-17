@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan sukiyaki",
     "th": "สุกี้เจ",
-    "ru": "Vegan sukiyaki"
+    "ru": "Сукияки (веган)"
   },
   "slug": {
     "en": "vegan-sukiyaki",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

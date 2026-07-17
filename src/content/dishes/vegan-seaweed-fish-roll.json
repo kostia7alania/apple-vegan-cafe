@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan seaweed fish roll",
     "th": "ปลาม้วนสาหร่ายเจ",
-    "ru": "Vegan seaweed fish roll"
+    "ru": "Веган-рыбный ролл в водорослях"
   },
   "slug": {
     "en": "vegan-seaweed-fish-roll",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

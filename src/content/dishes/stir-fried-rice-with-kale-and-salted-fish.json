@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried rice with kale and salted fish",
     "th": "ข้าวผัดคะน้าปลาเค็มเจ",
-    "ru": "Stir-fried rice with kale and salted fish"
+    "ru": "Жареный рис с кайланом и веган-солёной рыбой"
   },
   "slug": {
     "en": "stir-fried-rice-with-kale-and-salted-fish",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

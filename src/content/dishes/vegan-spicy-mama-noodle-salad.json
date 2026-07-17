@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan spicy mama noodle salad",
     "th": "ยำมาม่า",
-    "ru": "Vegan spicy mama noodle salad"
+    "ru": "Острый салат с лапшой мама (веган)"
   },
   "slug": {
     "en": "vegan-spicy-mama-noodle-salad",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

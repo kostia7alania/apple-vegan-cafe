@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan som tum (vegan papaya salad) with fermented soybean sauce",
     "th": "ส้มตำปลาร้าเจ",
-    "ru": "Vegan som tum (vegan papaya salad) with fermented soybean sauce"
+    "ru": "Сом там с соусом из ферментированной сои (веган)"
   },
   "slug": {
     "en": "vegan-som-tum-vegan-papaya-salad-with-fermented-soybean-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

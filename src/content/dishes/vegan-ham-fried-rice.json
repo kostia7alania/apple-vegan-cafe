@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan ham fried rice",
     "th": "ข้าวผัดแฮม",
-    "ru": "Vegan ham fried rice"
+    "ru": "Жареный рис с веган-ветчиной"
   },
   "slug": {
     "en": "vegan-ham-fried-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

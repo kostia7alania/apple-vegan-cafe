@@ -4,7 +4,7 @@
   "name": {
     "en": "Crispy vegan pork with spicy jaw sauce",
     "th": "หมูกรอบเจน้ำจิ้มแจ่ว",
-    "ru": "Crispy vegan pork with spicy jaw sauce"
+    "ru": "Хрустящая веган-свинина с острым соусом джеу"
   },
   "slug": {
     "en": "crispy-vegan-pork-with-spicy-jaw-sauce",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

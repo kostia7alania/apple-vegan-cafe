@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan chu cheese mackerel",
     "th": "ฉู่ฉี่ปลาทูเจ",
-    "ru": "Vegan chu cheese mackerel"
+    "ru": "Чу чи с веган-скумбрией"
   },
   "slug": {
     "en": "vegan-chu-cheese-mackerel",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

@@ -4,7 +4,7 @@
   "name": {
     "en": "Stir-fried tofu with vegetables",
     "th": "Stir-fried tofu with vegetables",
-    "ru": "Stir-fried tofu with vegetables"
+    "ru": "Тофу, жаренный с овощами"
   },
   "slug": {
     "en": "stir-fried-tofu-with-vegetables",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

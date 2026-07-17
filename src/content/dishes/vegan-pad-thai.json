@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan pad thai",
     "th": "ผัดไทยเจ",
-    "ru": "Vegan pad thai"
+    "ru": "Пад тай (веган)"
   },
   "slug": {
     "en": "vegan-pad-thai",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

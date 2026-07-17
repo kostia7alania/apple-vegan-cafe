@@ -4,7 +4,7 @@
   "name": {
     "en": "Fried vegetables tofu",
     "th": "เต้าหู้ผักทอด",
-    "ru": "Fried vegetables tofu"
+    "ru": "Жареные овощи с тофу"
   },
   "slug": {
     "en": "fried-vegetables-tofu",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

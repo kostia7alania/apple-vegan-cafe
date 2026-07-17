@@ -4,7 +4,7 @@
   "name": {
     "en": "Red curry with roasted duck vegan",
     "th": "แกงเผ็ดเป็ดย่างเจ",
-    "ru": "Red curry with roasted duck vegan"
+    "ru": "Красный карри с веган-уткой"
   },
   "slug": {
     "en": "red-curry-with-roasted-duck-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

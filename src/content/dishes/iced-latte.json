@@ -4,7 +4,7 @@
   "name": {
     "en": "Iced latte",
     "th": "ลาเต้เย็น",
-    "ru": "Iced latte"
+    "ru": "Айс латте"
   },
   "slug": {
     "en": "iced-latte",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

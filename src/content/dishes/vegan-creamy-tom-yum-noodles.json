@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Creamy Tom  Yum  Noodles",
     "th": "ก๋วยเตี๋ยวต้มยำน้ำจ้นเจ",
-    "ru": "Vegan Creamy Tom  Yum  Noodles"
+    "ru": "Лапша том ям в сливочном бульоне (веган)"
   },
   "slug": {
     "en": "vegan-creamy-tom-yum-noodles",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

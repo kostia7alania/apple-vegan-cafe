@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan mushroom fried rice",
     "th": "ข้าวผัดเห็ด",
-    "ru": "Vegan mushroom fried rice"
+    "ru": "Жареный рис с грибами (веган)"
   },
   "slug": {
     "en": "vegan-mushroom-fried-rice",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

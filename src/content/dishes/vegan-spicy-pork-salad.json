@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan spicy pork salad",
     "th": "น้ำตกหมูเจ",
-    "ru": "Vegan spicy pork salad"
+    "ru": "Острый салат с веган-свининой"
   },
   "slug": {
     "en": "vegan-spicy-pork-salad",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

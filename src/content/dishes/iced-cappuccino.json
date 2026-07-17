@@ -4,7 +4,7 @@
   "name": {
     "en": "Iced cappuccino",
     "th": "คาปูชิโน่เย็น",
-    "ru": "Iced cappuccino"
+    "ru": "Айс капучино"
   },
   "slug": {
     "en": "iced-cappuccino",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

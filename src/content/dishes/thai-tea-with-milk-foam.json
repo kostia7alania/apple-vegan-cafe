@@ -4,7 +4,7 @@
   "name": {
     "en": "Thai tea with milk foam",
     "th": "ชาไทยฟองนม",
-    "ru": "Thai tea with milk foam"
+    "ru": "Тайский чай с молочной пенкой"
   },
   "slug": {
     "en": "thai-tea-with-milk-foam",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

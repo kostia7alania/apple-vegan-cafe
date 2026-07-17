@@ -4,7 +4,7 @@
   "name": {
     "en": "Vegan Stir-fried sea bass with ginger",
     "th": "ปลากะพงเจผัดขิง",
-    "ru": "Vegan Stir-fried sea bass with ginger"
+    "ru": "Веган-сибас, жаренный с имбирём"
   },
   "slug": {
     "en": "vegan-stir-fried-sea-bass-with-ginger",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

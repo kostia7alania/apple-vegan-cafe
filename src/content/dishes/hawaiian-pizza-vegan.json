@@ -4,7 +4,7 @@
   "name": {
     "en": "Hawaiian Pizza vegan",
     "th": "Hawaiian Pizza vegan",
-    "ru": "Hawaiian Pizza vegan"
+    "ru": "Пицца «Гавайская» (веган)"
   },
   "slug": {
     "en": "hawaiian-pizza-vegan",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,

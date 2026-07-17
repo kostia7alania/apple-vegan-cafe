@@ -4,7 +4,7 @@
   "name": {
     "en": "Fried  vegan chicken",
     "th": "เนื้อไก่เจทอด",
-    "ru": "Fried  vegan chicken"
+    "ru": "Жареная веган-курица"
   },
   "slug": {
     "en": "fried-vegan-chicken",
@@ -13,7 +13,10 @@
   },
   "previousSlugs": [],
   "images": [],
-  "dietaryTags": ["vegan", "jay"],
+  "dietaryTags": [
+    "vegan",
+    "jay"
+  ],
   "allergens": [],
   "spicyLevel": 0,
   "available": true,
