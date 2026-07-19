@@ -70,6 +70,38 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
   return jsonld;
 }
 
+export interface MenuSectionInput {
+  name: string;
+  items: { name: string; price: number; description?: string }[];
+}
+
+/**
+ * schema.org Menu markup. No documented rich result today — emitted as a
+ * no-risk experiment (see plan §5); prices mirror the owner's Grab catalog.
+ */
+export function buildMenu(input: {
+  url: string;
+  locale: Locale;
+  sections: MenuSectionInput[];
+}): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Menu',
+    url: input.url,
+    inLanguage: input.locale,
+    hasMenuSection: input.sections.map((section) => ({
+      '@type': 'MenuSection',
+      name: section.name,
+      hasMenuItem: section.items.map((item) => ({
+        '@type': 'MenuItem',
+        name: item.name,
+        ...(item.description ? { description: item.description } : {}),
+        offers: { '@type': 'Offer', price: item.price, priceCurrency: 'THB' },
+      })),
+    })),
+  };
+}
+
 export interface BreadcrumbItem {
   name: string;
   url: string;

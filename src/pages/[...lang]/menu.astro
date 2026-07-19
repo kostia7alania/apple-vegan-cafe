@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
-import { buildBreadcrumb } from '../../lib/jsonld';
+import { buildBreadcrumb, buildMenu } from '../../lib/jsonld';
 import { t, type UiKey } from '../../lib/ui';
 
 export function getStaticPaths() {
@@ -56,6 +56,20 @@ const jsonld = [
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
     { name: t(locale, 'nav.menu'), url: absoluteUrl(site, localePath(locale, '/menu/')) },
   ]),
+  buildMenu({
+    url: absoluteUrl(site, localePath(locale, '/menu/')),
+    locale,
+    sections: nonEmptyCategories.map((category) => ({
+      name: category.data.name[locale],
+      items: dishes
+        .filter((d) => d.data.category.id === category.id)
+        .map(({ data: dish }) => ({
+          name: dish.name[locale],
+          price: dish.price_thb,
+          description: dish.description?.[locale],
+        })),
+    })),
+  }),
 ];
 ---
 
