@@ -1,32 +1,29 @@
 ---
-// EN copy self-reviewed; final proofread before launch — backlog R3.
-// English landing page for the «vegan delivery pattaya» query cluster.
-// RU twin lives at /ru/veganskaya-dostavka-v-pattaye/ (reciprocal hreflang
-// via alternates); no TH version yet.
+// Русский лендинг под кластер «веган доставка паттайя» (RU-выдача пуста —
+// см. план §3). Копия вычитана разработчиком (носитель RU).
+// hreflang: взаимная связка с EN /vegan-delivery-pattaya/ (см. alternates).
 //
-// Ordering links live in the CMS (settings.orderingLinks). While the family
-// hasn't added a Grab link yet, we show honest «search for us in the app»
-// guidance; once a provider containing «grab» appears in settings, the page
-// upgrades to a direct GrabFood button automatically.
+// Ссылки на заказ живут в CMS (settings.orderingLinks): пока провайдера
+// «grab» нет — честная подсказка «найдите нас в приложении», при появлении
+// ссылки страница сама апгрейдится до прямой кнопки GrabFood.
 import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import JayBadge from '../components/JayBadge.astro';
-import LeafDivider from '../components/LeafDivider.astro';
-import MoreForYou from '../components/MoreForYou.astro';
-import Sprig from '../components/Sprig.astro';
-import type { Locale } from '../lib/i18n';
-import { absoluteUrl, localePath } from '../lib/urls';
-import { buildBreadcrumb } from '../lib/jsonld';
-import { t, type UiKey } from '../lib/ui';
+import Base from '../../layouts/Base.astro';
+import JayBadge from '../../components/JayBadge.astro';
+import LeafDivider from '../../components/LeafDivider.astro';
+import Sprig from '../../components/Sprig.astro';
+import type { Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath } from '../../lib/urls';
+import { buildBreadcrumb } from '../../lib/jsonld';
+import { t, type UiKey } from '../../lib/ui';
 
-const locale: Locale = 'en';
-const PAGE_PATH = '/vegan-delivery-pattaya/';
+const locale: Locale = 'ru';
+const PAGE_PATH = '/ru/veganskaya-dostavka-v-pattaye/';
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// Hand-picked dishes from mains + desserts that survive the ride well.
+// Те же блюда, что на EN-версии: хорошо переносят дорогу.
 const DELIVERY_DISH_IDS = [
   'vegan-pad-thai',
   'pad-see-ew-vegan',
@@ -42,17 +39,17 @@ const deliveryDishes = (
 
 const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
 
-const alternates = { en: PAGE_PATH, ru: '/ru/veganskaya-dostavka-v-pattaye/' };
+const alternates = { en: '/vegan-delivery-pattaya/', ru: PAGE_PATH };
 const site = Astro.site!;
 
-const title = 'Vegan Food Delivery in Pattaya — Apple Vegan Cafe (Grab & pickup)';
+const title = 'Доставка веганской еды в Паттайе — Apple Vegan Cafe (Grab и самовывоз)';
 const description =
-  '100% vegan Thai food delivered in Pattaya via GrabFood, or call and pick up at the counter. Family kitchen — no egg, no dairy, no fish sauce.';
+  '100% веганская тайская еда с доставкой по Паттайе через GrabFood или самовывозом. Семейная кухня — без яиц, молока и рыбного соуса.';
 
 const jsonld = [
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
-    { name: 'Vegan food delivery in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
+    { name: 'Доставка веганской еды в Паттайе', url: absoluteUrl(site, PAGE_PATH) },
   ]),
 ];
 
@@ -85,16 +82,16 @@ const daysLabel = (days: readonly string[]) =>
       <h1
         class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
       >
-        Vegan food delivery in Pattaya — Apple Vegan Cafe &amp; Restaurant
+        Доставка веганской еды в Паттайе — Apple Vegan Cafe &amp; Restaurant
       </h1>
       <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
-        Our small family kitchen, brought to your door — or packed and waiting at the counter
+        Наша маленькая семейная кухня — у вашей двери. Или собранный заказ ждёт вас у стойки
       </p>
       <p
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Pickup daily 7:00–22:00 · Grab — often around the clock
+        Самовывоз ежедневно 7:00–22:00 · Grab — часто круглосуточно
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -116,11 +113,11 @@ const daysLabel = (days: readonly string[]) =>
   <section class="wrap py-12 sm:py-14">
     <div class="prose-editorial">
       <p>
-        Some evenings you just don't want to leave the room — we understand. We're{' '}
-        <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a family-run cafe in Bang Lamung, and
-        everything we cook is 100% plant-based. In our kitchen there is{' '}
-        <strong>no meat, no fish sauce, no egg and no dairy</strong> — ever. It's the same honest cooking
-        whether it lands on one of our tables or arrives at your door in a delivery bag.
+        Бывают вечера, когда выходить из номера не хочется совсем — мы понимаем. Мы —{' '}
+        <strong>Apple Vegan Cafe &amp; Restaurant</strong>, семейное кафе в Банг Ламунге, и всё, что
+        мы готовим, — 100% растительное. На нашей кухне{' '}
+        <strong>нет мяса, рыбного соуса, яиц и молочных продуктов</strong> — вообще. Еда одна и та же
+        честная — что на нашем столике, что в пакете у курьера.
       </p>
     </div>
     <LeafDivider class="mt-10 max-w-60" />
@@ -128,14 +125,14 @@ const daysLabel = (days: readonly string[]) =>
 
   <section class="wrap pb-12">
     <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-      How to order
+      Как заказать
     </h2>
     {
       grabLink ? (
         <>
           <p class="mt-3 max-w-[60ch] leading-relaxed text-ink-700">
-            We're on <strong>GrabFood</strong> — tap the button below, order, and a rider brings it
-            over while it's still warm.
+            Мы есть в <strong>GrabFood</strong> — нажмите кнопку ниже, соберите заказ, и курьер
+            привезёт его ещё тёплым.
           </p>
           <p class="mt-5">
             <a
@@ -143,28 +140,27 @@ const daysLabel = (days: readonly string[]) =>
               rel="noopener"
               class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
             >
-              Order on GrabFood
+              Заказать в GrabFood
             </a>
           </p>
         </>
       ) : (
         <p class="mt-3 max-w-[60ch] leading-relaxed text-ink-700">
-          Delivery is available through <strong>Grab</strong> — open the GrabFood app and search for{' '}
-          <strong>«Apple Vegan Cafe»</strong>. You'll find our dishes there, and a rider brings them
-          over while they're still warm.
+          Доставка работает через <strong>Grab</strong> — откройте приложение GrabFood и найдите{' '}
+          <strong>«Apple Vegan Cafe»</strong>. Там всё наше меню, курьер привезёт заказ ещё тёплым.
         </p>
       )
     }
     <p class="mt-4 max-w-[60ch] leading-relaxed text-ink-700">
-      Prefer to skip the app? Call us, tell us what you'd like, and pick it up at the counter —
-      we'll have it packed and ready.
+      Не хочется через приложение? Позвоните, скажите, что собрать, — и заберите у стойки: заказ
+      будет упакован и готов к вашему приходу.
     </p>
     <p class="mt-5">
       <a
         href={phoneHref}
         class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
       >
-        {`${t(locale, 'actions.call')} ${settings.phone} for pickup`}
+        {`${t(locale, 'actions.call')} ${settings.phone} — самовывоз`}
       </a>
     </p>
 
@@ -172,12 +168,12 @@ const daysLabel = (days: readonly string[]) =>
       class="mt-8 max-w-[62ch] rounded-3xl border border-leaf-700/15 bg-leaf-50 px-6 py-6 sm:px-8"
     >
       <h3 class="font-display text-xl font-bold text-leaf-900">
-        🌙 Craving pad thai at 2 a.m.? Check the app anyway
+        🌙 Захотелось пад тая в два часа ночи? Всё равно проверьте приложение
       </h3>
       <p class="mt-2 leading-relaxed text-ink-700">
-        The dining room runs 7:00–22:00, but we're a family business and we often keep{' '}
-        <strong>Grab orders on around the clock</strong> — a late order literally wakes the kitchen up.
-        The Grab app always shows our live status: if it says we're open, we're cooking.
+        Зал работает с 7:00 до 22:00, но мы семейный бизнес и заказы в Grab часто{' '}
+        <strong>принимаем почти круглосуточно</strong> — ночной заказ буквально будит кухню. Актуальный
+        статус всегда виден в приложении Grab: если написано «открыто» — мы уже готовим.
       </p>
     </div>
   </section>
@@ -190,14 +186,15 @@ const daysLabel = (days: readonly string[]) =>
         class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
       />
       <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
-        An honest word about prices
+        Честно про цены
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        Dishes in delivery apps usually cost a little more than they do at our tables — that's
-        simply how the apps work. The menu on this website matches our <strong>GrabFood menu</strong
-        >, and <strong>pickup at the counter is often a little cheaper — just ask us</strong>. So if
-        you're nearby, collecting your order yourself is the friendliest deal — and you get to say
-        hello.
+        В приложениях доставки блюда обычно стоят чуть дороже, чем за нашими столиками, — так
+        устроены сами приложения. Меню на этом сайте совпадает с нашим{' '}
+        <strong>меню в GrabFood</strong>, а <strong
+          >у стойки самовывоз часто немного дешевле — просто спросите нас</strong
+        >. Так что если вы рядом, забрать заказ самому — самый выгодный вариант. И повод
+        поздороваться.
       </p>
     </div>
   </section>
@@ -205,7 +202,7 @@ const daysLabel = (days: readonly string[]) =>
   <section class="wrap pb-12">
     <div class="flex items-baseline justify-between gap-4">
       <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-        Popular for delivery
+        Что хорошо едет в доставке
       </h2>
       <a
         href={menuPath}
@@ -215,8 +212,8 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      A few dishes that travel especially well — curries and noodles arrive just as happy as they
-      left the kitchen. Prices shown match our GrabFood menu.
+      Несколько блюд, которые особенно хорошо переносят дорогу: карри и лапша доезжают такими же,
+      какими вышли из кухни. Цены совпадают с нашим меню в GrabFood.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -250,7 +247,7 @@ const daysLabel = (days: readonly string[]) =>
         href={menuPath}
         class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
       >
-        See the full menu with prices
+        Полное меню с ценами
       </a>
     </p>
   </section>
@@ -266,8 +263,8 @@ const daysLabel = (days: readonly string[]) =>
         {t(locale, 'home.findUs')}
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        The kitchen cooks from <strong>7:00 to 22:00, every day</strong> — early breakfast boxes and late
-        dinners both welcome.
+        Кухня готовит <strong>с 7:00 до 22:00, каждый день</strong> — и ранние завтраки с собой, и поздние
+        ужины.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
@@ -300,7 +297,7 @@ const daysLabel = (days: readonly string[]) =>
               href={menuPath}
               class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
             >
-              View full menu
+              Смотреть меню
             </a>
           </div>
         </div>
@@ -328,6 +325,4 @@ const daysLabel = (days: readonly string[]) =>
       </div>
     </div>
   </section>
-
-  <MoreForYou currentPath={PAGE_PATH} />
 </Base>
