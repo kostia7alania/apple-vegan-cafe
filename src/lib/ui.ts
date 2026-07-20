@@ -34,6 +34,7 @@ const strings = {
   'menu.spicy': { en: 'spicy', th: 'เผ็ด', ru: 'острое' },
   'menu.categoriesNav': { en: 'Menu categories', th: 'หมวดเมนู', ru: 'Разделы меню' },
   'menu.contains': { en: 'Contains', th: 'มีส่วนผสม', ru: 'Содержит' },
+  'menu.backToTop': { en: 'Back to top', th: 'กลับขึ้นบน', ru: 'Наверх' },
   'menu.orderGrab': {
     en: 'Order delivery on GrabFood',
     th: 'สั่งเดลิเวอรีผ่าน GrabFood',

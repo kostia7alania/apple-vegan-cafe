@@ -74,7 +74,7 @@ const jsonld = [
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
-  <div class="wrap pt-10 pb-2 sm:pt-14">
+  <div id="top" class="wrap pt-10 pb-2 sm:pt-14">
     <JayBadge label={t(locale, 'trust.jay')} />
     <h1 class="mt-4 font-display text-4xl font-extrabold tracking-tight text-leaf-900 sm:text-5xl">
       {t(locale, 'menu.title')}
@@ -106,9 +106,12 @@ const jsonld = [
             <li>
               <a
                 href={`#${category.data.slug[locale]}`}
-                class="inline-flex min-h-11 items-center rounded-full border border-leaf-700/25 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+                class="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-leaf-700/25 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
               >
                 {category.data.name[locale]}
+                <span class="text-xs font-normal text-ink-500 tabular-nums" aria-hidden="true">
+                  {dishes.filter((d) => d.data.category.id === category.id).length}
+                </span>
               </a>
             </li>
           ))
@@ -208,6 +211,14 @@ const jsonld = [
                 </li>
               ))}
             </ul>
+            <p class="mt-2 text-right">
+              <a
+                href="#top"
+                class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-leaf-700 transition-colors hover:text-leaf-900"
+              >
+                ↑ {t(locale, 'menu.backToTop')}
+              </a>
+            </p>
           </section>
         );
       })
