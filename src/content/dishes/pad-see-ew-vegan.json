@@ -19,5 +19,10 @@
   "available": true,
   "featured": true,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "description": {
+    "en": "Wide rice noodles wok-fried with Chinese kale in a smoky-sweet soy glaze.",
+    "th": "ก๋วยเตี๋ยวเส้นใหญ่ผัดซีอิ๊วกับคะน้า หอมกลิ่นกระทะ",
+    "ru": "Широкая рисовая лапша, обжаренная в воке с кайланом в дымно-сладком соевом соусе."
+  }
 }

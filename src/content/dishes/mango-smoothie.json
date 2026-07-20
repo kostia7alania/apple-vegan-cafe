@@ -19,5 +19,10 @@
   "available": true,
   "featured": true,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "description": {
+    "en": "Ripe mango, blended thick and cold.",
+    "th": "มะม่วงสุกปั่นเนื้อเนียน เย็นชื่นใจ",
+    "ru": "Спелое манго, взбитое в густой холодный смузи."
+  }
 }

@@ -19,5 +19,10 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "description": {
+    "en": "Thailand's classic noodle stir-fry, fully plant-based — tamarind tang, no fish sauce.",
+    "th": "ผัดไทยเจสูตรครอบครัว รสมะขามกลมกล่อม ไม่ใส่น้ำปลา",
+    "ru": "Классическая тайская жареная лапша, полностью растительная: тамариндовая кислинка, без рыбного соуса."
+  }
 }

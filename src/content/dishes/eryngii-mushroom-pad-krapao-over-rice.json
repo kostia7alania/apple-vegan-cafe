@@ -19,5 +19,10 @@
   "available": true,
   "featured": true,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "description": {
+    "en": "Holy-basil stir-fry of meaty eryngii mushrooms, served over rice.",
+    "th": "ผัดกะเพราเห็ดออรินจิเนื้อแน่น เสิร์ฟพร้อมข้าวสวย",
+    "ru": "Мясистые грибы эринги, обжаренные со священным базиликом, подаются с рисом."
+  }
 }
