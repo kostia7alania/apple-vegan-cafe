@@ -56,6 +56,11 @@ Portal (Menu → Bulk Update → download) or a hand-filled sheet. Scraping
 food.grab.com violates Grab's ToS and is deliberately not implemented. Every
 imported dish gets `reviewedAt: null` — the owner must verify each one.
 
+The live menu (141 dishes, July 2026) was imported from such an export.
+**Quarterly re-syncs**: `scripts/data/grab-item-map.json` maps every Grab
+`ItemID` to its dish file (survives renames and slug changes) — see
+[docs/grab-resync.md](docs/grab-resync.md) for the runbook.
+
 ## SEO rules baked in
 
 - `/` = English (x-default), `/th/…`, `/ru/…`; reciprocal hreflang in `<head>`
