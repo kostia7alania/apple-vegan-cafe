@@ -51,9 +51,15 @@ test('language toggle opens without JS and navigates', async ({ page }) => {
 test('language switcher never disappears: untranslated pages fall back to locale home', async ({
   page,
 }) => {
-  await page.goto('/vegan-breakfast-pattaya/');
+  await page.goto('/pure-veg-jain-friendly/');
   await expect(page.locator('header a[hreflang="th"]')).toHaveAttribute('href', '/th/');
   await expect(page.locator('header a[hreflang="ru"]')).toHaveAttribute('href', '/ru/');
+  // translated landing: RU twin exists, switcher links straight to it
+  await page.goto('/vegan-breakfast-pattaya/');
+  await expect(page.locator('header a[hreflang="ru"]')).toHaveAttribute(
+    'href',
+    '/ru/veganskiy-zavtrak-v-pattaye/',
+  );
   // partially translated article: RU twin exists, TH falls back to home
   await page.goto('/blog/how-to-order-vegan-food-in-thailand/');
   await expect(page.locator('header a[hreflang="ru"]')).toHaveAttribute(

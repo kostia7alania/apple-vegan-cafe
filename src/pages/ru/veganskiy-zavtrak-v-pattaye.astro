@@ -1,27 +1,25 @@
 ---
-// EN copy self-reviewed; final proofread before launch — backlog R2.
-// English landing page for the «vegan breakfast pattaya» query cluster.
-// RU twin lives at /ru/veganskiy-zavtrak-v-pattaye/ (reciprocal hreflang
-// via alternates); no TH version yet.
+// Русский лендинг под кластер «веганский завтрак паттайя» (RU-выдача без
+// сайтов ресторанов — план §3). Копия вычитана разработчиком (носитель RU).
+// hreflang: взаимная связка с EN /vegan-breakfast-pattaya/ (см. alternates).
 import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import JayBadge from '../components/JayBadge.astro';
-import LeafDivider from '../components/LeafDivider.astro';
-import MoreForYou from '../components/MoreForYou.astro';
-import Sprig from '../components/Sprig.astro';
-import type { Locale } from '../lib/i18n';
-import { absoluteUrl, localePath } from '../lib/urls';
-import { buildBreadcrumb } from '../lib/jsonld';
-import { t, type UiKey } from '../lib/ui';
+import Base from '../../layouts/Base.astro';
+import JayBadge from '../../components/JayBadge.astro';
+import LeafDivider from '../../components/LeafDivider.astro';
+import Sprig from '../../components/Sprig.astro';
+import type { Locale } from '../../lib/i18n';
+import { absoluteUrl, localePath } from '../../lib/urls';
+import { buildBreadcrumb } from '../../lib/jsonld';
+import { t, type UiKey } from '../../lib/ui';
 
-const locale: Locale = 'en';
-const PAGE_PATH = '/vegan-breakfast-pattaya/';
+const locale: Locale = 'ru';
+const PAGE_PATH = '/ru/veganskiy-zavtrak-v-pattaye/';
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// Every available breakfast dish, cheapest first.
+// Те же утренние блюда, что и на EN-версии, дешёвые первыми.
 const BREAKFAST_PICK_IDS = [
   'vegan-tuna-sandwich-with-fries',
   'fried-banana-fritters',
@@ -34,7 +32,7 @@ const breakfastDishes = (
   .map((e) => e.data)
   .sort((a, b) => a.price_thb - b.price_thb);
 
-// Two morning drinks, hand-picked: the oat milk latte and the mango smoothie.
+// Два утренних напитка: латте на овсяном молоке и манговый смузи.
 const MORNING_DRINK_IDS = ['iced-latte', 'mango-smoothie'];
 const morningDrinks = (
   await getCollection('dishes', ({ id, data }) => data.available && MORNING_DRINK_IDS.includes(id))
@@ -42,17 +40,17 @@ const morningDrinks = (
   .sort((a, b) => MORNING_DRINK_IDS.indexOf(a.id) - MORNING_DRINK_IDS.indexOf(b.id))
   .map((e) => e.data);
 
-const alternates = { en: PAGE_PATH, ru: '/ru/veganskiy-zavtrak-v-pattaye/' };
+const alternates = { en: '/vegan-breakfast-pattaya/', ru: PAGE_PATH };
 const site = Astro.site!;
 
-const title = 'Vegan Breakfast in Pattaya from 7:00 — Apple Vegan Cafe';
+const title = 'Веганский завтрак в Паттайе с 7:00 — Apple Vegan Cafe';
 const description =
-  'One of the earliest vegan breakfasts in Pattaya — doors open 7:00, every day. 100% plant-based Thai breakfast plates, smoothies and fresh coffee.';
+  'Один из самых ранних веганских завтраков в Паттайе — открываемся в 7:00, каждый день. 100% растительные тайские завтраки, смузи и свежий кофе на овсяном молоке.';
 
 const jsonld = [
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
-    { name: 'Vegan breakfast in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
+    { name: 'Веганский завтрак в Паттайе', url: absoluteUrl(site, PAGE_PATH) },
   ]),
 ];
 
@@ -86,16 +84,16 @@ const daysLabel = (days: readonly string[]) =>
       <h1
         class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
       >
-        Vegan breakfast in Pattaya — Apple Vegan Cafe &amp; Restaurant
+        Веганский завтрак в Паттайе — Apple Vegan Cafe &amp; Restaurant
       </h1>
       <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
-        A small family kitchen serving one of the earliest vegan breakfasts in town
+        Маленькая семейная кухня с одним из самых ранних веганских завтраков в городе
       </p>
       <p
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Doors open 7:00 · every day
+        Открываемся в 7:00 · каждый день
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -117,23 +115,23 @@ const daysLabel = (days: readonly string[]) =>
   <section class="wrap py-12 sm:py-14">
     <div class="prose-editorial">
       <p>
-        Seven in the morning is a quiet hour in Pattaya. The streets are still cool, the beach crowd
-        hasn't arrived, and most vegan kitchens in town won't open for a while yet. Ours already
-        has. We're <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a small family-run cafe in
-        Bang Lamung, and breakfast here starts at <strong>7:00, every day of the week</strong> — one of
-        the earliest vegan breakfasts in Pattaya.
+        Семь утра — тихий час в Паттайе. Улицы ещё прохладные, пляжная публика не проснулась, а
+        большинство веганских кухонь города откроются нескоро. Наша уже работает. Мы —{' '}
+        <strong>Apple Vegan Cafe &amp; Restaurant</strong>, маленькое семейное кафе в Банг Ламунге,
+        и завтрак здесь начинается <strong>в 7:00, каждый день</strong> — один из самых ранних веганских
+        завтраков в Паттайе.
       </p>
       <p>
-        Everything we cook is 100% plant-based — not a vegan corner of a regular menu, but the whole
-        kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> anywhere on the premises,
-        so nothing needs double-checking and nothing is cooked next to meat. The morning coffee is made
-        with our house-made oat milk, and every single dish is plant-based — no egg anywhere.
+        Всё, что мы готовим, — 100% растительное: не «веганский уголок» обычного меню, а вся кухня
+        целиком. У нас <strong>нет яиц, молочных продуктов и рыбного соуса</strong> — вообще нигде, поэтому
+        ничего не нужно перепроверять и ничто не жарится рядом с мясом. Утренний кофе — на овсяном молоке,
+        которое мы делаем сами.
       </p>
       <p>
-        Mornings here are unhurried. It's usually just us and a few regulars — someone reading
-        before work, a couple fuelling up before a dive trip to the islands. Order at the counter,
-        take a table, and breakfast arrives when it's ready. No buffet, no rush, no music turned up
-        too loud.
+        Утро здесь неторопливое. Обычно только мы и несколько завсегдатаев: кто-то читает перед
+        работой, кто-то заправляется перед дайв-поездкой на острова. Закажите у стойки, займите
+        столик — завтрак приедет, когда будет готов. Без шведского стола, без спешки и без слишком
+        громкой музыки.
       </p>
     </div>
     <LeafDivider class="mt-10 max-w-60" />
@@ -142,7 +140,7 @@ const daysLabel = (days: readonly string[]) =>
   <section class="wrap pb-12">
     <div class="flex items-baseline justify-between gap-4">
       <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-        What's for breakfast
+        Что на завтрак
       </h2>
       <a
         href={breakfastAnchor}
@@ -152,8 +150,8 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      The breakfast menu is short on purpose — a few things we make well every morning, at the same
-      prices you'll see on the table.
+      Утренний список нарочно короткий — несколько блюд, которые мы каждое утро готовим хорошо, по
+      тем же ценам, что и на столе.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -187,7 +185,7 @@ const daysLabel = (days: readonly string[]) =>
         href={breakfastAnchor}
         class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
       >
-        See breakfast on the full menu
+        Завтраки в полном меню
       </a>
     </p>
   </section>
@@ -200,11 +198,11 @@ const daysLabel = (days: readonly string[]) =>
         class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
       />
       <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
-        Also great in the morning
+        И к завтраку
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        No latte art competitions here — just proper espresso with oat milk we make ourselves, and
-        fresh fruit smoothies, mango first among them.
+        Без соревнований по латте-арту — просто честный эспрессо на овсяном молоке собственного
+        приготовления и свежие фруктовые смузи, манговый — первый среди них.
       </p>
       <ul class="relative mt-4 max-w-xl divide-y divide-mango-500/20">
         {
@@ -247,8 +245,8 @@ const daysLabel = (days: readonly string[]) =>
         {t(locale, 'home.findUs')}
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        We open at <strong>7:00</strong> — early enough for breakfast before a morning flight, a dive
-        trip or a long beach day.
+        Открываемся в <strong>7:00</strong> — успеете позавтракать перед утренним рейсом, дайв-поездкой
+        или длинным пляжным днём.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
@@ -281,7 +279,7 @@ const daysLabel = (days: readonly string[]) =>
               href={menuPath}
               class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
             >
-              View full menu
+              Смотреть меню
             </a>
           </div>
         </div>
@@ -309,6 +307,4 @@ const daysLabel = (days: readonly string[]) =>
       </div>
     </div>
   </section>
-
-  <MoreForYou currentPath={PAGE_PATH} />
 </Base>
