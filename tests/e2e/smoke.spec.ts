@@ -77,6 +77,38 @@ test('canonical is self-referential', async ({ page }) => {
   );
 });
 
+test('social preview metadata stays absolute and shareable', async ({ page, request }) => {
+  for (const path of ['/', '/menu/', '/th/menu/', '/ru/menu/']) {
+    await page.goto(path);
+    const expectedUrl = `https://apple-vegan-cafe.com${path}`;
+
+    await expect(page.locator('head meta[property="og:url"]'), `${path} og:url`).toHaveAttribute(
+      'content',
+      expectedUrl,
+    );
+    await expect(
+      page.locator('head meta[property="og:image"]'),
+      `${path} og:image`,
+    ).toHaveAttribute('content', 'https://apple-vegan-cafe.com/og-default.png');
+    await expect(
+      page.locator('head meta[property="og:image:width"]'),
+      `${path} og:image:width`,
+    ).toHaveAttribute('content', '1200');
+    await expect(
+      page.locator('head meta[property="og:image:height"]'),
+      `${path} og:image:height`,
+    ).toHaveAttribute('content', '630');
+    await expect(
+      page.locator('head meta[name="twitter:card"]'),
+      `${path} twitter:card`,
+    ).toHaveAttribute('content', 'summary_large_image');
+  }
+
+  const ogImage = await request.get('/og-default.png');
+  expect(ogImage.ok()).toBe(true);
+  expect(ogImage.headers()['content-type']).toContain('image/png');
+});
+
 test('launch indexing guard keeps public pages crawlable', async ({ page, request }) => {
   for (const path of ['/', '/menu/', '/th/menu/', '/ru/menu/']) {
     await page.goto(path);
