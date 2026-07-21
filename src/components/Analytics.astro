@@ -1,0 +1,81 @@
+---
+const cloudflareToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN;
+const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
+const cloudflareBeaconConfig = cloudflareToken ? JSON.stringify({ token: cloudflareToken }) : null;
+const gaInlineScript = gaMeasurementId
+  ? `
+window.dataLayer = window.dataLayer || [];
+window.gtag = function () {
+  window.dataLayer.push(arguments);
+};
+window.gtag('js', new Date());
+window.gtag('config', ${JSON.stringify(gaMeasurementId)}, {
+  anonymize_ip: true,
+  transport_type: 'beacon',
+});
+
+document.addEventListener('click', function (event) {
+  if (typeof window.gtag !== 'function') return;
+  if (!(event.target instanceof Element)) return;
+
+  var link = event.target.closest('a[href]');
+  if (!link) return;
+
+  var href = link.getAttribute('href') || '';
+  var pagePath = window.location.pathname;
+  var eventName = '';
+  var params = { page_path: pagePath };
+
+  if (href.indexOf('tel:') === 0) {
+    eventName = 'phone_click';
+    params.contact_method = 'phone';
+  } else if (href.indexOf('grab.com') !== -1) {
+    eventName = 'order_click';
+    params.order_provider = 'grab';
+  } else if (href.indexOf('happycow.net') !== -1) {
+    eventName = 'review_click';
+    params.review_provider = 'happycow';
+  } else if (href.indexOf('google.com/maps') !== -1 || href.indexOf('goo.gl/maps') !== -1) {
+    eventName = 'directions_click';
+    params.map_provider = 'google';
+  } else {
+    try {
+      var url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) {
+        eventName = 'outbound_click';
+        params.link_domain = url.hostname;
+      }
+    } catch (error) {
+      return;
+    }
+  }
+
+  if (eventName) window.gtag('event', eventName, params);
+});
+`
+  : null;
+---
+
+{
+  cloudflareBeaconConfig && (
+    <script
+      is:inline
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={cloudflareBeaconConfig}
+    />
+  )
+}
+
+{
+  gaMeasurementId && (
+    <>
+      <script
+        is:inline
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+      />
+      <script is:inline set:html={gaInlineScript} />
+    </>
+  )
+}

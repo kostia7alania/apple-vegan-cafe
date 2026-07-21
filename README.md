@@ -78,6 +78,22 @@ Cloudflare Workers Static Assets, config in `infrastructure/wrangler.jsonc`:
 the Cloudflare dashboard — this repo contains none. See
 `infrastructure/sveltia-auth/README.md` for the one-time CMS auth setup.
 
+## Analytics
+
+Analytics is optional and build-time configured:
+
+- `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` — recommended default for the cafe:
+  lightweight, cookieless pageview analytics in Cloudflare.
+- `PUBLIC_GA_MEASUREMENT_ID` — optional GA4 measurement ID (`G-...`) if Google
+  Ads/campaign attribution is needed.
+
+When GA4 is enabled, the site also records simple conversion-style events for
+phone, GrabFood, review, maps and outbound clicks. Phone numbers are not sent as
+event values.
+
+For GitHub deploys, set these as repository **Variables** (not secrets) because
+they are public IDs used at build time.
+
 ## Docs
 
 - [docs/adr/](docs/adr/) — architecture decision records
