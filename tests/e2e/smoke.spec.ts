@@ -46,6 +46,15 @@ async function expectHeadSeoLinks(
   ).toBe(actualAlternates.length);
 }
 
+async function parseSitemapLocs(page: Page, xml: string): Promise<string[]> {
+  return page.evaluate((source) => {
+    const doc = new DOMParser().parseFromString(source, 'application/xml');
+    const parseError = doc.querySelector('parsererror');
+    if (parseError) throw new Error(parseError.textContent ?? 'Invalid sitemap XML');
+    return Array.from(doc.querySelectorAll('url > loc'), (loc) => loc.textContent ?? '');
+  }, xml);
+}
+
 for (const { prefix, hreflang, heading } of locales) {
   test(`home renders in ${hreflang}`, async ({ page }) => {
     await page.goto(`${prefix}/`);
@@ -287,6 +296,43 @@ test('launch indexing guard keeps public pages crawlable', async ({ page, reques
   const sitemapIndexBody = await sitemapIndex.text();
   expect(sitemapIndexBody).toContain('<sitemapindex');
   expect(sitemapIndexBody).toContain('<loc>https://apple-vegan-cafe.com/sitemap-0.xml</loc>');
+});
+
+test('sitemap lists canonical public pages and excludes service URLs', async ({
+  page,
+  request,
+}) => {
+  const sitemap = await request.get('/sitemap-0.xml');
+  expect(sitemap.ok()).toBe(true);
+
+  const locs = await parseSitemapLocs(page, await sitemap.text());
+  expect(new Set(locs).size, 'sitemap loc entries must be unique').toBe(locs.length);
+  expect(locs.every((loc) => loc.startsWith(`${SITE_ORIGIN}/`))).toBe(true);
+  expect(locs.every((loc) => loc.endsWith('/'))).toBe(true);
+  expect(locs.some((loc) => loc.includes('/admin/'))).toBe(false);
+  expect(locs.some((loc) => loc.includes('/uploads/'))).toBe(false);
+  expect(locs.some((loc) => /[?#]/.test(loc))).toBe(false);
+
+  expect(locs).toEqual(
+    expect.arrayContaining([
+      absolute('/'),
+      absolute('/menu/'),
+      absolute('/th/menu/'),
+      absolute('/ru/menu/'),
+      absolute('/faq/'),
+      absolute('/th/faq/'),
+      absolute('/ru/faq/'),
+      absolute('/vegan-breakfast-pattaya/'),
+      absolute('/ru/veganskiy-zavtrak-v-pattaye/'),
+      absolute('/vegan-delivery-pattaya/'),
+      absolute('/ru/veganskaya-dostavka-v-pattaye/'),
+      absolute('/pure-veg-jain-friendly/'),
+      absolute('/th/ร้านอาหารเจ-พัทยา/'),
+      absolute('/blog/how-to-order-vegan-food-in-thailand/'),
+      absolute('/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/'),
+      absolute('/ru/blog/vegan-gid-po-pattaye/'),
+    ]),
+  );
 });
 
 test('restaurant JSON-LD is present and has no self-serving rating', async ({ page }) => {

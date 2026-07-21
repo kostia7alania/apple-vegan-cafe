@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R14 SEO-quality sitemap coverage guard** — Playwright парсит `sitemap-0.xml`, проверяет канонические public URL для основных EN/TH/RU страниц, уникальность/trailing slash/absolute loc и отсутствие служебных `/admin/`, `/uploads/`, query/hash URL.
 - 2026-07-22: **R13 SEO-quality canonical/hreflang matrix** — Playwright проверяет self-canonical и точный набор head `hreflang`/`x-default` для структурных страниц, парных лендингов, одноязычных страниц и переведённых статей.
 - 2026-07-22: **R12 SEO-quality social preview guard** — Playwright проверяет, что `/`, `/menu/`, `/th/menu/`, `/ru/menu/` отдают absolute `og:url`, `og:image`, размеры 1200×630 и `twitter:card=summary_large_image`; `/og-default.png` доступен как PNG.
 - 2026-07-21: **R11 SEO-регрессия индексации** — Playwright guard проверяет, что `/`, `/menu/`, `/th/menu/`, `/ru/menu/` не получают `meta robots noindex`, `robots.txt` не закрывает корень и указывает на sitemap, а `sitemap-index.xml` генерируется с `sitemap-0.xml`.
