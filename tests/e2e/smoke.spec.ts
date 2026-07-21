@@ -276,6 +276,46 @@ test('social preview metadata stays absolute and shareable', async ({ page, requ
   expect(ogImage.headers()['content-type']).toContain('image/png');
 });
 
+test('head discovery metadata exposes manifest, favicon and sitemap', async ({ page, request }) => {
+  await page.goto('/');
+
+  await expect(page.locator('head meta[name="theme-color"]')).toHaveAttribute('content', '#faf6ed');
+  await expect(page.locator('head link[rel="icon"]')).toHaveAttribute('href', '/favicon.svg');
+  await expect(page.locator('head link[rel="icon"]')).toHaveAttribute('type', 'image/svg+xml');
+  await expect(page.locator('head link[rel="manifest"]')).toHaveAttribute(
+    'href',
+    '/site.webmanifest',
+  );
+  await expect(page.locator('head link[rel="sitemap"]')).toHaveAttribute(
+    'href',
+    '/sitemap-index.xml',
+  );
+
+  const manifestResponse = await request.get('/site.webmanifest');
+  expect(manifestResponse.ok()).toBe(true);
+  expect(manifestResponse.headers()['content-type']).toContain('application/manifest+json');
+  const manifest = (await manifestResponse.json()) as {
+    name?: string;
+    short_name?: string;
+    display?: string;
+    theme_color?: string;
+    background_color?: string;
+    icons?: { src?: string; sizes?: string; type?: string }[];
+  };
+  expect(manifest.name).toBe('Apple Vegan Cafe & Restaurant');
+  expect(manifest.short_name).toBe('Apple Vegan Cafe');
+  expect(manifest.display).toBe('browser');
+  expect(manifest.theme_color).toBe('#faf6ed');
+  expect(manifest.background_color).toBe('#faf6ed');
+  expect(manifest.icons).toEqual(
+    expect.arrayContaining([{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }]),
+  );
+
+  const faviconResponse = await request.get('/favicon.svg');
+  expect(faviconResponse.ok()).toBe(true);
+  expect(faviconResponse.headers()['content-type']).toContain('image/svg+xml');
+});
+
 test('launch indexing guard keeps public pages crawlable', async ({ page, request }) => {
   for (const path of ['/', '/menu/', '/th/menu/', '/ru/menu/']) {
     await page.goto(path);
