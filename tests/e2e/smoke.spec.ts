@@ -1,3 +1,4 @@
+import { readFileSync, readdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 
 const locales = [
@@ -7,12 +8,53 @@ const locales = [
 ];
 
 const SITE_ORIGIN = 'https://apple-vegan-cafe.com';
+const DISHES_DIR = 'src/content/dishes';
+const availableDishCount = readdirSync(DISHES_DIR)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(`${DISHES_DIR}/${f}`, 'utf8')) as { available: boolean })
+  .filter((d) => d.available).length;
+const allowedSchemaTypes = new Set(['Article', 'BreadcrumbList', 'Menu', 'Restaurant']);
 
 function absolute(path: string): string {
   return new URL(path, SITE_ORIGIN).href;
 }
 
 type ExpectedAlternates = Record<string, string>;
+type JsonLdObject = Record<string, unknown>;
+
+function isObject(value: unknown): value is JsonLdObject {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+function containsKey(value: unknown, key: string): boolean {
+  if (Array.isArray(value)) return value.some((item) => containsKey(item, key));
+  if (!isObject(value)) return false;
+  return key in value || Object.values(value).some((item) => containsKey(item, key));
+}
+
+function schemaType(schema: JsonLdObject): string {
+  const type = schema['@type'];
+  if (typeof type !== 'string') throw new Error(`Invalid JSON-LD @type: ${String(type)}`);
+  return type;
+}
+
+function expectAbsoluteUrl(value: unknown, label: string) {
+  expect(typeof value, label).toBe('string');
+  expect(value as string, label).toMatch(/^https:\/\//);
+}
+
+async function parseJsonLd(page: Page, path: string): Promise<JsonLdObject[]> {
+  await page.goto(path);
+  const blocks = await page
+    .locator('script[type="application/ld+json"]')
+    .evaluateAll((els) => els.map((el) => el.textContent ?? ''));
+
+  return blocks.map((block, index) => {
+    const parsed = JSON.parse(block) as unknown;
+    if (!isObject(parsed)) throw new Error(`${path} JSON-LD block ${index + 1} is not an object`);
+    return parsed;
+  });
+}
 
 async function expectHeadSeoLinks(
   page: Page,
@@ -382,6 +424,79 @@ test('restaurant JSON-LD is present and has no self-serving rating', async ({ pa
   expect(jsonld['@type']).toBe('Restaurant');
   expect(jsonld.aggregateRating).toBeUndefined();
   expect(jsonld.review).toBeUndefined();
+});
+
+test('structured data stays parseable, useful and within safe schema types', async ({ page }) => {
+  const pageExpectations: { path: string; types: string[] }[] = [
+    { path: '/', types: ['Restaurant'] },
+    { path: '/contact/', types: ['Restaurant', 'BreadcrumbList'] },
+    { path: '/menu/', types: ['BreadcrumbList', 'Menu'] },
+    { path: '/th/menu/', types: ['BreadcrumbList', 'Menu'] },
+    { path: '/ru/menu/', types: ['BreadcrumbList', 'Menu'] },
+    { path: '/faq/', types: ['BreadcrumbList'] },
+    { path: '/blog/how-to-order-vegan-food-in-thailand/', types: ['Article', 'BreadcrumbList'] },
+  ];
+
+  for (const { path, types } of pageExpectations) {
+    const schemas = await parseJsonLd(page, path);
+    expect(schemas.map(schemaType), `${path} schema types`).toEqual(types);
+
+    for (const schema of schemas) {
+      const type = schemaType(schema);
+      expect(allowedSchemaTypes.has(type), `${path} safe schema type: ${type}`).toBe(true);
+      expect(schema['@context'], `${path} ${type} context`).toBe('https://schema.org');
+      expect(containsKey(schema, 'aggregateRating'), `${path} ${type} aggregateRating`).toBe(false);
+      expect(containsKey(schema, 'review'), `${path} ${type} review`).toBe(false);
+      expect(type, `${path} must not emit retired FAQ rich-result markup`).not.toBe('FAQPage');
+
+      if (type === 'BreadcrumbList') {
+        const items = schema.itemListElement;
+        expect(Array.isArray(items), `${path} BreadcrumbList items`).toBe(true);
+        for (const item of items as JsonLdObject[]) {
+          expectAbsoluteUrl(item.item, `${path} breadcrumb item URL`);
+        }
+      }
+
+      if (type === 'Restaurant') {
+        expectAbsoluteUrl(schema.url, `${path} Restaurant url`);
+        expectAbsoluteUrl(schema.menu, `${path} Restaurant menu`);
+        const action = schema.potentialAction;
+        if (!isObject(action)) throw new Error(`${path} Restaurant OrderAction is missing`);
+        expect(action['@type']).toBe('OrderAction');
+        expectAbsoluteUrl(action.target, `${path} Restaurant OrderAction target`);
+      }
+
+      if (type === 'Menu') {
+        expectAbsoluteUrl(schema.url, `${path} Menu url`);
+        const sections = schema.hasMenuSection;
+        expect(Array.isArray(sections), `${path} Menu sections`).toBe(true);
+        const menuItems = (sections as JsonLdObject[]).flatMap((section) => {
+          expect(schemaType(section), `${path} MenuSection type`).toBe('MenuSection');
+          expect(typeof section.name, `${path} MenuSection name`).toBe('string');
+          expect(Array.isArray(section.hasMenuItem), `${path} MenuSection items`).toBe(true);
+          return section.hasMenuItem as JsonLdObject[];
+        });
+        expect(menuItems, `${path} MenuItem count`).toHaveLength(availableDishCount);
+
+        for (const item of menuItems) {
+          expect(schemaType(item), `${path} MenuItem type`).toBe('MenuItem');
+          expect(typeof item.name, `${path} MenuItem name`).toBe('string');
+          const offers = item.offers;
+          if (!isObject(offers)) throw new Error(`${path} MenuItem Offer is missing`);
+          expect(offers['@type']).toBe('Offer');
+          expect(offers.priceCurrency).toBe('THB');
+          expect(typeof offers.price, `${path} MenuItem price`).toBe('number');
+          expect(offers.price as number, `${path} MenuItem price positive`).toBeGreaterThan(0);
+        }
+      }
+
+      if (type === 'Article') {
+        expectAbsoluteUrl(schema.url, `${path} Article url`);
+        expect(typeof schema.headline, `${path} Article headline`).toBe('string');
+        expect(typeof schema.datePublished, `${path} Article datePublished`).toBe('string');
+      }
+    }
+  }
 });
 
 test('blog article renders with localized slug', async ({ page }) => {
