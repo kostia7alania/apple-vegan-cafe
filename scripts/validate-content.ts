@@ -1,7 +1,7 @@
 /**
  * Content sanity checks that go beyond the Zod schemas (which `astro build`
  * already enforces): cross-entity rules — slug uniqueness, category existence,
- * article translation-set reciprocity. Runs in CI before the build.
+ * article translation-set reciprocity, redirect safety. Runs in CI before the build.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
@@ -13,9 +13,14 @@ type Locale = (typeof LOCALES)[number];
 const root = resolve(import.meta.dirname, '..');
 const contentDir = resolve(root, 'src/content');
 const errors: string[] = [];
+const servicePathPattern = /^\/(?:admin|uploads)(?:\/|$)/;
 
 function fail(message: string) {
   errors.push(message);
+}
+
+function isSafeSitePath(path: string): boolean {
+  return path.startsWith('/') && !path.startsWith('//') && !/[?#]/.test(path);
 }
 
 // --- categories ---------------------------------------------------------
@@ -134,6 +139,46 @@ for (const fileName of readdirSync(pagesDir).filter((f) => f.endsWith('.md'))) {
   const key = `${fm.translationKey}:${fm.locale}`;
   if (pageKeySeen.has(key)) fail(`${label}: duplicate page for ${key}`);
   pageKeySeen.add(key);
+}
+
+// --- redirects --------------------------------------------------------------
+interface Redirect {
+  from?: string;
+  to?: string;
+  code?: number;
+}
+const redirectStatusCodes = new Set([301, 302, 307, 308]);
+const redirects = JSON.parse(
+  readFileSync(join(contentDir, 'redirects.json'), 'utf8'),
+) as Redirect[];
+const redirectSources = new Set<string>();
+for (const [index, redirect] of redirects.entries()) {
+  const label = `redirects.json[${index}]`;
+  const { from, to, code = 301 } = redirect;
+
+  if (!from) fail(`${label}: missing from`);
+  if (!to) fail(`${label}: missing to`);
+
+  if (from && !isSafeSitePath(from)) {
+    fail(`${label}: from must be a site-relative path without query/hash: ${from}`);
+  }
+  if (to && !isSafeSitePath(to)) {
+    fail(`${label}: to must be a site-relative path without query/hash: ${to}`);
+  }
+  if (from && servicePathPattern.test(from)) {
+    fail(`${label}: from must not target a service path: ${from}`);
+  }
+  if (to && servicePathPattern.test(to)) {
+    fail(`${label}: to must not target a service path: ${to}`);
+  }
+  if (from && to && from === to) fail(`${label}: redirects to itself: ${from}`);
+  if (!redirectStatusCodes.has(code)) {
+    fail(`${label}: code must be one of ${[...redirectStatusCodes].join(', ')}`);
+  }
+  if (from) {
+    if (redirectSources.has(from)) fail(`${label}: duplicate source: ${from}`);
+    redirectSources.add(from);
+  }
 }
 
 // --- result -------------------------------------------------------------------
