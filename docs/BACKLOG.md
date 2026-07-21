@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R13 SEO-quality canonical/hreflang matrix** — Playwright проверяет self-canonical и точный набор head `hreflang`/`x-default` для структурных страниц, парных лендингов, одноязычных страниц и переведённых статей.
 - 2026-07-22: **R12 SEO-quality social preview guard** — Playwright проверяет, что `/`, `/menu/`, `/th/menu/`, `/ru/menu/` отдают absolute `og:url`, `og:image`, размеры 1200×630 и `twitter:card=summary_large_image`; `/og-default.png` доступен как PNG.
 - 2026-07-21: **R11 SEO-регрессия индексации** — Playwright guard проверяет, что `/`, `/menu/`, `/th/menu/`, `/ru/menu/` не получают `meta robots noindex`, `robots.txt` не закрывает корень и указывает на sitemap, а `sitemap-index.xml` генерируется с `sitemap-0.xml`.
 - 2026-07-21: **Индексация + deploy + analytics foundation** — `SITE_LAUNCHED=true`, live больше не отдает `noindex`, sitemap/robots доступны; `CLOUDFLARE_API_TOKEN` добавлен в GitHub и Deploy workflow реально деплоит через Wrangler; добавлена опциональная аналитика: Cloudflare Web Analytics и GA4 через repo Variables, GA4-события `phone_click`/`order_click`/`review_click`/`directions_click`/`outbound_click`, CSP обновлен, без переменных live не грузит third-party scripts.

@@ -1,10 +1,50 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const locales = [
   { prefix: '', hreflang: 'en', heading: 'Apple Vegan Cafe' },
   { prefix: '/th', hreflang: 'th', heading: 'ร้านอาหารเจ' },
   { prefix: '/ru', hreflang: 'ru', heading: 'Apple Vegan Cafe' },
 ];
+
+const SITE_ORIGIN = 'https://apple-vegan-cafe.com';
+
+function absolute(path: string): string {
+  return new URL(path, SITE_ORIGIN).href;
+}
+
+type ExpectedAlternates = Record<string, string>;
+
+async function expectHeadSeoLinks(
+  page: Page,
+  path: string,
+  expectedAlternates: ExpectedAlternates,
+) {
+  await page.goto(path);
+
+  await expect(page.locator('head link[rel="canonical"]'), `${path} canonical`).toHaveAttribute(
+    'href',
+    absolute(path),
+  );
+
+  const actualAlternates = await page.locator('head link[rel="alternate"]').evaluateAll((els) =>
+    els
+      .map((el) => ({
+        hreflang: el.getAttribute('hreflang') ?? '',
+        href: (el as HTMLLinkElement).href,
+      }))
+      .sort((a, b) => a.hreflang.localeCompare(b.hreflang)),
+  );
+
+  const expected = Object.entries(expectedAlternates)
+    .map(([hreflang, href]) => ({ hreflang, href: absolute(href) }))
+    .sort((a, b) => a.hreflang.localeCompare(b.hreflang));
+
+  expect(actualAlternates, `${path} hreflang links`).toEqual(expected);
+  expect(
+    new Set(actualAlternates.map((entry) => entry.hreflang)).size,
+    `${path} hreflang values must be unique`,
+  ).toBe(actualAlternates.length);
+}
 
 for (const { prefix, hreflang, heading } of locales) {
   test(`home renders in ${hreflang}`, async ({ page }) => {
@@ -69,12 +109,130 @@ test('language switcher never disappears: untranslated pages fall back to locale
   await expect(page.locator('header a[hreflang="th"]')).toHaveAttribute('href', '/th/');
 });
 
-test('canonical is self-referential', async ({ page }) => {
-  await page.goto('/th/menu/');
-  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute(
-    'href',
-    'https://apple-vegan-cafe.com/th/menu/',
-  );
+test('canonical and head hreflang stay coherent across page types', async ({ page }) => {
+  const structuralPaths = ['/', '/menu/', '/about/', '/blog/', '/faq/', '/contact/'];
+
+  for (const path of structuralPaths) {
+    await expectHeadSeoLinks(page, path, {
+      en: path,
+      th: `/th${path}`,
+      ru: `/ru${path}`,
+      'x-default': path,
+    });
+    await expectHeadSeoLinks(page, `/th${path}`, {
+      en: path,
+      th: `/th${path}`,
+      ru: `/ru${path}`,
+      'x-default': path,
+    });
+    await expectHeadSeoLinks(page, `/ru${path}`, {
+      en: path,
+      th: `/th${path}`,
+      ru: `/ru${path}`,
+      'x-default': path,
+    });
+  }
+
+  const localizedPageGroups: { path: string; alternates: ExpectedAlternates }[] = [
+    {
+      path: '/vegan-breakfast-pattaya/',
+      alternates: {
+        en: '/vegan-breakfast-pattaya/',
+        ru: '/ru/veganskiy-zavtrak-v-pattaye/',
+        'x-default': '/vegan-breakfast-pattaya/',
+      },
+    },
+    {
+      path: '/ru/veganskiy-zavtrak-v-pattaye/',
+      alternates: {
+        en: '/vegan-breakfast-pattaya/',
+        ru: '/ru/veganskiy-zavtrak-v-pattaye/',
+        'x-default': '/vegan-breakfast-pattaya/',
+      },
+    },
+    {
+      path: '/vegan-delivery-pattaya/',
+      alternates: {
+        en: '/vegan-delivery-pattaya/',
+        ru: '/ru/veganskaya-dostavka-v-pattaye/',
+        'x-default': '/vegan-delivery-pattaya/',
+      },
+    },
+    {
+      path: '/ru/veganskaya-dostavka-v-pattaye/',
+      alternates: {
+        en: '/vegan-delivery-pattaya/',
+        ru: '/ru/veganskaya-dostavka-v-pattaye/',
+        'x-default': '/vegan-delivery-pattaya/',
+      },
+    },
+    {
+      path: '/pure-veg-jain-friendly/',
+      alternates: {
+        en: '/pure-veg-jain-friendly/',
+        'x-default': '/pure-veg-jain-friendly/',
+      },
+    },
+    {
+      path: '/th/ร้านอาหารเจ-พัทยา/',
+      alternates: {
+        th: '/th/ร้านอาหารเจ-พัทยา/',
+      },
+    },
+    {
+      path: '/blog/welcome/',
+      alternates: {
+        en: '/blog/welcome/',
+        th: '/th/blog/ยินดีต้อนรับ/',
+        ru: '/ru/blog/dobro-pozhalovat/',
+        'x-default': '/blog/welcome/',
+      },
+    },
+    {
+      path: '/th/blog/ยินดีต้อนรับ/',
+      alternates: {
+        en: '/blog/welcome/',
+        th: '/th/blog/ยินดีต้อนรับ/',
+        ru: '/ru/blog/dobro-pozhalovat/',
+        'x-default': '/blog/welcome/',
+      },
+    },
+    {
+      path: '/ru/blog/dobro-pozhalovat/',
+      alternates: {
+        en: '/blog/welcome/',
+        th: '/th/blog/ยินดีต้อนรับ/',
+        ru: '/ru/blog/dobro-pozhalovat/',
+        'x-default': '/blog/welcome/',
+      },
+    },
+    {
+      path: '/blog/how-to-order-vegan-food-in-thailand/',
+      alternates: {
+        en: '/blog/how-to-order-vegan-food-in-thailand/',
+        ru: '/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/',
+        'x-default': '/blog/how-to-order-vegan-food-in-thailand/',
+      },
+    },
+    {
+      path: '/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/',
+      alternates: {
+        en: '/blog/how-to-order-vegan-food-in-thailand/',
+        ru: '/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/',
+        'x-default': '/blog/how-to-order-vegan-food-in-thailand/',
+      },
+    },
+    {
+      path: '/ru/blog/vegan-gid-po-pattaye/',
+      alternates: {
+        ru: '/ru/blog/vegan-gid-po-pattaye/',
+      },
+    },
+  ];
+
+  for (const { path, alternates } of localizedPageGroups) {
+    await expectHeadSeoLinks(page, path, alternates);
+  }
 });
 
 test('social preview metadata stays absolute and shareable', async ({ page, request }) => {
