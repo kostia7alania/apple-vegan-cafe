@@ -1,10 +1,8 @@
 /**
- * Launch gate. While `false`, every page carries <meta name="robots" noindex>:
- * the menu below is a realistic PLACEHOLDER (source: "retyped", reviewedAt:
- * null) — real dishes/prices must come from the owner's Grab export or menu
- * photos and be verified by the family.
+ * Launch gate. While `false`, every page carries <meta name="robots" noindex>.
  *
- * Flip to `true` ONLY when the launch checklist passes (real menu, owner
- * review, translations checked) — then submit the sitemap in Search Console.
+ * The live menu now comes from the owner's Grab Bulk Update export. Keep this
+ * true unless a serious legal/reputation issue requires temporarily removing
+ * the public site from search.
  */
-export const SITE_LAUNCHED = false;
+export const SITE_LAUNCHED = true;
