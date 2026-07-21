@@ -6,9 +6,8 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## READY (могу делать автономно)
 
-| #    | Задача                                                                     | DoD               | Размер |
-| ---- | -------------------------------------------------------------------------- | ----------------- | ------ |
-| R10* | www→apex 301 (zone Redirect Rule) + HSTS preload после месяца стабильности | curl -I www → 301 | S      |
+| #   | Задача | DoD | Размер |
+| --- | ------ | --- | ------ |
 
 ## BLOCKED (ждут тебя или владельца кафе)
 
@@ -22,6 +21,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 | B7  | UptimeRobot keyword-монитор + Search Console (домен подтвердить) + Bing Places + Apple Business Connect                                                                                                                                                                                                                                                                                                                                                     | твои аккаунты                 |
 | B8  | Спросить хозяйку: спец-условия с Grab; кто снимал фото для Grab; используется ли алкоголь в готовке (для халяль-формулировок); какие реальные блюда содержат морковь (для 🪷-тега); подтвердить, что картофеля/имбиря нет вообще; согласие называть веру семьи на сайте; **в Grab два одинаковых «Спагетти с грибным соусом» (฿199, THITE…09904 и THITE…95416) — удалить дубль в GrabMerchant?**; цены у стойки vs цены Grab (что печатать в бумажном меню) | владелец                      |
 | B9  | Включить трекинг: сначала Cloudflare Web Analytics (`PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN`), GA4 (`PUBLIC_GA_MEASUREMENT_ID`) только если нужны Ads/UTM-воронки; код и CSP уже готовы                                                                                                                                                                                                                                                                      | repo Variables + rerun Deploy |
+| B10 | www→apex 301 (Cloudflare DNS + zone Redirect Rule) + HSTS preload после месяца стабильности. Сейчас `curl -I https://www.apple-vegan-cafe.com/` не резолвится, `www` DNS-записи нет, локальный `wrangler whoami` не авторизован; HSTS preload не раньше 2026-08-21 после месяца стабильного HTTPS.                                                                                                                                                          | доступ к Cloudflare zone      |
 
 ## LATER (по плану, не сейчас)
 
@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-21: **R11 SEO-регрессия индексации** — Playwright guard проверяет, что `/`, `/menu/`, `/th/menu/`, `/ru/menu/` не получают `meta robots noindex`, `robots.txt` не закрывает корень и указывает на sitemap, а `sitemap-index.xml` генерируется с `sitemap-0.xml`.
 - 2026-07-21: **Индексация + deploy + analytics foundation** — `SITE_LAUNCHED=true`, live больше не отдает `noindex`, sitemap/robots доступны; `CLOUDFLARE_API_TOKEN` добавлен в GitHub и Deploy workflow реально деплоит через Wrangler; добавлена опциональная аналитика: Cloudflare Web Analytics и GA4 через repo Variables, GA4-события `phone_click`/`order_click`/`review_click`/`directions_click`/`outbound_click`, CSP обновлен, без переменных live не грузит third-party scripts.
 - 2026-07-20 (ночь, 10 задач): **e2e-регрессии фактов** (часы ежедневно, 141-блюдная паритетность с Grab, CTA, OrderAction — 23 теста); **JSON-LD Menu/MenuSection/MenuItem** ×3 локали; **тайские имена** 12 западных блюд; **RU-лендинги** `/ru/veganskaya-dostavka-v-pattaye/` и `/ru/veganskiy-zavtrak-v-pattaye/` со взаимным hreflang (+фикс несвежих «young coconuts» в EN); **UX меню** (счётчики в чипах категорий, back-to-top); **perf-аудит** (меню 9КБ br на проводе, TTFB ~0.6с — фиксы не нужны); **описания 5 сигнатурных блюд** ×3 локали; **доки** (HANDOVER-th: таблица 5 категорий + балк-ресинк; README: quarterly re-sync); **аудит**: 477 внутренних ссылок целы, security-заголовки на месте. R10: www не имеет DNS-записи — нужна ручная запись + Redirect Rule (инструкция в отчёте)
 - 2026-07-18 (ночь): **B1 реальное меню на проде** — 141 блюдо из официального Grab Bulk-Update-экспорта хозяйки (5 настоящих категорий, цены ฿90–439), 43 тайских названия переведены на EN, все 141 названы по-русски вручную; Grab-ссылка в CMS → кнопки «Order on GrabFood» на главной/контактах/доставке и (2 CTA) на странице меню ×3 локали; джайн-лендинг ограничен 10 блюдами; вычищены захардкоженные «Sunday — Closed» и «Mon–Sat» на трёх лендингах; `scripts/data/grab-item-map.json` (ItemID→файл) + `docs/grab-resync.md` для квартальных ре-синков; пайплайн зелёный, задеплоено

@@ -77,6 +77,28 @@ test('canonical is self-referential', async ({ page }) => {
   );
 });
 
+test('launch indexing guard keeps public pages crawlable', async ({ page, request }) => {
+  for (const path of ['/', '/menu/', '/th/menu/', '/ru/menu/']) {
+    await page.goto(path);
+    await expect(page.locator('head meta[name="robots"]'), `${path} must not noindex`).toHaveCount(
+      0,
+    );
+  }
+
+  const robots = await request.get('/robots.txt');
+  expect(robots.ok()).toBe(true);
+  const robotsBody = await robots.text();
+  expect(robotsBody).toContain('Allow: /');
+  expect(robotsBody).not.toMatch(/^Disallow: \/$/m);
+  expect(robotsBody).toContain('Sitemap: https://apple-vegan-cafe.com/sitemap-index.xml');
+
+  const sitemapIndex = await request.get('/sitemap-index.xml');
+  expect(sitemapIndex.ok()).toBe(true);
+  const sitemapIndexBody = await sitemapIndex.text();
+  expect(sitemapIndexBody).toContain('<sitemapindex');
+  expect(sitemapIndexBody).toContain('<loc>https://apple-vegan-cafe.com/sitemap-0.xml</loc>');
+});
+
 test('restaurant JSON-LD is present and has no self-serving rating', async ({ page }) => {
   await page.goto('/');
   const raw = await page.locator('script[type="application/ld+json"]').first().textContent();
