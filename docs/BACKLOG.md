@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R24 SEO-quality location geo guard** — `pnpm validate:content` теперь отклоняет небезопасные координаты в `locations.json`: отсутствующие/нечисловые lat/lng, значения вне диапазонов latitude/longitude и placeholder `0,0`, чтобы будущий Google pin не ломал JSON-LD/Local SEO.
 - 2026-07-22: **R23 SEO-quality published article discoverability guard** — Playwright теперь автоматически собирает published-статьи из Markdown frontmatter и проверяет, что каждый URL есть в локальном blog index и `sitemap-0.xml`, а draft-URL не попадают в индексы.
 - 2026-07-22: **R22 SEO-quality draft article exposure guard** — Playwright теперь автоматически собирает draft-статьи из Markdown frontmatter и проверяет, что их URL отдают 404 и не попадают в `sitemap-0.xml`, чтобы черновики не утекали в публичную индексацию.
 - 2026-07-22: **R21 SEO-quality article slug guard** — `pnpm validate:content` теперь отклоняет небезопасные article URL slugs (`/`, `?`, `#`, `%`, пробелы, пустые/обрезаемые значения и dot segments вроде `.`/`..`), чтобы Markdown-статьи не порождали проблемные `/blog/{slug}/` URL.

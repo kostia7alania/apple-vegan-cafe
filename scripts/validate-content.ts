@@ -259,16 +259,32 @@ validateExternalUrl(
 
 interface Locations {
   [id: string]: {
+    geo?: { lat?: number; lng?: number } | null;
     mapsUrl?: string | null;
   };
 }
 const locations = JSON.parse(readFileSync(join(contentDir, 'locations.json'), 'utf8')) as Locations;
 for (const [id, location] of Object.entries(locations)) {
-  validateExternalUrl(
-    `locations.json ${id}.mapsUrl`,
-    location.mapsUrl,
-    allowedExternalHosts.googleMaps,
-  );
+  const label = `locations.json ${id}`;
+  if (location.geo) {
+    const { lat, lng } = location.geo;
+    if (typeof lat !== 'number' || !Number.isFinite(lat)) {
+      fail(`${label}.geo.lat must be a finite number`);
+    } else if (lat < -90 || lat > 90) {
+      fail(`${label}.geo.lat must be between -90 and 90`);
+    }
+
+    if (typeof lng !== 'number' || !Number.isFinite(lng)) {
+      fail(`${label}.geo.lng must be a finite number`);
+    } else if (lng < -180 || lng > 180) {
+      fail(`${label}.geo.lng must be between -180 and 180`);
+    }
+
+    if (lat === 0 && lng === 0) {
+      fail(`${label}.geo must not use the 0,0 placeholder`);
+    }
+  }
+  validateExternalUrl(`${label}.mapsUrl`, location.mapsUrl, allowedExternalHosts.googleMaps);
 }
 
 // --- articles: frontmatter + translation sets ------------------------------
