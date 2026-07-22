@@ -38,13 +38,31 @@ function articlePath(locale: string, slug: string): string {
   return `${locale === 'en' ? '' : `/${locale}`}/blog/${slug}/`;
 }
 
-const draftArticlePaths = locales.flatMap(({ hreflang }) =>
+const allArticleFrontmatter = locales.flatMap(({ hreflang }) =>
   readdirSync(`${ARTICLES_DIR}/${hreflang}`)
     .filter((f) => f.endsWith('.md'))
-    .map((fileName) => readArticleFrontmatter(`${ARTICLES_DIR}/${hreflang}/${fileName}`))
-    .filter((article) => article.draft)
-    .map((article) => articlePath(article.locale, article.slug)),
+    .map((fileName) => readArticleFrontmatter(`${ARTICLES_DIR}/${hreflang}/${fileName}`)),
 );
+const publishedArticlePaths = allArticleFrontmatter
+  .filter((article) => !article.draft)
+  .map((article) => articlePath(article.locale, article.slug));
+const draftArticlePaths = allArticleFrontmatter
+  .filter((article) => article.draft)
+  .map((article) => articlePath(article.locale, article.slug));
+const articleIndexPaths = locales.map(({ prefix }) => `${prefix}/blog/`);
+
+function blogIndexPath(article: ArticleFrontmatter): string {
+  return `${article.locale === 'en' ? '' : `/${article.locale}`}/blog/`;
+}
+
+const publishedArticlePathsByIndex = new Map<string, string[]>(
+  articleIndexPaths.map((path) => [path, []]),
+);
+for (const article of allArticleFrontmatter.filter((article) => !article.draft)) {
+  publishedArticlePathsByIndex
+    .get(blogIndexPath(article))
+    ?.push(articlePath(article.locale, article.slug));
+}
 
 type ExpectedAlternates = Record<string, string>;
 type JsonLdObject = Record<string, unknown>;
@@ -426,6 +444,11 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
       absolute(draftPath),
     );
   }
+  for (const publishedPath of publishedArticlePaths) {
+    expect(locs, `sitemap must include published article ${publishedPath}`).toContain(
+      absolute(publishedPath),
+    );
+  }
 
   expect(locs).toEqual(
     expect.arrayContaining([
@@ -447,6 +470,28 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
       absolute('/ru/blog/vegan-gid-po-pattaye/'),
     ]),
   );
+});
+
+test('blog indexes link published articles only', async ({ page }) => {
+  for (const indexPath of articleIndexPaths) {
+    await page.goto(indexPath);
+    const articleHrefs = await page
+      .locator('main a[href*="/blog/"]')
+      .evaluateAll((links) =>
+        links.map((link) => (link as HTMLAnchorElement).getAttribute('href') ?? ''),
+      );
+
+    for (const publishedPath of publishedArticlePathsByIndex.get(indexPath) ?? []) {
+      expect(articleHrefs, `${indexPath} must link published article ${publishedPath}`).toContain(
+        publishedPath,
+      );
+    }
+    for (const draftPath of draftArticlePaths) {
+      expect(articleHrefs, `${indexPath} must not link draft article ${draftPath}`).not.toContain(
+        draftPath,
+      );
+    }
+  }
 });
 
 test('draft articles are not publicly routed', async ({ request }) => {
