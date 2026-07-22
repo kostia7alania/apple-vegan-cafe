@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { parse as parseYaml } from 'yaml';
 
 const locales = [
   { prefix: '', hreflang: 'en', heading: 'Apple Vegan Cafe' },
@@ -9,15 +10,41 @@ const locales = [
 
 const SITE_ORIGIN = 'https://apple-vegan-cafe.com';
 const DISHES_DIR = 'src/content/dishes';
+const ARTICLES_DIR = 'src/content/articles';
 const availableDishCount = readdirSync(DISHES_DIR)
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(readFileSync(`${DISHES_DIR}/${f}`, 'utf8')) as { available: boolean })
   .filter((d) => d.available).length;
 const allowedSchemaTypes = new Set(['Article', 'BreadcrumbList', 'Menu', 'Restaurant']);
 
+interface ArticleFrontmatter {
+  locale: string;
+  slug: string;
+  draft?: boolean;
+}
+
 function absolute(path: string): string {
   return new URL(path, SITE_ORIGIN).href;
 }
+
+function readArticleFrontmatter(path: string): ArticleFrontmatter {
+  const raw = readFileSync(path, 'utf8');
+  const match = raw.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) throw new Error(`${path} is missing frontmatter`);
+  return parseYaml(match[1] as string) as ArticleFrontmatter;
+}
+
+function articlePath(locale: string, slug: string): string {
+  return `${locale === 'en' ? '' : `/${locale}`}/blog/${slug}/`;
+}
+
+const draftArticlePaths = locales.flatMap(({ hreflang }) =>
+  readdirSync(`${ARTICLES_DIR}/${hreflang}`)
+    .filter((f) => f.endsWith('.md'))
+    .map((fileName) => readArticleFrontmatter(`${ARTICLES_DIR}/${hreflang}/${fileName}`))
+    .filter((article) => article.draft)
+    .map((article) => articlePath(article.locale, article.slug)),
+);
 
 type ExpectedAlternates = Record<string, string>;
 type JsonLdObject = Record<string, unknown>;
@@ -394,6 +421,11 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
   expect(locs.some((loc) => loc.includes('/admin/'))).toBe(false);
   expect(locs.some((loc) => loc.includes('/uploads/'))).toBe(false);
   expect(locs.some((loc) => /[?#]/.test(loc))).toBe(false);
+  for (const draftPath of draftArticlePaths) {
+    expect(locs, `sitemap must not include draft article ${draftPath}`).not.toContain(
+      absolute(draftPath),
+    );
+  }
 
   expect(locs).toEqual(
     expect.arrayContaining([
@@ -415,6 +447,13 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
       absolute('/ru/blog/vegan-gid-po-pattaye/'),
     ]),
   );
+});
+
+test('draft articles are not publicly routed', async ({ request }) => {
+  for (const draftPath of draftArticlePaths) {
+    const response = await request.get(draftPath);
+    expect(response.status(), `${draftPath} must stay unpublished`).toBe(404);
+  }
 });
 
 test('restaurant JSON-LD is present and has no self-serving rating', async ({ page }) => {

@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R22 SEO-quality draft article exposure guard** — Playwright теперь автоматически собирает draft-статьи из Markdown frontmatter и проверяет, что их URL отдают 404 и не попадают в `sitemap-0.xml`, чтобы черновики не утекали в публичную индексацию.
 - 2026-07-22: **R21 SEO-quality article slug guard** — `pnpm validate:content` теперь отклоняет небезопасные article URL slugs (`/`, `?`, `#`, `%`, пробелы, пустые/обрезаемые значения и dot segments вроде `.`/`..`), чтобы Markdown-статьи не порождали проблемные `/blog/{slug}/` URL.
 - 2026-07-22: **R20 SEO-quality category slug guard** — `pnpm validate:content` теперь отклоняет небезопасные category anchors (`/`, `?`, `#`, пробелы, пустые/обрезаемые значения), дубли category slug по локалям и конфликты category/dish anchors, чтобы меню не получало дублирующиеся DOM `id`.
 - 2026-07-22: **R19 SEO-quality business external link guard** — `pnpm validate:content` now rejects unsafe configured social/order/review/maps URLs before deploy: invalid URLs, non-HTTPS links, embedded credentials, unsupported providers/platforms, and unexpected hosts outside the cafe’s business-link allowlists.
