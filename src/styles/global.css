@@ -1,17 +1,9 @@
 @import 'tailwindcss';
-/*
- * Self-hosted Playfair Display (variable, wght 400–900).
- * index.css declares latin + cyrillic (+ latin-ext/vietnamese) subsets with
- * unicode-range, so browsers download only what a page actually uses:
- * ~38 KB (latin) + ~21 KB (cyrillic) — within the ≤120 KB font budget.
- * Thai headings intentionally fall back to the system Thai serif/sans.
- */
-@import '@fontsource-variable/playfair-display/index.css';
 
 /*
- * «Thai garden table» design tokens.
- * Cream paper + deep leaf green carry the identity; mango/turmeric and
- * terracotta are accents; เจ-red is reserved for the เจ badge.
+ * Modern cafe tokens.
+ * Warm off-white + deep leaf carry the identity; mango/turmeric and
+ * tomato-red are accents; เจ-red is reserved for the เจ badge.
  * All text/background pairs used in components meet WCAG AA on cream #FAF6ED:
  *   ink-900 (16.4:1), ink-700 (~9:1), ink-500 (5.3:1), leaf-700 (7.1:1),
  *   terracotta-700 (5.3:1), jay-500 (5.5:1), cream-50 on leaf-700+ (≥7:1).
@@ -21,8 +13,8 @@
     system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Noto Sans Thai',
     Thonburi, sans-serif;
   --font-display:
-    'Playfair Display Variable', 'Playfair Display', Georgia, 'Times New Roman', 'Noto Serif Thai',
-    Thonburi, serif;
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Noto Sans Thai',
+    Thonburi, sans-serif;
 
   /* cream paper */
   --color-cream-50: #fdfbf5;
@@ -87,7 +79,7 @@
   /* Page container: comfortable editorial measure with full-bleed sections. */
   .wrap {
     width: 100%;
-    max-width: 64rem;
+    max-width: 72rem;
     margin-inline: auto;
     padding-inline: 1.25rem;
   }
@@ -98,10 +90,7 @@
     }
   }
 
-  /* Classic menu typography: dish name … dotted leader … price.
-     An empty span's flex baseline is its bottom margin edge, so inside an
-     items-baseline row the dots sit on the first text baseline — even when
-     a long dish name wraps. */
+  /* Legacy dotted leaders are kept for older landing pages. */
   .leader {
     flex: 1 1 1.25rem;
     min-width: 1.25rem;

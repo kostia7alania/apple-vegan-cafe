@@ -90,14 +90,11 @@ const actionLink =
       {t(locale, 'a11y.skipToContent')}
     </a>
 
-    {/* festival ribbon: leaf → mango → เจ-red */}
-    <div class="h-1 bg-linear-to-r from-leaf-700 via-mango-500 to-jay-500" aria-hidden="true"></div>
-
     {
       /* Compact header: brand + switcher on one row, nav as a single
         horizontally-scrollable row — the hero stays high above the fold. */
     }
-    <header class="border-b border-cream-300/70 bg-cream-100">
+    <header class="sticky top-0 z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md">
       <div class="wrap py-3">
         <div class="flex items-center justify-between gap-3">
           <a href={homeHref} class="flex min-w-0 items-center gap-2 sm:gap-2.5">
@@ -113,9 +110,7 @@ const actionLink =
                 stroke-linecap="round"
                 fill="none"></path>
             </svg>
-            <span
-              class="min-w-0 font-display text-base leading-tight font-bold tracking-tight sm:text-xl"
-            >
+            <span class="min-w-0 text-base leading-tight font-extrabold tracking-tight sm:text-xl">
               {settings.nameLocalized[locale]}
             </span>
           </a>
@@ -133,7 +128,7 @@ const actionLink =
                   <a
                     href={item.href}
                     aria-current={isCurrent(item.href) ? 'page' : undefined}
-                    class="inline-flex min-h-10 items-center rounded-full px-3 whitespace-nowrap text-ink-700 transition-colors aria-[current=page]:bg-leaf-100 aria-[current=page]:font-semibold aria-[current=page]:text-leaf-900 hover:bg-leaf-50 hover:text-leaf-800"
+                    class="inline-flex min-h-10 items-center rounded-lg px-3 whitespace-nowrap text-ink-700 transition-colors aria-[current=page]:bg-leaf-900 aria-[current=page]:font-semibold aria-[current=page]:text-cream-50 hover:bg-leaf-50 hover:text-leaf-800"
                   >
                     {item.label}
                   </a>

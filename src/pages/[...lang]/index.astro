@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
-import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildRestaurant } from '../../lib/jsonld';
@@ -81,49 +80,43 @@ const openChip = mainHours
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
   <section
-    class="relative overflow-hidden bg-leaf-900 bg-[radial-gradient(60rem_30rem_at_85%_-10%,rgba(232,161,60,0.16),transparent_60%)] text-cream-100"
+    class="relative min-h-[78svh] overflow-hidden bg-leaf-900 text-cream-100 sm:min-h-[72svh]"
   >
-    <Sprig
-      class="pointer-events-none absolute top-4 -right-6 h-64 w-auto rotate-12 text-cream-100/10 sm:-top-6 sm:right-4 sm:h-[26rem]"
+    <img
+      src="/hero-vegan-table.webp"
+      alt=""
+      width="1600"
+      height="900"
+      fetchpriority="high"
+      class="absolute inset-0 h-full w-full object-cover"
     />
-    <Sprig
-      class="pointer-events-none absolute -bottom-14 -left-10 h-52 w-auto -rotate-[30deg] text-mango-500/10"
-    />
-    <Sprig
-      class="pointer-events-none absolute -bottom-16 right-[30%] hidden h-64 w-auto -rotate-[160deg] text-cream-100/[0.07] lg:block"
-    />
-    {/* เจ stamp watermark — fills the hero's right column on desktop */}
     <div
-      class="pointer-events-none absolute top-1/2 right-[8%] hidden rotate-12 -translate-y-1/2 md:block"
+      class="absolute inset-0 bg-linear-to-r from-leaf-900/95 via-leaf-900/70 to-leaf-900/10"
       aria-hidden="true"
     >
-      <div
-        class="flex h-48 w-48 items-center justify-center rounded-full border-2 border-mango-500/40 lg:h-56 lg:w-56"
-      >
-        <div
-          class="flex h-38 w-38 items-center justify-center rounded-full border border-dashed border-mango-500/35 lg:h-44 lg:w-44"
-        >
-          <span lang="th" class="font-display text-7xl font-bold text-mango-500/50 lg:text-8xl">
-            เจ
-          </span>
-        </div>
-      </div>
     </div>
-    <div class="wrap relative py-16 sm:py-24">
+    <div
+      class="absolute inset-0 bg-linear-to-t from-leaf-900/70 via-transparent to-transparent"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="wrap relative flex min-h-[78svh] flex-col justify-end py-12 sm:min-h-[72svh] sm:py-16"
+    >
       <p class="rise">
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
-        class="rise rise-1 mt-5 max-w-[17ch] font-display text-4xl leading-[1.08] font-extrabold tracking-tight text-balance text-cream-50 sm:text-6xl"
+        class="rise rise-1 mt-5 max-w-[15ch] text-5xl leading-[0.98] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
       >
         {settings.nameLocalized[locale]}
       </h1>
-      <p class="rise rise-2 mt-4 max-w-[46ch] text-lg text-leaf-200 sm:text-xl">
+      <p class="rise rise-2 mt-5 max-w-[44ch] text-lg leading-relaxed text-cream-100/88 sm:text-xl">
         {settings.tagline[locale]}
       </p>
       {
         openChip && (
-          <p class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium">
+          <p class="rise rise-2 mt-6 inline-flex w-fit items-center gap-2.5 rounded-lg border border-cream-100/25 bg-cream-50/10 px-4 py-2 text-sm font-semibold backdrop-blur-md">
             <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true" />
             {openChip}
           </p>
@@ -132,7 +125,7 @@ const openChip = mainHours
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
           href={menuPath}
-          class="inline-flex min-h-12 items-center rounded-full bg-mango-500 px-7 text-base font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+          class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
         >
           {t(locale, 'home.viewMenu')}
         </a>
@@ -141,7 +134,7 @@ const openChip = mainHours
             <a
               href={location.mapsUrl}
               rel="noopener"
-              class="inline-flex min-h-12 items-center rounded-full border border-cream-100/40 px-7 text-base font-semibold text-cream-100 transition-colors hover:border-cream-100 hover:bg-leaf-800 focus-visible:outline-mango-300"
+              class="inline-flex min-h-12 items-center rounded-lg border border-cream-100/45 bg-cream-50/10 px-7 text-base font-semibold text-cream-100 backdrop-blur-md transition-colors hover:border-cream-100 hover:bg-cream-50/18 focus-visible:outline-mango-300"
             >
               {t(locale, 'home.getDirections')}
             </a>
@@ -222,7 +215,7 @@ const openChip = mainHours
       <section class="wrap pt-10">
         <a
           href="/vegan-breakfast-pattaya/"
-          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
+          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-lg border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
         >
           <span class="flex min-w-0 items-center gap-3">
             <span
@@ -251,7 +244,7 @@ const openChip = mainHours
       <section class="wrap pt-10">
         <a
           href="/th/ร้านอาหารเจ-พัทยา/"
-          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-2xl border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
+          class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-lg border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
         >
           <span class="flex min-w-0 items-center gap-3">
             <span
@@ -276,7 +269,7 @@ const openChip = mainHours
     featured.length > 0 && (
       <section class="wrap py-14 sm:py-16">
         <div class="flex items-baseline justify-between gap-4">
-          <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+          <h2 class="text-3xl font-black tracking-tight text-leaf-900 sm:text-4xl">
             {t(locale, 'home.featured')}
           </h2>
           <a
@@ -289,7 +282,7 @@ const openChip = mainHours
         <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((dish) => (
             <li>
-              <article class="group relative flex h-full flex-col rounded-2xl border border-cream-300 bg-cream-50 p-6 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_10px_30px_-12px_rgba(38,34,27,0.25)]">
+              <article class="group relative flex h-full flex-col rounded-lg border border-cream-300 bg-cream-50 p-5 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_14px_34px_-20px_rgba(38,34,27,0.32)]">
                 {dish.images[0] && (
                   <img
                     src={dish.images[0]}
@@ -297,16 +290,16 @@ const openChip = mainHours
                     loading="lazy"
                     width="640"
                     height="480"
-                    class="mb-4 aspect-4/3 w-full rounded-xl border border-cream-300 object-cover"
+                    class="mb-4 aspect-4/3 w-full rounded-md border border-cream-300 object-cover"
                   />
                 )}
-                <p class="text-[11px] font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+                <p class="text-[11px] font-bold text-terracotta-700 uppercase">
                   {categoryName(dish.category.id)}
                 </p>
-                <h3 class="mt-2 font-display text-xl leading-snug font-bold">
+                <h3 class="mt-2 text-xl leading-snug font-extrabold">
                   <a
                     href={`${menuPath}#${dish.slug[locale]}`}
-                    class="transition-colors after:absolute after:inset-0 after:rounded-2xl group-hover:text-leaf-800"
+                    class="transition-colors after:absolute after:inset-0 after:rounded-lg group-hover:text-leaf-800"
                   >
                     {dish.name[locale]}
                   </a>
@@ -317,7 +310,7 @@ const openChip = mainHours
                   </p>
                 )}
                 <p class="mt-auto flex items-center justify-between pt-5">
-                  <span class="rounded-full bg-leaf-700 px-3.5 py-1 text-sm font-bold text-cream-50 tabular-nums">
+                  <span class="rounded-md bg-leaf-700 px-3 py-1 text-sm font-bold text-cream-50 tabular-nums">
                     ฿{dish.price_thb}
                   </span>
                   <span
@@ -337,12 +330,9 @@ const openChip = mainHours
 
   <section class="wrap pb-4">
     <div
-      class="relative overflow-hidden rounded-3xl border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
+      class="relative overflow-hidden rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
     >
-      <Sprig
-        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-leaf-700 opacity-[0.13]"
-      />
-      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+      <h2 class="text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl">
         {t(locale, 'home.findUs')}
       </h2>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
@@ -353,7 +343,7 @@ const openChip = mainHours
           <p class="mt-2 max-w-[36ch] leading-relaxed">{location.address[locale]}</p>
           <a
             href={phoneHref}
-            class="mt-5 inline-flex min-h-12 items-center gap-2.5 rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+            class="mt-5 inline-flex min-h-12 items-center gap-2.5 rounded-lg bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
           >
             <svg
               viewBox="0 0 24 24"
