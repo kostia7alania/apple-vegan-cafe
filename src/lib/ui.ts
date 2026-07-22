@@ -22,20 +22,25 @@ const strings = {
     ru: 'тайское, европейское, напитки',
   },
   'home.openDailyNote': {
-    en: 'Daily 7:00–22:00',
-    th: 'ทุกวัน 7:00–22:00',
-    ru: 'ежедневно 7:00–22:00',
+    en: 'Dine-in + GrabFood',
+    th: 'นั่งทานที่ร้าน + GrabFood',
+    ru: 'Зал + GrabFood',
+  },
+  'home.openDailyHint': {
+    en: 'Dine-in hours, 24/7 delivery',
+    th: 'เวลานั่งทานและเดลิเวอรี 24 ชม.',
+    ru: 'часы зала и доставка 24/7',
   },
   'home.happyCowNote': {
     en: 'Found by vegan travelers',
     th: 'นักเดินทางวีแกนหาเจอ',
     ru: 'находят vegan-туристы',
   },
-  // {days} and {open} are replaced at render time from locations.json
+  // {open} and {close} are replaced at render time from locations.json
   'home.openChip': {
-    en: 'Open {days} from {open}',
-    th: 'เปิด {days} ตั้งแต่ {open} น.',
-    ru: 'Открыто {days} с {open}',
+    en: 'Dine-in {open}–{close} · delivery 24/7',
+    th: 'นั่งทาน {open}–{close} · เดลิเวอรี 24 ชม.',
+    ru: 'Зал {open}–{close} · доставка 24/7',
   },
   'home.seeInMenu': { en: 'See in menu', th: 'ดูในเมนู', ru: 'Найти в меню' },
   'home.findUs': { en: 'Find us', th: 'มาหาเราได้ที่นี่', ru: 'Как нас найти' },
@@ -89,9 +94,9 @@ const strings = {
   'contact.closed': { en: 'Closed', th: 'ปิด', ru: 'Закрыто' },
   'contact.findUs': { en: 'Find us on the map', th: 'ดูแผนที่', ru: 'Мы на карте' },
   'contact.nightOrders': {
-    en: 'Late-night delivery: we often keep Grab orders on around the clock — the app shows our live status.',
-    th: 'ส่งดึก: ใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ',
-    ru: 'Ночная доставка: заказы в Grab мы часто принимаем почти круглосуточно — актуальный статус виден в приложении.',
+    en: 'Planning to visit? Use dine-in hours. Delivery runs 24/7 through GrabFood.',
+    th: 'จะมาที่ร้านให้ดูเวลานั่งทาน เดลิเวอรีเปิด 24 ชม. ผ่าน GrabFood',
+    ru: 'В кафе ориентируйтесь на часы зала. Доставка через GrabFood работает 24/7.',
   },
   'blog.readMore': { en: 'Read more', th: 'อ่านต่อ', ru: 'Читать далее' },
   'footer.reviews': { en: 'Leave us a review', th: 'รีวิวร้านเรา', ru: 'Оставить отзыв' },
@@ -106,15 +111,25 @@ const strings = {
   'days.sat': { en: 'Sat', th: 'ส.', ru: 'Сб' },
   'days.sun': { en: 'Sun', th: 'อา.', ru: 'Вс' },
   'days.daily': { en: 'Every day', th: 'ทุกวัน', ru: 'Ежедневно' },
+  'hours.cafe': {
+    en: 'Cafe',
+    th: 'หน้าร้าน',
+    ru: 'Кафе',
+  },
   'hours.delivery': {
-    en: '🌙 Delivery (Grab)',
-    th: '🌙 ส่งอาหาร (Grab)',
-    ru: '🌙 Доставка (Grab)',
+    en: 'Delivery',
+    th: 'เดลิเวอรี',
+    ru: 'Доставка',
   },
   'hours.deliveryValue': {
-    en: 'usually around the clock*',
-    th: 'เกือบตลอดเวลา*',
-    ru: 'почти круглосуточно*',
+    en: '24/7 through GrabFood',
+    th: '24 ชม. ผ่าน GrabFood',
+    ru: '24/7 через GrabFood',
+  },
+  'hours.deliveryLive': {
+    en: '24/7 through GrabFood',
+    th: '24 ชม. ผ่าน GrabFood',
+    ru: '24/7 через GrabFood',
   },
 } satisfies Record<string, Record<Locale, string>>;
 

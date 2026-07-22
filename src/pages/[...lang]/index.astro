@@ -6,7 +6,7 @@ import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildRestaurant } from '../../lib/jsonld';
-import { t, type UiKey } from '../../lib/ui';
+import { t } from '../../lib/ui';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -64,28 +64,19 @@ const heroTitle = {
   ru: 'Веганское кафе в Паттайе',
 }[locale];
 const heroIntro = {
-  en: 'Apple Vegan Cafe is a family-run 100% plant-based Thai kitchen with 141 dishes, GrabFood delivery and breakfast from 7:00.',
-  th: 'Apple Vegan Cafe เป็นร้านอาหารเจ 100% ของครอบครัว มี 141 เมนู สั่งผ่าน GrabFood ได้ และเปิดตั้งแต่ 7:00 น.',
-  ru: 'Apple Vegan Cafe — семейная 100% растительная тайская кухня: 141 блюдо, доставка GrabFood и завтраки с 7:00.',
+  en: 'Apple Vegan Cafe is a family-run 100% plant-based Thai kitchen with 141 dishes, oat milk drinks and GrabFood delivery.',
+  th: 'Apple Vegan Cafe เป็นร้านอาหารเจ 100% ของครอบครัว มี 141 เมนู เครื่องดื่มนมโอ๊ต และสั่งผ่าน GrabFood ได้',
+  ru: 'Apple Vegan Cafe — семейная 100% растительная тайская кухня: 141 блюдо, напитки на овсяном молоке и доставка GrabFood.',
 }[locale];
 
 const menuPath = localePath(locale, '/menu/');
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
-const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
-const daysLabel = (days: readonly string[]) =>
-  days.length === 7
-    ? t(locale, 'days.daily')
-    : days.length > 2
-      ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
-      : days.map(dayLabel).join(', ');
-
 const [mainHours] = location.hours;
-const dayRange = mainHours ? daysLabel(mainHours.days) : '';
 const openChip = mainHours
   ? t(locale, 'home.openChip')
-      .replace('{days}', dayRange)
       .replace('{open}', mainHours.open.replace(/^0/, ''))
+      .replace('{close}', mainHours.close)
   : '';
 ---
 
@@ -130,7 +121,7 @@ const openChip = mainHours
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
-        class="rise rise-1 mt-5 max-w-[16ch] text-4xl leading-[1.02] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
+        class="rise rise-1 mt-5 max-w-[16ch] font-display text-4xl leading-[1.04] font-extrabold text-balance text-cream-50 sm:text-7xl"
       >
         {heroTitle}
       </h1>
@@ -226,7 +217,7 @@ const openChip = mainHours
           </svg>
           {t(locale, 'home.openDailyNote')}
         </p>
-        <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'trust.family')}</p>
+        <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'home.openDailyHint')}</p>
       </li>
       <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
         <a href={settings.reviewLinks.happycow} rel="noopener" class="group block">
@@ -296,7 +287,7 @@ const openChip = mainHours
             <span>
               <span class="block font-extrabold">{t(locale, 'home.orderGrab')}</span>
               <span class="mt-0.5 block text-sm text-ink-700">
-                {t(locale, 'hours.deliveryValue')}
+                {t(locale, 'hours.deliveryLive')}
               </span>
             </span>
           </a>
@@ -541,21 +532,13 @@ const openChip = mainHours
           </h3>
           <table class="mt-2 text-left">
             <tbody>
-              {
-                location.hours.map((h) => (
-                  <tr>
-                    <th scope="row" class="py-1 pr-6 font-medium">
-                      {daysLabel(h.days)}
-                    </th>
-                    <td class="py-1 tabular-nums">
-                      {h.open}–{h.close}
-                    </td>
-                  </tr>
-                ))
-              }
+              <tr>
+                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'hours.cafe')}</th>
+                <td class="py-1">{t(locale, 'contact.hours').toLowerCase()}</td>
+              </tr>
               <tr>
                 <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'hours.delivery')}</th>
-                <td class="py-1">{t(locale, 'hours.deliveryValue')}</td>
+                <td class="py-1">{t(locale, 'hours.deliveryLive')}</td>
               </tr>
             </tbody>
           </table>
