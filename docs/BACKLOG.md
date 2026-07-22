@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R20 SEO-quality category slug guard** — `pnpm validate:content` теперь отклоняет небезопасные category anchors (`/`, `?`, `#`, пробелы, пустые/обрезаемые значения), дубли category slug по локалям и конфликты category/dish anchors, чтобы меню не получало дублирующиеся DOM `id`.
 - 2026-07-22: **R19 SEO-quality business external link guard** — `pnpm validate:content` now rejects unsafe configured social/order/review/maps URLs before deploy: invalid URLs, non-HTTPS links, embedded credentials, unsupported providers/platforms, and unexpected hosts outside the cafe’s business-link allowlists.
 - 2026-07-22: **R18 SEO-quality dish slug guard** — `pnpm validate:content` теперь отклоняет небезопасные dish anchors (`/`, `?`, `#`, пробелы, пустые/обрезаемые значения), дубли текущих dish slug по локалям, конфликты `previousSlugs` с живыми slug и дубли старых slug между блюдами.
 - 2026-07-22: **R17 SEO-quality redirect/content guard** — `pnpm validate:content` теперь отклоняет небезопасные redirect-записи до деплоя: неверные status code, дубли source, self-redirect, external/protocol-relative URL, query/hash URL и service paths вроде `/admin/` или `/uploads/`.

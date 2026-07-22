@@ -1,7 +1,8 @@
 /**
  * Content sanity checks that go beyond the Zod schemas (which `astro build`
  * already enforces): cross-entity rules — slug uniqueness, category existence,
- * article translation-set reciprocity, redirect safety. Runs in CI before the build.
+ * category/dish anchor safety, article translation-set reciprocity, redirect safety.
+ * Runs in CI before the build.
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
@@ -84,9 +85,31 @@ function allowedOrderingHosts(provider: string): readonly string[] | undefined {
 // --- categories ---------------------------------------------------------
 const categories = JSON.parse(readFileSync(join(contentDir, 'categories.json'), 'utf8')) as {
   id: string;
+  slug: Partial<Record<Locale, string>>;
 }[];
 const categoryIds = new Set(categories.map((c) => c.id));
 if (categoryIds.size !== categories.length) fail('categories.json: duplicate ids');
+const categorySlugSeen: Record<Locale, Map<string, string>> = {
+  en: new Map(),
+  th: new Map(),
+  ru: new Map(),
+};
+for (const [index, category] of categories.entries()) {
+  const label = `categories.json[${index}]`;
+  for (const locale of LOCALES) {
+    const slug = category.slug?.[locale];
+    if (!slug) {
+      fail(`${label}: missing slug.${locale}`);
+      continue;
+    }
+    if (!isSafeAnchorSlug(slug)) {
+      fail(`${label}: slug.${locale} must be a safe anchor slug without /, ?, # or spaces`);
+    }
+    const previous = categorySlugSeen[locale].get(slug);
+    if (previous) fail(`${label}: slug.${locale} "${slug}" already used by ${previous}`);
+    categorySlugSeen[locale].set(slug, label);
+  }
+}
 
 // --- allergens -----------------------------------------------------------
 const allergens = JSON.parse(readFileSync(join(contentDir, 'allergens.json'), 'utf8')) as {
@@ -135,6 +158,10 @@ for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))
     }
     const previous = slugSeen[locale].get(slug);
     if (previous) fail(`${label}: slug.${locale} "${slug}" already used by ${previous}`);
+    const categoryOwner = categorySlugSeen[locale].get(slug);
+    if (categoryOwner) {
+      fail(`${label}: slug.${locale} "${slug}" conflicts with category anchor in ${categoryOwner}`);
+    }
     slugSeen[locale].set(slug, fileName);
   }
 }
