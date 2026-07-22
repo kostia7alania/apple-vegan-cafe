@@ -403,6 +403,15 @@ test('head discovery metadata exposes manifest, favicon and sitemap', async ({ p
   expect(faviconResponse.headers()['content-type']).toContain('image/svg+xml');
 });
 
+test('footer keeps HappyCow as a single contextual trust link', async ({ page }) => {
+  for (const { prefix } of locales) {
+    await page.goto(`${prefix}/`);
+
+    await expect(page.locator('footer a[href*="happycow.net"]')).toHaveCount(1);
+    await expect(page.locator('footer a[href*="happycow.net"]').first()).toContainText('HappyCow');
+  }
+});
+
 test('launch indexing guard keeps public pages crawlable', async ({ page, request }) => {
   for (const path of ['/', '/menu/', '/th/menu/', '/ru/menu/']) {
     await page.goto(path);

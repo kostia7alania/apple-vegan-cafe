@@ -58,7 +58,7 @@ const ALL_DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
 const closedDays = ALL_DAYS.filter(
   (d) => !location.hours.some((h) => (h.days as readonly string[]).includes(d)),
 );
-const reviewUrl = settings.reviewLinks.google ?? settings.reviewLinks.happycow;
+const reviewUrl = settings.reviewLinks.google ?? settings.reviewLinks.tripadvisor;
 const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
 const brandLabel = {
   en: 'Apple Vegan Cafe',

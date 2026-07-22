@@ -6,10 +6,9 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## READY (могу делать автономно)
 
-| #   | Задача                                                                                                                                     | DoD                                                                                                                          | Размер |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------ |
-| R30 | SEO outbound link context pass: проверить повторяющиеся Grab/HappyCow/Instagram ссылки и оставить их только там, где они полезны и понятны | Внешние ссылки остаются полезными business CTA, не превращаются в шум, nofollow не добавляется к нормальным endorsed ссылкам | S      |
-| R31 | SEO schema spike: проверить лучший schema.org способ отразить `Restaurant & Cafe` без fake reviews/ratings и без поломки JSON-LD guards    | Короткий ADR/вывод; если безопасно — schema обновлена и валидируется тестами                                                 | S      |
+| #   | Задача                                                                                                                                  | DoD                                                                          | Размер |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ |
+| R31 | SEO schema spike: проверить лучший schema.org способ отразить `Restaurant & Cafe` без fake reviews/ratings и без поломки JSON-LD guards | Короткий ADR/вывод; если безопасно — schema обновлена и валидируется тестами | S      |
 
 ## BLOCKED (ждут тебя или владельца кафе)
 
@@ -36,6 +35,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R30 SEO outbound link context pass** — проверены повторяющиеся GrabFood/HappyCow/Instagram ссылки в сгенерированном HTML: GrabFood оставлен как conversion CTA, Instagram остаётся единственным footer social-link, HappyCow оставлен как endorsed trust/review ссылка без `nofollow`; убран шумный fallback, который дублировал тот же HappyCow URL вторым footer CTA «Leave us a review» на каждой странице. Добавлен Playwright guard на один contextual HappyCow footer link.
 - 2026-07-22: **R29 SEO link graph audit** — добавлен `pnpm audit:links` (`scripts/audit-links.ts`): проверяет внутренние HTML-ссылки и якоря из `dist`, корректно декодирует Thai URL, игнорирует assets/service pages и отличает broken links от low-inbound warnings. Скрипт сразу поймал и исправил реальный RU anchor bug: `/ru/menu/#one-plate` → `/ru/menu/#osnovnye-blyuda`. Текущий результат: audit проходит, остаются два warning по low-inbound blog articles.
 - 2026-07-22: **R28 SEO metadata trim pass** — укорочены слишком длинные title/H1/description на EN/RU статьях и landing pages без потери основного intent: delivery и pure-veg H1 теперь не дублируют бренд, EN home description короче, RU/EN blog titles чище. После build локальный audit по порогам `title > 60`, `description > 155`, `h1 > 65` возвращает `flagged=0`.
 - 2026-07-22: **R27 SEO internal linking pass** — добавлены контекстные внутренние ссылки без искусственных «кольцевых» блоков: EN/RU welcome и how-to статьи ведут к breakfast/delivery, EN Jay статья ведёт к pure-veg/Jain странице, RU home получила breakfast/delivery entry points, RU breakfast/delivery лендинги связаны по сценарию «утро vs доставка», TH welcome ведёт к Thai Jay landing. После build целевые входы: EN breakfast 6, EN delivery 5, pure-veg 3, RU breakfast 6, RU delivery 6, TH Jay 3.
