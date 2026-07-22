@@ -28,6 +28,16 @@ function isSafeAnchorSlug(slug: string): boolean {
   return slug.trim() === slug && slug.length > 0 && !/[/?#\s]/.test(slug);
 }
 
+function isSafeRouteSegment(slug: string): boolean {
+  return (
+    slug.trim() === slug &&
+    slug.length > 0 &&
+    slug !== '.' &&
+    slug !== '..' &&
+    !/[/?#%\s]/.test(slug)
+  );
+}
+
 function validateExternalUrl(
   label: string,
   value: string | null | undefined,
@@ -292,6 +302,11 @@ for (const locale of LOCALES) {
       fail(`${label}: frontmatter locale "${fm.locale}" does not match folder "${locale}"`);
     }
     if (fm.slug) {
+      if (!isSafeRouteSegment(fm.slug)) {
+        fail(
+          `${label}: slug must be a safe URL segment without /, ?, #, %, spaces or dot segments`,
+        );
+      }
       const key = `${locale}:${fm.slug}`;
       const previous = articleSlugSeen.get(key);
       if (previous) fail(`${label}: slug "${fm.slug}" already used by ${previous}`);
