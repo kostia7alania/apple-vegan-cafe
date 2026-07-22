@@ -58,6 +58,7 @@ const closedDays = ALL_DAYS.filter(
   (d) => !location.hours.some((h) => (h.days as readonly string[]).includes(d)),
 );
 const reviewUrl = settings.reviewLinks.google ?? settings.reviewLinks.happycow;
+const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
 
 const actionLink =
   'flex min-h-14 flex-col items-center justify-center gap-1 px-2 text-[11px] font-semibold tracking-wide text-cream-100 uppercase transition-colors hover:bg-leaf-800 focus-visible:outline-mango-300';
@@ -115,7 +116,20 @@ const actionLink =
             </span>
           </a>
           <div class="shrink-0">
-            <LanguageSwitcher {locale} {alternates} />
+            <div class="flex items-center gap-2">
+              {
+                grabLink && (
+                  <a
+                    href={grabLink.url}
+                    rel="noopener"
+                    class="hidden min-h-9 items-center rounded-lg bg-mango-500 px-4 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300 sm:inline-flex"
+                  >
+                    {t(locale, 'actions.order')}
+                  </a>
+                )
+              }
+              <LanguageSwitcher {locale} {alternates} />
+            </div>
           </div>
         </div>
         <nav class="mt-1.5" aria-label="Main">
@@ -226,7 +240,7 @@ const actionLink =
               <a
                 href={reviewUrl}
                 rel="noopener"
-                class="mt-5 inline-flex min-h-11 items-center rounded-full bg-mango-500 px-5 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                class="mt-5 inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-5 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
               >
                 {t(locale, 'footer.reviews')}
               </a>
@@ -265,6 +279,29 @@ const actionLink =
             <span>{t(locale, 'nav.menu')}</span>
           </a>
         </li>
+        {
+          grabLink && (
+            <li class="flex-1">
+              <a href={grabLink.url} rel="noopener" class={actionLink}>
+                <svg
+                  viewBox="0 0 24 24"
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                  <path d="M3 6h18" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <span>{t(locale, 'actions.order')}</span>
+              </a>
+            </li>
+          )
+        }
         <li class="flex-1">
           <a href={phoneHref} class={actionLink}>
             <svg

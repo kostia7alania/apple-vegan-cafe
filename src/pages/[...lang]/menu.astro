@@ -97,7 +97,7 @@ const jsonld = [
 
   <nav
     aria-label={t(locale, 'menu.categoriesNav')}
-    class="sticky top-0 z-30 border-b border-cream-300/80 bg-cream-100/95"
+    class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem]"
   >
     <div class="wrap">
       <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
@@ -122,10 +122,13 @@ const jsonld = [
 
   <div class="wrap pb-4">
     {
-      nonEmptyCategories.map((category) => {
+      nonEmptyCategories.map((category, categoryIndex) => {
         const items = dishes.filter((d) => d.data.category.id === category.id);
         return (
-          <section id={category.data.slug[locale]} class="scroll-mt-24 pt-12">
+          <section
+            id={category.data.slug[locale]}
+            class:list={['scroll-mt-24 pt-12', categoryIndex > 0 && 'menu-section-deferred']}
+          >
             <div class="flex items-center gap-4">
               <h2 class="text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl">
                 {category.data.name[locale]}

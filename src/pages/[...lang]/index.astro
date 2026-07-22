@@ -20,11 +20,11 @@ const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-const featured = (await getCollection('dishes', ({ data }) => data.featured && data.available)).map(
-  (e) => e.data,
-);
+const availableDishes = await getCollection('dishes', ({ data }) => data.available);
+const featured = availableDishes.filter((e) => e.data.featured).map((e) => e.data);
 const categories = await getCollection('categories');
 const categoryName = (id: string) => categories.find((c) => c.id === id)?.data.name[locale];
+const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
 
 const alternates = structuralAlternates('/');
 const site = Astro.site!;
@@ -82,14 +82,26 @@ const openChip = mainHours
   <section
     class="relative min-h-[78svh] overflow-hidden bg-leaf-900 text-cream-100 sm:min-h-[72svh]"
   >
-    <img
-      src="/hero-vegan-table.webp"
-      alt=""
-      width="1600"
-      height="900"
-      fetchpriority="high"
-      class="absolute inset-0 h-full w-full object-cover"
-    />
+    <picture>
+      <source
+        type="image/avif"
+        srcset="/hero-vegan-table-960.avif 960w, /hero-vegan-table-1600.avif 1600w"
+        sizes="100vw"
+      />
+      <source
+        type="image/webp"
+        srcset="/hero-vegan-table-960.webp 960w, /hero-vegan-table-1600.webp 1600w"
+        sizes="100vw"
+      />
+      <img
+        src="/hero-vegan-table.webp"
+        alt=""
+        width="1600"
+        height="900"
+        fetchpriority="high"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    </picture>
     <div
       class="absolute inset-0 bg-linear-to-r from-leaf-900/95 via-leaf-900/70 to-leaf-900/10"
       aria-hidden="true"
@@ -107,7 +119,7 @@ const openChip = mainHours
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
-        class="rise rise-1 mt-5 max-w-[15ch] text-5xl leading-[0.98] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
+        class="rise rise-1 mt-5 max-w-[15ch] text-4xl leading-[1.02] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
       >
         {settings.nameLocalized[locale]}
       </h1>
@@ -123,9 +135,25 @@ const openChip = mainHours
         )
       }
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
+        {
+          grabLink && (
+            <a
+              href={grabLink.url}
+              rel="noopener"
+              class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+            >
+              {t(locale, 'home.orderGrab')}
+            </a>
+          )
+        }
         <a
           href={menuPath}
-          class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+          class:list={[
+            'inline-flex min-h-12 items-center rounded-lg px-7 text-base font-semibold transition-colors focus-visible:outline-mango-300',
+            grabLink
+              ? 'border border-cream-100/45 bg-cream-50/10 text-cream-100 backdrop-blur-md hover:border-cream-100 hover:bg-cream-50/18'
+              : 'bg-mango-500 text-ink-900 hover:bg-mango-300',
+          ]}
         >
           {t(locale, 'home.viewMenu')}
         </a>
@@ -145,16 +173,107 @@ const openChip = mainHours
   </section>
 
   <section class="border-b border-cream-300/80 bg-cream-50">
-    <ul
-      class="wrap grid grid-cols-2 gap-x-6 gap-y-4 py-6 text-sm font-medium text-ink-700 sm:grid-cols-4 sm:py-5"
-    >
-      <li class="flex items-center">
-        <JayBadge label={t(locale, 'trust.jay')} />
+    <ul class="wrap grid grid-cols-2 gap-3 py-5 text-sm text-ink-700 sm:grid-cols-4">
+      <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+        <p>
+          <JayBadge label={t(locale, 'trust.jay')} size="sm" />
+        </p>
+        <p class="mt-2 text-xs font-semibold text-ink-500">{t(locale, 'trust.honest')}</p>
       </li>
-      <li class="flex items-center gap-2">
+      <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+        <p class="text-lg font-black text-leaf-900 tabular-nums">
+          {t(locale, 'home.menuCount').replace('{count}', String(availableDishes.length))}
+        </p>
+        <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'home.menuCountNote')}</p>
+      </li>
+      <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+        <p class="flex items-center gap-2 font-black text-leaf-900">
+          <span class="h-2 w-2 rounded-full bg-mango-500" aria-hidden="true"></span>
+          {t(locale, 'home.openDailyNote')}
+        </p>
+        <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'trust.family')}</p>
+      </li>
+      <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+        <a href={settings.reviewLinks.happycow} rel="noopener" class="group block">
+          <span class="flex items-center gap-2 font-black text-leaf-900">
+            <svg viewBox="0 0 24 24" class="h-4.5 w-4.5 shrink-0 fill-mango-500" aria-hidden="true">
+              <path
+                d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z"
+              ></path>
+            </svg>
+            {t(locale, 'trust.happycow')}
+          </span>
+          <span class="mt-1 block text-xs font-semibold text-ink-500 group-hover:text-leaf-800">
+            {t(locale, 'home.happyCowNote')}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="wrap pt-10">
+    <div class="grid gap-3 sm:grid-cols-3">
+      <a
+        href={menuPath}
+        class="flex min-h-20 items-center gap-4 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/35 hover:bg-leaf-50"
+      >
         <svg
           viewBox="0 0 24 24"
-          class="h-4.5 w-4.5 shrink-0 text-terracotta-500"
+          class="h-5 w-5 shrink-0 text-leaf-700"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="5" y="3.5" width="14" height="17" rx="2"></rect>
+          <path d="M9 8h6M9 12h6M9 16h4"></path>
+        </svg>
+        <span>
+          <span class="block font-extrabold text-leaf-900">{t(locale, 'home.viewMenu')}</span>
+          <span class="mt-0.5 block text-sm text-ink-500">
+            {t(locale, 'home.menuCount').replace('{count}', String(availableDishes.length))}
+          </span>
+        </span>
+      </a>
+      {
+        grabLink && (
+          <a
+            href={grabLink.url}
+            rel="noopener"
+            class="flex min-h-20 items-center gap-4 rounded-lg border border-mango-300 bg-mango-500 px-4 py-3 text-ink-900 transition-colors hover:bg-mango-300"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              class="h-5 w-5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+              <path d="M3 6h18" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            <span>
+              <span class="block font-extrabold">{t(locale, 'home.orderGrab')}</span>
+              <span class="mt-0.5 block text-sm text-ink-700">
+                {t(locale, 'hours.deliveryValue')}
+              </span>
+            </span>
+          </a>
+        )
+      }
+      <a
+        href={phoneHref}
+        class="flex min-h-20 items-center gap-4 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/35 hover:bg-leaf-50"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="h-5 w-5 shrink-0 text-leaf-700"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -163,49 +282,15 @@ const openChip = mainHours
           aria-hidden="true"
         >
           <path
-            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
           ></path>
         </svg>
-        {t(locale, 'trust.family')}
-      </li>
-      {
-        settings.reviewLinks.happycow && (
-          <li class="flex items-center">
-            <a
-              href={settings.reviewLinks.happycow}
-              rel="noopener"
-              class="inline-flex items-center gap-2 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-800"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                class="h-4.5 w-4.5 shrink-0 fill-mango-500"
-                aria-hidden="true"
-              >
-                <path d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z" />
-              </svg>
-              {t(locale, 'trust.happycow')}
-            </a>
-          </li>
-        )
-      }
-      <li class="flex items-center gap-2">
-        <svg
-          viewBox="0 0 24 24"
-          class="h-4.5 w-4.5 shrink-0 text-leaf-700"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"
-          ></path>
-          <path d="M2 21c0-3 1.85-5.36 5.08-6"></path>
-        </svg>
-        {t(locale, 'trust.honest')}
-      </li>
-    </ul>
+        <span>
+          <span class="block font-extrabold text-leaf-900">{t(locale, 'actions.call')}</span>
+          <span class="mt-0.5 block text-sm text-ink-500">{settings.phone}</span>
+        </span>
+      </a>
+    </div>
   </section>
 
   {

@@ -12,8 +12,25 @@ const strings = {
   'nav.blog': { en: 'Blog', th: 'บทความ', ru: 'Блог' },
   'nav.faq': { en: 'FAQ', th: 'คำถามที่พบบ่อย', ru: 'Вопросы и ответы' },
   'home.viewMenu': { en: 'View the menu', th: 'ดูเมนู', ru: 'Смотреть меню' },
+  'home.orderGrab': { en: 'Order on GrabFood', th: 'สั่งผ่าน GrabFood', ru: 'Заказать в GrabFood' },
   'home.getDirections': { en: 'Get directions', th: 'นำทาง', ru: 'Как добраться' },
   'home.featured': { en: 'Popular dishes', th: 'เมนูแนะนำ', ru: 'Популярные блюда' },
+  'home.menuCount': { en: '{count} dishes', th: '{count} เมนู', ru: '{count} блюдо' },
+  'home.menuCountNote': {
+    en: 'Thai, Western, drinks',
+    th: 'ไทย ตะวันตก เครื่องดื่ม',
+    ru: 'тайское, европейское, напитки',
+  },
+  'home.openDailyNote': {
+    en: 'Daily 7:00–22:00',
+    th: 'ทุกวัน 7:00–22:00',
+    ru: 'ежедневно 7:00–22:00',
+  },
+  'home.happyCowNote': {
+    en: 'Found by vegan travelers',
+    th: 'นักเดินทางวีแกนหาเจอ',
+    ru: 'находят vegan-туристы',
+  },
   // {days} and {open} are replaced at render time from locations.json
   'home.openChip': {
     en: 'Open {days} from {open}',
@@ -53,6 +70,7 @@ const strings = {
   'tag.nut-free': { en: 'nut-free', th: 'ไม่มีถั่ว', ru: 'без орехов' },
   'actions.quick': { en: 'Quick actions', th: 'เมนูลัด', ru: 'Быстрые действия' },
   'actions.call': { en: 'Call', th: 'โทร', ru: 'Звонок' },
+  'actions.order': { en: 'Order', th: 'สั่ง', ru: 'Заказ' },
   'actions.map': { en: 'Map', th: 'แผนที่', ru: 'Карта' },
   'contact.callUs': { en: 'Call us', th: 'โทรหาเรา', ru: 'Позвоните нам' },
   'a11y.skipToContent': {

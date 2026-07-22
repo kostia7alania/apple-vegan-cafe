@@ -54,8 +54,8 @@
 
 @layer base {
   html {
-    /* keep anchor targets clear of the sticky category nav */
-    scroll-padding-top: 5rem;
+    /* keep anchor targets clear of the sticky header + category nav */
+    scroll-padding-top: 10rem;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -171,6 +171,11 @@
   }
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  .menu-section-deferred {
+    content-visibility: auto;
+    contain-intrinsic-size: auto none auto 42rem;
   }
 
   /* Staggered page-load reveal (hero). No-ops under reduced motion. */
