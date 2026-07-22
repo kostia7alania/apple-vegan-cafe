@@ -48,14 +48,24 @@ const jsonld = [
 ];
 
 const title = {
-  en: 'Apple Vegan Cafe & Restaurant — 100% vegan food in Pattaya',
-  th: 'ร้านอาหารเจ คาเฟ่เจ พัทยา — Apple Vegan Cafe',
-  ru: 'Apple Vegan Cafe — 100% веганское кафе в Паттайе',
+  en: 'Vegan Restaurant in Pattaya | Apple Vegan Cafe',
+  th: 'ร้านอาหารเจ พัทยา | Apple Vegan Cafe',
+  ru: 'Веганское кафе в Паттайе | Apple Vegan Cafe',
 }[locale];
 const description = {
-  en: 'Family-run 100% vegan Thai cafe in Pattaya. Open every day from 7:00. Real menu, real prices, plant-based only — no fish sauce, no egg, no dairy.',
-  th: 'ร้านอาหารเจของครอบครัวในพัทยา เปิดทุกวัน ตั้งแต่ 7:00 น. อาหารเจ 100% ไม่มีน้ำปลา ไข่ หรือนม',
-  ru: 'Семейное 100% веганское тайское кафе в Паттайе. Открыто пн–сб с 7:00. Настоящее меню и цены, только растительная еда.',
+  en: '100% vegan restaurant in Pattaya serving Thai food, smoothies and coffee daily from 7:00. Family-run, plant-based only — no fish sauce, no egg, no dairy.',
+  th: 'ร้านอาหารเจ 100% ในพัทยา มีอาหารไทย สมูทตี้ กาแฟ เปิดทุกวันตั้งแต่ 7:00 น. ไม่มีน้ำปลา ไข่ หรือนม',
+  ru: '100% веганское кафе в Паттайе: тайская еда, смузи и кофе каждый день с 7:00. Без рыбного соуса, яиц и молочных продуктов.',
+}[locale];
+const heroTitle = {
+  en: 'Vegan Restaurant in Pattaya',
+  th: 'ร้านอาหารเจ พัทยา',
+  ru: 'Веганское кафе в Паттайе',
+}[locale];
+const heroIntro = {
+  en: 'Apple Vegan Cafe is a family-run 100% plant-based Thai kitchen with 141 dishes, GrabFood delivery and breakfast from 7:00.',
+  th: 'Apple Vegan Cafe เป็นร้านอาหารเจ 100% ของครอบครัว มี 141 เมนู สั่งผ่าน GrabFood ได้ และเปิดตั้งแต่ 7:00 น.',
+  ru: 'Apple Vegan Cafe — семейная 100% растительная тайская кухня: 141 блюдо, доставка GrabFood и завтраки с 7:00.',
 }[locale];
 
 const menuPath = localePath(locale, '/menu/');
@@ -119,17 +129,29 @@ const openChip = mainHours
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
-        class="rise rise-1 mt-5 max-w-[15ch] text-4xl leading-[1.02] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
+        class="rise rise-1 mt-5 max-w-[16ch] text-4xl leading-[1.02] font-black tracking-tight text-balance text-cream-50 sm:text-7xl"
       >
-        {settings.nameLocalized[locale]}
+        {heroTitle}
       </h1>
       <p class="rise rise-2 mt-5 max-w-[44ch] text-lg leading-relaxed text-cream-100/88 sm:text-xl">
-        {settings.tagline[locale]}
+        {heroIntro}
       </p>
       {
         openChip && (
           <p class="rise rise-2 mt-6 inline-flex w-fit items-center gap-2.5 rounded-lg border border-cream-100/25 bg-cream-50/10 px-4 py-2 text-sm font-semibold backdrop-blur-md">
-            <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true" />
+            <svg
+              viewBox="0 0 24 24"
+              class="h-4 w-4 shrink-0 text-mango-300"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
             {openChip}
           </p>
         )
@@ -188,7 +210,19 @@ const openChip = mainHours
       </li>
       <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
         <p class="flex items-center gap-2 font-black text-leaf-900">
-          <span class="h-2 w-2 rounded-full bg-mango-500" aria-hidden="true"></span>
+          <svg
+            viewBox="0 0 24 24"
+            class="h-4.5 w-4.5 shrink-0 text-mango-500"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>
           {t(locale, 'home.openDailyNote')}
         </p>
         <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'trust.family')}</p>
