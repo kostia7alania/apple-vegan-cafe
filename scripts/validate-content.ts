@@ -38,6 +38,14 @@ function isSafeRouteSegment(slug: string): boolean {
   );
 }
 
+function hasText(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isLocale(value: string): value is Locale {
+  return (LOCALES as readonly string[]).includes(value);
+}
+
 function validateExternalUrl(
   label: string,
   value: string | null | undefined,
@@ -380,16 +388,45 @@ for (const locale of LOCALES) {
 // --- pages ------------------------------------------------------------------
 const pagesDir = join(contentDir, 'pages');
 const pageKeySeen = new Set<string>();
+const pageLocalesByKey = new Map<string, Set<Locale>>();
 for (const fileName of readdirSync(pagesDir).filter((f) => f.endsWith('.md'))) {
   const label = `pages/${fileName}`;
   const fm = readFrontmatter(join(pagesDir, fileName));
-  if (!fm.translationKey || !fm.locale) {
-    fail(`${label}: missing translationKey/locale`);
-    continue;
+
+  if (!hasText(fm.translationKey)) {
+    fail(`${label}: missing frontmatter field "translationKey"`);
   }
-  const key = `${fm.translationKey}:${fm.locale}`;
-  if (pageKeySeen.has(key)) fail(`${label}: duplicate page for ${key}`);
-  pageKeySeen.add(key);
+  if (!hasText(fm.locale)) {
+    fail(`${label}: missing frontmatter field "locale"`);
+  } else if (!isLocale(fm.locale)) {
+    fail(`${label}: locale "${fm.locale}" must be one of ${LOCALES.join(', ')}`);
+  } else if (!fileName.endsWith(`-${fm.locale}.md`)) {
+    fail(`${label}: filename must end with "-${fm.locale}.md"`);
+  }
+  if (!hasText(fm.title)) {
+    fail(`${label}: missing frontmatter field "title"`);
+  }
+  if (!hasText(fm.description)) {
+    fail(`${label}: missing frontmatter field "description"`);
+  }
+
+  if (hasText(fm.translationKey) && hasText(fm.locale) && isLocale(fm.locale)) {
+    const key = `${fm.translationKey}:${fm.locale}`;
+    if (pageKeySeen.has(key)) fail(`${label}: duplicate page for ${key}`);
+    pageKeySeen.add(key);
+
+    const locales = pageLocalesByKey.get(fm.translationKey) ?? new Set<Locale>();
+    locales.add(fm.locale);
+    pageLocalesByKey.set(fm.translationKey, locales);
+  }
+}
+
+for (const [translationKey, locales] of pageLocalesByKey.entries()) {
+  for (const locale of LOCALES) {
+    if (!locales.has(locale)) {
+      fail(`pages translationKey "${translationKey}": missing ${locale} version`);
+    }
+  }
 }
 
 // --- redirects --------------------------------------------------------------
