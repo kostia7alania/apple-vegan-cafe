@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { parse as parseYaml } from 'yaml';
 
 const locales = [
-  { prefix: '', hreflang: 'en', heading: 'Vegan Restaurant in Pattaya' },
+  { prefix: '', hreflang: 'en', heading: 'Vegan Restaurant & Cafe in Pattaya' },
   { prefix: '/th', hreflang: 'th', heading: 'ร้านอาหารเจ' },
   { prefix: '/ru', hreflang: 'ru', heading: 'Веганское кафе в Паттайе' },
 ];
