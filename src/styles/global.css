@@ -58,6 +58,16 @@
     scroll-padding-top: 10rem;
   }
 
+  body {
+    background:
+      linear-gradient(90deg, rgb(47 93 58 / 0.025) 1px, transparent 1px),
+      linear-gradient(180deg, rgb(47 93 58 / 0.025) 1px, transparent 1px), var(--color-cream-100);
+    background-size:
+      3.25rem 3.25rem,
+      3.25rem 3.25rem,
+      auto;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
@@ -164,6 +174,127 @@
     padding-inline-start: 1em;
     font-style: italic;
     color: var(--color-ink-500);
+  }
+
+  .site-main {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .ambient-ornaments {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .ambient-ornaments::before {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background:
+      radial-gradient(circle at 20% 18%, rgb(232 161 60 / 0.08) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 78% 42%, rgb(47 93 58 / 0.07) 0 1px, transparent 1.5px);
+    background-size:
+      1.9rem 1.9rem,
+      2.4rem 2.4rem;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black 8rem,
+      black calc(100% - 8rem),
+      transparent
+    );
+  }
+
+  .ambient-sprig {
+    position: absolute;
+    width: auto;
+    color: var(--color-leaf-700);
+    opacity: 0.055;
+  }
+
+  .ambient-sprig-a {
+    top: 8rem;
+    right: max(-3rem, calc((100vw - 72rem) / 2 - 6rem));
+    height: 18rem;
+    rotate: 14deg;
+  }
+
+  .ambient-sprig-b {
+    top: 42rem;
+    left: max(-4rem, calc((100vw - 72rem) / 2 - 8rem));
+    height: 15rem;
+    rotate: -24deg;
+  }
+
+  .page-shell {
+    position: relative;
+  }
+
+  .page-shell::before {
+    position: absolute;
+    inset-block-start: 0.35rem;
+    inset-inline-start: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+    width: 3.25rem;
+    height: 0.2rem;
+    border-radius: 999px;
+    content: '';
+    background: var(--color-mango-500);
+  }
+
+  .decor-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .decor-card::after {
+    position: absolute;
+    right: -2.5rem;
+    bottom: -2.5rem;
+    width: 8rem;
+    height: 8rem;
+    border: 1px solid rgb(47 93 58 / 0.12);
+    border-radius: 999px;
+    content: '';
+    pointer-events: none;
+  }
+
+  .section-heading {
+    position: relative;
+    padding-inline-start: 1rem;
+  }
+
+  .section-heading::before {
+    position: absolute;
+    inset-block: 0.18em 0.16em;
+    inset-inline-start: 0;
+    width: 0.22rem;
+    border-radius: 999px;
+    content: '';
+    background: var(--color-mango-500);
+  }
+
+  .botanical-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-leaf-700);
+  }
+
+  .botanical-divider::before,
+  .botanical-divider::after {
+    flex: 1;
+    height: 1px;
+    min-width: 1.75rem;
+    content: '';
+    background: linear-gradient(to var(--line-dir, right), transparent, var(--color-cream-300));
+  }
+
+  .botanical-divider::after {
+    --line-dir: left;
   }
 
   /* Horizontal category nav: scrollable without a visible scrollbar. */

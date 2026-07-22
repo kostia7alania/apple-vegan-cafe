@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
+import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildRestaurant } from '../../lib/jsonld';
@@ -388,7 +389,7 @@ const openChip = mainHours
     featured.length > 0 && (
       <section class="wrap py-14 sm:py-16">
         <div class="flex items-baseline justify-between gap-4">
-          <h2 class="text-3xl font-black tracking-tight text-leaf-900 sm:text-4xl">
+          <h2 class="section-heading text-3xl font-black tracking-tight text-leaf-900 sm:text-4xl">
             {t(locale, 'home.featured')}
           </h2>
           <a
@@ -449,9 +450,14 @@ const openChip = mainHours
 
   <section class="wrap pb-4">
     <div
-      class="relative overflow-hidden rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
+      class="decor-card relative overflow-hidden rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
     >
-      <h2 class="text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl">
+      <Sprig
+        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-leaf-700 opacity-[0.13]"
+      />
+      <h2
+        class="section-heading relative text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl"
+      >
         {t(locale, 'home.findUs')}
       </h2>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">

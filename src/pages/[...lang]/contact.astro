@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import LeafDivider from '../../components/LeafDivider.astro';
 import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
@@ -64,10 +65,11 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
-  <div class="wrap py-10 sm:py-14">
+  <div class="page-shell wrap py-10 sm:py-14">
     <h1 class="font-display text-4xl font-extrabold tracking-tight text-leaf-900 sm:text-5xl">
       {t(locale, 'nav.contact')}
     </h1>
+    <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />
 
     {
       /* Balanced two-column composition: address + phone stacked left,
@@ -75,7 +77,7 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
     }
     <div class="mt-8 grid items-start gap-5 sm:grid-cols-2">
       <div class="grid gap-5">
-        <section class="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-7">
+        <section class="decor-card rounded-lg border border-cream-300 bg-cream-50 p-6 sm:p-7">
           <h2
             class="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase"
           >
@@ -100,7 +102,7 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
               <a
                 href={location.mapsUrl}
                 rel="noopener"
-                class="mt-5 inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+                class="mt-5 inline-flex min-h-12 items-center rounded-lg border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
               >
                 {t(locale, 'contact.findUs')}
               </a>
@@ -108,7 +110,7 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
           }
         </section>
 
-        <section class="rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:p-7">
+        <section class="decor-card rounded-lg border border-cream-300 bg-cream-50 p-6 sm:p-7">
           <h2
             class="flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase"
           >
@@ -131,7 +133,7 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
           <p class="mt-3 text-sm text-ink-500">{t(locale, 'contact.callUs')}</p>
           <a
             href={phoneHref}
-            class="mt-4 inline-flex min-h-13 w-full items-center justify-center rounded-full bg-leaf-700 px-6 text-lg font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:w-auto"
+            class="mt-4 inline-flex min-h-13 w-full items-center justify-center rounded-lg bg-leaf-700 px-6 text-lg font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:w-auto"
           >
             {settings.phone}
           </a>
@@ -152,7 +154,7 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
       </div>
 
       <section
-        class="relative overflow-hidden rounded-2xl border border-cream-300 bg-cream-50 p-6 sm:h-full sm:p-7"
+        class="decor-card relative overflow-hidden rounded-lg border border-cream-300 bg-cream-50 p-6 sm:h-full sm:p-7"
       >
         <Sprig
           class="pointer-events-none absolute -right-5 -bottom-7 h-40 w-auto text-leaf-700 opacity-[0.12]"

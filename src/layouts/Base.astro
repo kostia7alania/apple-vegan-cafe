@@ -4,6 +4,7 @@ import Seo from '../components/Seo.astro';
 import Analytics from '../components/Analytics.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import JayBadge from '../components/JayBadge.astro';
+import Sprig from '../components/Sprig.astro';
 import { type Locale, type PartiallyLocalized } from '../lib/i18n';
 import { localePath, normalizePath } from '../lib/urls';
 import { SITE_LAUNCHED } from '../lib/site';
@@ -159,7 +160,11 @@ const actionLink =
       </div>
     </header>
 
-    <main id="main" class="flex-1">
+    <main id="main" class="site-main flex-1">
+      <div class="ambient-ornaments" aria-hidden="true">
+        <Sprig class="ambient-sprig ambient-sprig-a" />
+        <Sprig class="ambient-sprig ambient-sprig-b" />
+      </div>
       <slot />
     </main>
 

@@ -10,8 +10,7 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<div class:list={['flex items-center gap-3 text-leaf-700', className]} aria-hidden="true">
-  <span class="h-px flex-1 bg-cream-300"></span>
+<div class:list={['botanical-divider text-leaf-700', className]} aria-hidden="true">
   <svg
     viewBox="0 0 40 22"
     fill="none"
@@ -25,5 +24,4 @@ const { class: className } = Astro.props;
     <path d="M20 12 C15 11 11 8 10 3 C15 4 19 7 20 12 Z"></path>
     <path d="M20 12 C25 11 29 8 30 3 C25 4 21 7 20 12 Z"></path>
   </svg>
-  <span class="h-px flex-1 bg-cream-300"></span>
 </div>
