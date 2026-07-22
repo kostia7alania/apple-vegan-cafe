@@ -294,6 +294,8 @@ interface ArticleFrontmatter {
   title?: string;
   description?: string;
   slug?: string;
+  publishedAt?: unknown;
+  updatedAt?: unknown;
   draft?: boolean;
 }
 function readFrontmatter(path: string): ArticleFrontmatter {
@@ -302,6 +304,30 @@ function readFrontmatter(path: string): ArticleFrontmatter {
   if (!match) return {};
   return parseYaml(match[1] as string) as ArticleFrontmatter;
 }
+
+function parseArticleDate(label: string, field: 'publishedAt' | 'updatedAt', value: unknown) {
+  if (value === undefined || value === null || value === '') {
+    fail(`${label}: missing frontmatter field "${field}"`);
+    return null;
+  }
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    fail(`${label}: ${field} must be a YYYY-MM-DD date`);
+    return null;
+  }
+
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) {
+    fail(`${label}: ${field} must be a real calendar date`);
+    return null;
+  }
+
+  return parsed;
+}
+
+const today = new Date();
+const todayUtc = new Date(
+  Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
+);
 
 const articlesDir = join(contentDir, 'articles');
 const byKey = new Map<string, Map<string, string>>(); // translationKey -> locale -> file
@@ -313,6 +339,15 @@ for (const locale of LOCALES) {
     const fm = readFrontmatter(join(dir, fileName));
     for (const field of ['translationKey', 'locale', 'title', 'description', 'slug'] as const) {
       if (!fm[field]) fail(`${label}: missing frontmatter field "${field}"`);
+    }
+    const publishedAt = parseArticleDate(label, 'publishedAt', fm.publishedAt);
+    const updatedAt =
+      fm.updatedAt === undefined ? null : parseArticleDate(label, 'updatedAt', fm.updatedAt);
+    if (publishedAt && publishedAt > todayUtc) {
+      fail(`${label}: publishedAt must not be in the future`);
+    }
+    if (publishedAt && updatedAt && updatedAt < publishedAt) {
+      fail(`${label}: updatedAt must not be earlier than publishedAt`);
     }
     if (fm.locale && fm.locale !== locale) {
       fail(`${label}: frontmatter locale "${fm.locale}" does not match folder "${locale}"`);
