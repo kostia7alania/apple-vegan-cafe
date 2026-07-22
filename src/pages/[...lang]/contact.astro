@@ -66,7 +66,9 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
   <div class="page-shell wrap py-10 sm:py-14">
-    <h1 class="font-display text-4xl font-extrabold tracking-tight text-leaf-900 sm:text-5xl">
+    <h1
+      class="page-heading font-display text-4xl leading-tight font-extrabold tracking-tight text-leaf-900 sm:text-5xl"
+    >
       {t(locale, 'nav.contact')}
     </h1>
     <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />

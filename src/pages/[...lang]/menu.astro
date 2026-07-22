@@ -76,15 +76,19 @@ const jsonld = [
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
   <div id="top" class="page-shell wrap pt-10 pb-2 sm:pt-14">
-    <JayBadge label={t(locale, 'trust.jay')} />
-    <h1 class="mt-4 text-4xl font-black tracking-tight text-leaf-900 sm:text-5xl">
+    <p class="page-kicker">
+      <JayBadge label={t(locale, 'trust.jay')} />
+    </p>
+    <h1
+      class="page-heading mt-4 text-4xl leading-tight font-black tracking-tight text-leaf-900 sm:text-5xl"
+    >
       {t(locale, 'menu.title')}
     </h1>
-    <p class="mt-3 max-w-[52ch] text-ink-500">{t(locale, 'trust.honest')}</p>
+    <p class="page-deck mt-3 text-ink-500">{t(locale, 'trust.honest')}</p>
     <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />
     {
       grabLink && (
-        <p class="mt-5">
+        <p class="mt-5 text-center">
           <a
             href={grabLink.url}
             rel="noopener"

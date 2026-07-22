@@ -267,6 +267,30 @@
     padding-inline-start: 1rem;
   }
 
+  .page-heading {
+    max-inline-size: 11ch;
+    margin-inline: auto;
+    max-width: 11ch;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .page-heading-wide {
+    max-inline-size: 12ch;
+    max-width: 12ch;
+  }
+
+  .page-kicker {
+    text-align: center;
+  }
+
+  .page-deck {
+    max-inline-size: 52ch;
+    margin-inline: auto;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
   .section-heading::before {
     position: absolute;
     inset-block: 0.18em 0.16em;

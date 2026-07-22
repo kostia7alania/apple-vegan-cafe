@@ -74,13 +74,13 @@ const dateFmt = new Intl.DateTimeFormat(locale, { dateStyle: 'long' });
     />
     <div class="mx-auto max-w-[65ch]">
       <header>
-        <p class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+        <p class="page-kicker text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
           <time datetime={entry.data.publishedAt.toISOString().slice(0, 10)}>
             {dateFmt.format(entry.data.publishedAt)}
           </time>
         </p>
         <h1
-          class="mt-3 font-display text-4xl leading-tight font-extrabold tracking-tight text-balance text-leaf-900 sm:text-5xl"
+          class="page-heading page-heading-wide mt-3 font-display text-4xl leading-tight font-extrabold tracking-tight text-leaf-900 sm:text-5xl"
         >
           {entry.data.title}
         </h1>
