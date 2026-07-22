@@ -64,6 +64,10 @@ HappyCow is the standard tool for finding vegan and vegan-friendly places in Tha
 "vegan" search on Google Maps works well in tourist towns. Read a few recent reviews — they
 usually reveal whether a kitchen really understands "no fish sauce".
 
+If you are ordering to a hotel instead of walking in, check whether the restaurant explains
+delivery clearly. Our own [vegan food delivery page](/vegan-delivery-pattaya/) keeps the GrabFood
+and pickup details in one place.
+
 ## And a note from us
 
 At our cafe, none of this vigilance is needed. The whole kitchen is plant-based: no fish sauce, no

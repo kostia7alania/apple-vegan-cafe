@@ -358,6 +358,54 @@ const openChip = mainHours
   }
 
   {
+    /* RU-only: contextual links to the Russian breakfast and delivery landing pages. */
+    locale === 'ru' && (
+      <section class="wrap pt-10">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <a
+            href="/ru/veganskiy-zavtrak-v-pattaye/"
+            class="group flex min-h-20 items-center justify-between gap-x-5 gap-y-3 rounded-lg border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
+          >
+            <span class="flex min-w-0 items-center gap-3">
+              <span
+                class="font-display text-2xl leading-none font-bold whitespace-nowrap text-jay-700"
+                aria-hidden="true"
+              >
+                7:00
+              </span>
+              <span class="font-semibold text-ink-900">
+                Рано встали? Веганский завтрак в Паттайе каждый день с 7:00
+              </span>
+            </span>
+            <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">
+              Читать →
+            </span>
+          </a>
+          <a
+            href="/ru/veganskaya-dostavka-v-pattaye/"
+            class="group flex min-h-20 items-center justify-between gap-x-5 gap-y-3 rounded-lg border border-leaf-700/20 bg-leaf-50 px-6 py-5 transition-colors hover:border-leaf-700/40 hover:bg-leaf-100"
+          >
+            <span class="flex min-w-0 items-center gap-3">
+              <span
+                class="font-display text-2xl leading-none font-bold whitespace-nowrap text-leaf-700"
+                aria-hidden="true"
+              >
+                Grab
+              </span>
+              <span class="font-semibold text-ink-900">
+                Доставка через GrabFood и самовывоз, если не хочется выходить
+              </span>
+            </span>
+            <span class="text-sm font-bold whitespace-nowrap text-leaf-700 underline decoration-leaf-500/50 decoration-2 underline-offset-4 group-hover:text-leaf-900">
+              Читать →
+            </span>
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  {
     /* TH-only: internal link to the seasonal เจ landing page (backlog R1).
        Locale-conditional — the EN/RU home pages must not render this block. */
     locale === 'th' && (

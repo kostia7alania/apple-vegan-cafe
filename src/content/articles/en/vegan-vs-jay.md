@@ -69,5 +69,6 @@ the mushroom pad krapao (฿159) — are cooked jay-style. If you keep the obser
 avoid pungent vegetables: our whole kitchen skips them year round, so every dish already qualifies.
 
 If you read Thai, we have written a fuller page about jay food in Pattaya:
-[ร้านอาหารเจ พัทยา](/th/ร้านอาหารเจ-พัทยา/). And if you are simply hungry, the
-[menu with real prices](/menu/) is the best place to start.
+[ร้านอาหารเจ พัทยา](/th/ร้านอาหารเจ-พัทยา/). For Indian guests comparing pure veg and Jain-friendly
+food, we also keep a separate [pure veg guide for Pattaya](/pure-veg-jain-friendly/). And if you
+are simply hungry, the [menu with real prices](/menu/) is the best place to start.
