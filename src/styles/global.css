@@ -234,6 +234,17 @@
     position: relative;
   }
 
+  .page-shell::before {
+    position: absolute;
+    inset-block-start: 0.35rem;
+    inset-inline-start: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+    width: 3.25rem;
+    height: 0.2rem;
+    border-radius: 999px;
+    content: '';
+    background: var(--color-mango-500);
+  }
+
   .decor-card {
     position: relative;
     overflow: hidden;
