@@ -1,7 +1,7 @@
 ---
 translationKey: how-to-order-vegan
 locale: en
-title: 'How to order vegan food in Thailand: phrases, pitfalls and the เจ symbol'
+title: 'Order vegan food in Thailand: Thai phrases and เจ'
 description: 'Key Thai phrases with script and romanization, the animal ingredients hiding in Thai dishes, and the yellow เจ flag that marks safe street food.'
 slug: how-to-order-vegan-food-in-thailand
 author: family

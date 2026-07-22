@@ -1,7 +1,7 @@
 ---
 translationKey: vegan-vs-jay
 locale: en
-title: "Vegan vs เจ (jay): what Thailand's own plant-based tradition means"
+title: "Vegan vs เจ: Thailand's plant-based tradition"
 description: 'What เจ (jay) food means in Thailand, how it differs from vegetarian and Western vegan, and why a jay kitchen is a safe place for vegans to eat.'
 slug: vegan-vs-jay-food
 author: family
