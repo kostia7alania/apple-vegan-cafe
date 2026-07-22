@@ -6,13 +6,13 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## READY (могу делать автономно)
 
-| #   | Задача | DoD | Размер |
-| --- | ------ | --- | ------ |
-| R27 | SEO internal linking pass: добавить контекстные ссылки из релевантных статей/секций на low-inbound лендинги (EN/RU/TH), без искусственных «кольцевых» блоков ради SEO | Ссылки помогают читателю, landing pages получают нормальные входящие ссылки, `pnpm lint`, `pnpm build`, `pnpm test:e2e` OK | M |
-| R28 | SEO metadata trim pass: укоротить слишком длинные title/H1/description на blog/landing/home страницах без потери intent | Snippets/H1 чище на mobile/SERP, guards обновлены при необходимости, `pnpm lint`, `pnpm build`, `pnpm test:e2e` OK | S |
-| R29 | SEO link graph audit: добавить скрипт/тест для внутренних ссылок с корректным URL-decode, broken-link и low-inbound warnings | Скрипт не даёт false positive на Thai URL, ловит реальные orphan/low-inbound страницы, документация/CI или npm script обновлены | M |
-| R30 | SEO outbound link context pass: проверить повторяющиеся Grab/HappyCow/Instagram ссылки и оставить их только там, где они полезны и понятны | Внешние ссылки остаются полезными business CTA, не превращаются в шум, nofollow не добавляется к нормальным endorsed ссылкам | S |
-| R31 | SEO schema spike: проверить лучший schema.org способ отразить `Restaurant & Cafe` без fake reviews/ratings и без поломки JSON-LD guards | Короткий ADR/вывод; если безопасно — schema обновлена и валидируется тестами | S |
+| #   | Задача                                                                                                                                                                | DoD                                                                                                                             | Размер |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| R27 | SEO internal linking pass: добавить контекстные ссылки из релевантных статей/секций на low-inbound лендинги (EN/RU/TH), без искусственных «кольцевых» блоков ради SEO | Ссылки помогают читателю, landing pages получают нормальные входящие ссылки, `pnpm lint`, `pnpm build`, `pnpm test:e2e` OK      | M      |
+| R28 | SEO metadata trim pass: укоротить слишком длинные title/H1/description на blog/landing/home страницах без потери intent                                               | Snippets/H1 чище на mobile/SERP, guards обновлены при необходимости, `pnpm lint`, `pnpm build`, `pnpm test:e2e` OK              | S      |
+| R29 | SEO link graph audit: добавить скрипт/тест для внутренних ссылок с корректным URL-decode, broken-link и low-inbound warnings                                          | Скрипт не даёт false positive на Thai URL, ловит реальные orphan/low-inbound страницы, документация/CI или npm script обновлены | M      |
+| R30 | SEO outbound link context pass: проверить повторяющиеся Grab/HappyCow/Instagram ссылки и оставить их только там, где они полезны и понятны                            | Внешние ссылки остаются полезными business CTA, не превращаются в шум, nofollow не добавляется к нормальным endorsed ссылкам    | S      |
+| R31 | SEO schema spike: проверить лучший schema.org способ отразить `Restaurant & Cafe` без fake reviews/ratings и без поломки JSON-LD guards                               | Короткий ADR/вывод; если безопасно — schema обновлена и валидируется тестами                                                    | S      |
 
 ## BLOCKED (ждут тебя или владельца кафе)
 
