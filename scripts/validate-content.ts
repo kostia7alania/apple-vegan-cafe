@@ -27,6 +27,60 @@ function isSafeAnchorSlug(slug: string): boolean {
   return slug.trim() === slug && slug.length > 0 && !/[/?#\s]/.test(slug);
 }
 
+function validateExternalUrl(
+  label: string,
+  value: string | null | undefined,
+  allowedHosts: readonly string[],
+) {
+  if (value === null || value === undefined) return;
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    fail(`${label}: must be a valid absolute URL`);
+    return;
+  }
+
+  if (url.protocol !== 'https:') {
+    fail(`${label}: must use https`);
+  }
+  if (url.username || url.password) {
+    fail(`${label}: must not include embedded credentials`);
+  }
+  if (!allowedHosts.includes(url.hostname.toLowerCase())) {
+    fail(`${label}: unexpected host "${url.hostname}"`);
+  }
+}
+
+const allowedExternalHosts = {
+  grab: ['r.grab.com', 'grab.com', 'food.grab.com', 'www.grab.com'],
+  googleMaps: ['maps.app.goo.gl', 'google.com', 'www.google.com'],
+  googleReview: ['g.page', 'search.google.com', 'google.com', 'www.google.com'],
+  happycow: ['happycow.net', 'www.happycow.net'],
+  instagram: ['instagram.com', 'www.instagram.com'],
+  tripadvisor: ['tripadvisor.com', 'www.tripadvisor.com'],
+} as const;
+
+function allowedSocialHosts(platform: string): readonly string[] | undefined {
+  switch (platform.toLowerCase()) {
+    case 'instagram':
+      return allowedExternalHosts.instagram;
+    default:
+      return undefined;
+  }
+}
+
+function allowedOrderingHosts(provider: string): readonly string[] | undefined {
+  switch (provider.toLowerCase()) {
+    case 'grabfood':
+    case 'grab':
+      return allowedExternalHosts.grab;
+    default:
+      return undefined;
+  }
+}
+
 // --- categories ---------------------------------------------------------
 const categories = JSON.parse(readFileSync(join(contentDir, 'categories.json'), 'utf8')) as {
   id: string;
@@ -106,6 +160,78 @@ for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))
     }
     previousSlugSeen.set(previousSlug, fileName);
   }
+}
+
+// --- settings + locations --------------------------------------------------
+interface Settings {
+  site?: {
+    social?: { platform?: string; url?: string }[];
+    orderingLinks?: { provider?: string; url?: string }[];
+    reviewLinks?: {
+      google?: string | null;
+      happycow?: string | null;
+      tripadvisor?: string | null;
+    };
+  };
+}
+const settings = JSON.parse(readFileSync(join(contentDir, 'settings.json'), 'utf8')) as Settings;
+
+for (const [index, link] of (settings.site?.social ?? []).entries()) {
+  const label = `settings.json site.social[${index}]`;
+  if (!link.platform) {
+    fail(`${label}: missing platform`);
+    continue;
+  }
+  const hosts = allowedSocialHosts(link.platform);
+  if (!hosts) {
+    fail(`${label}: unsupported platform "${link.platform}"`);
+    continue;
+  }
+  validateExternalUrl(`${label}.url`, link.url, hosts);
+}
+
+for (const [index, link] of (settings.site?.orderingLinks ?? []).entries()) {
+  const label = `settings.json site.orderingLinks[${index}]`;
+  if (!link.provider) {
+    fail(`${label}: missing provider`);
+    continue;
+  }
+  const hosts = allowedOrderingHosts(link.provider);
+  if (!hosts) {
+    fail(`${label}: unsupported provider "${link.provider}"`);
+    continue;
+  }
+  validateExternalUrl(`${label}.url`, link.url, hosts);
+}
+
+validateExternalUrl(
+  'settings.json site.reviewLinks.google',
+  settings.site?.reviewLinks?.google,
+  allowedExternalHosts.googleReview,
+);
+validateExternalUrl(
+  'settings.json site.reviewLinks.happycow',
+  settings.site?.reviewLinks?.happycow,
+  allowedExternalHosts.happycow,
+);
+validateExternalUrl(
+  'settings.json site.reviewLinks.tripadvisor',
+  settings.site?.reviewLinks?.tripadvisor,
+  allowedExternalHosts.tripadvisor,
+);
+
+interface Locations {
+  [id: string]: {
+    mapsUrl?: string | null;
+  };
+}
+const locations = JSON.parse(readFileSync(join(contentDir, 'locations.json'), 'utf8')) as Locations;
+for (const [id, location] of Object.entries(locations)) {
+  validateExternalUrl(
+    `locations.json ${id}.mapsUrl`,
+    location.mapsUrl,
+    allowedExternalHosts.googleMaps,
+  );
 }
 
 // --- articles: frontmatter + translation sets ------------------------------
