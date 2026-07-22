@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import LeafDivider from '../../components/LeafDivider.astro';
 import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
@@ -48,9 +47,8 @@ const jsonld = [
         >
           {entry.data.title}
         </h1>
-        <LeafDivider class="mt-7 max-w-60" />
       </header>
-      <div class="prose-editorial mt-8">
+      <div class="prose-editorial mt-6 sm:mt-8">
         <Content />
       </div>
     </div>

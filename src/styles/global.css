@@ -107,6 +107,7 @@
   }
   .prose-editorial p {
     margin-block: 1.1em;
+    text-wrap: pretty;
   }
   .prose-editorial > :first-child {
     margin-top: 0;
