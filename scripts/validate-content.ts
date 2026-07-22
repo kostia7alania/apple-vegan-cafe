@@ -23,6 +23,10 @@ function isSafeSitePath(path: string): boolean {
   return path.startsWith('/') && !path.startsWith('//') && !/[?#]/.test(path);
 }
 
+function isSafeAnchorSlug(slug: string): boolean {
+  return slug.trim() === slug && slug.length > 0 && !/[/?#\s]/.test(slug);
+}
+
 // --- categories ---------------------------------------------------------
 const categories = JSON.parse(readFileSync(join(contentDir, 'categories.json'), 'utf8')) as {
   id: string;
@@ -42,6 +46,7 @@ interface Dish {
   price_thb: number;
   name: Partial<Record<Locale, string>>;
   slug: Partial<Record<Locale, string>>;
+  previousSlugs?: string[];
   allergens?: string[];
 }
 const dishesDir = join(contentDir, 'dishes');
@@ -50,6 +55,7 @@ const slugSeen: Record<Locale, Map<string, string>> = {
   th: new Map(),
   ru: new Map(),
 };
+const previousSlugSeen = new Map<string, string>();
 for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))) {
   const dish = JSON.parse(readFileSync(join(dishesDir, fileName), 'utf8')) as Dish;
   const label = `dishes/${fileName}`;
@@ -70,9 +76,35 @@ for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))
       fail(`${label}: missing slug.${locale}`);
       continue;
     }
+    if (!isSafeAnchorSlug(slug)) {
+      fail(`${label}: slug.${locale} must be a safe anchor slug without /, ?, # or spaces`);
+    }
     const previous = slugSeen[locale].get(slug);
     if (previous) fail(`${label}: slug.${locale} "${slug}" already used by ${previous}`);
     slugSeen[locale].set(slug, fileName);
+  }
+}
+
+for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))) {
+  const dish = JSON.parse(readFileSync(join(dishesDir, fileName), 'utf8')) as Dish;
+  const label = `dishes/${fileName}`;
+
+  for (const previousSlug of dish.previousSlugs ?? []) {
+    if (!isSafeAnchorSlug(previousSlug)) {
+      fail(`${label}: previousSlugs "${previousSlug}" must be a safe anchor slug`);
+      continue;
+    }
+    const liveSlugOwner = LOCALES.map((locale) => slugSeen[locale].get(previousSlug)).find(Boolean);
+    if (liveSlugOwner) {
+      fail(
+        `${label}: previousSlugs "${previousSlug}" conflicts with live slug in ${liveSlugOwner}`,
+      );
+    }
+    const duplicateOwner = previousSlugSeen.get(previousSlug);
+    if (duplicateOwner) {
+      fail(`${label}: previousSlugs "${previousSlug}" already used by ${duplicateOwner}`);
+    }
+    previousSlugSeen.set(previousSlug, fileName);
   }
 }
 

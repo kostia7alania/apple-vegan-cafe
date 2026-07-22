@@ -34,6 +34,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## DONE
 
+- 2026-07-22: **R18 SEO-quality dish slug guard** — `pnpm validate:content` теперь отклоняет небезопасные dish anchors (`/`, `?`, `#`, пробелы, пустые/обрезаемые значения), дубли текущих dish slug по локалям, конфликты `previousSlugs` с живыми slug и дубли старых slug между блюдами.
 - 2026-07-22: **R17 SEO-quality redirect/content guard** — `pnpm validate:content` теперь отклоняет небезопасные redirect-записи до деплоя: неверные status code, дубли source, self-redirect, external/protocol-relative URL, query/hash URL и service paths вроде `/admin/` или `/uploads/`.
 - 2026-07-22: **R16 SEO-quality structured data guard** — Playwright парсит JSON-LD на ключевых страницах, проверяет ожидаемые безопасные schema.org-типы (`Restaurant`, `BreadcrumbList`, `Menu`, `Article`), absolute URL в `url`/`menu`/`item`, `OrderAction`, полную Menu-разметку на 141 доступное блюдо с THB Offer и отсутствие `aggregateRating`/`review`/`FAQPage`.
 - 2026-07-22: **R15 SEO-quality manifest/head discoverability guard** — Playwright проверяет базовые head discovery-теги (`theme-color`, favicon, manifest, sitemap), валидность `site.webmanifest` (name/short_name/display/colors/icons) и доступность `favicon.svg`.
