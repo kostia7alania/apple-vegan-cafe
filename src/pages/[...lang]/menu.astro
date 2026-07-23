@@ -85,10 +85,13 @@ const jsonld = [
       {t(locale, 'menu.title')}
     </h1>
     <p class="page-deck mt-3 text-ink-500">{t(locale, 'trust.honest')}</p>
+    <p class="hidden print:block">
+      Apple Vegan Cafe &amp; Restaurant · {t(locale, 'days.daily')} 7:00–22:00 · {settings?.phone} · apple-vegan-cafe.com
+    </p>
     <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />
     {
       grabLink && (
-        <p class="mt-5 text-center">
+        <p class="mt-5 text-center print:hidden">
           <a
             href={grabLink.url}
             rel="noopener"
@@ -103,7 +106,7 @@ const jsonld = [
 
   <nav
     aria-label={t(locale, 'menu.categoriesNav')}
-    class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem]"
+    class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem] print:hidden"
   >
     <div class="wrap">
       <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
@@ -208,7 +211,7 @@ const jsonld = [
                 </li>
               ))}
             </ul>
-            <p class="mt-2 text-right">
+            <p class="mt-2 text-right print:hidden">
               <a
                 href="#top"
                 class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-leaf-700 transition-colors hover:text-leaf-900"
@@ -222,7 +225,7 @@ const jsonld = [
     }
     {
       grabLink && (
-        <section class="decor-card mt-14 mb-10 rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10">
+        <section class="decor-card mt-14 mb-10 rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10 print:hidden">
           <p class="text-xl font-black text-leaf-900">{t(locale, 'menu.orderClosing')}</p>
           <p class="mt-4">
             <a

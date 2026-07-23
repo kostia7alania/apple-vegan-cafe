@@ -101,7 +101,9 @@ const actionLink =
       /* Compact header: brand + switcher on one row, nav as a single
         horizontally-scrollable row — the hero stays high above the fold. */
     }
-    <header class="sticky top-0 z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md">
+    <header
+      class="sticky top-0 z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md print:hidden"
+    >
       <div class="wrap py-3">
         <div class="flex items-center justify-between gap-3">
           <a href={homeHref} class="flex min-w-0 items-center gap-2 sm:gap-2.5">
@@ -168,7 +170,7 @@ const actionLink =
       <slot />
     </main>
 
-    <footer class="mt-16 bg-leaf-900 text-cream-100">
+    <footer class="mt-16 bg-leaf-900 text-cream-100 print:hidden">
       <div class="wrap grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <p class="font-display text-xl leading-snug font-bold text-cream-50">
@@ -284,7 +286,7 @@ const actionLink =
     {/* Mobile-only fixed action bar (CSS only). Body padding keeps content clear. */}
     <nav
       aria-label={t(locale, 'actions.quick')}
-      class="fixed inset-x-0 bottom-0 z-40 bg-leaf-900 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgba(30,61,38,0.35)] md:hidden"
+      class="fixed inset-x-0 bottom-0 z-40 bg-leaf-900 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgba(30,61,38,0.35)] md:hidden print:hidden"
     >
       <ul class="flex divide-x divide-leaf-800">
         <li class="flex-1">

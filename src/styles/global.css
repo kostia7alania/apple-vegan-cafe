@@ -420,3 +420,23 @@
     translate: 0 -0.25rem;
   }
 }
+
+/* Print: the family can hand out the menu straight from the site. */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .leader {
+    border-color: #777;
+  }
+  li {
+    break-inside: avoid;
+  }
+  section {
+    break-inside: auto;
+  }
+  h2 {
+    break-after: avoid;
+  }
+}
