@@ -39,7 +39,9 @@ or onion either. Real jay food is automatically vegan. These stalls appear at fo
 markets all year round, and the food there is usually the cheapest in town.
 
 Where there is no sign, one simple rule applies: ask about fish sauce — «mai sai nam pla»
-(«without fish sauce») — and double-check about egg in fried dishes.
+(«without fish sauce») — and double-check about egg in fried dishes. If you are curious how jay
+relates to «vegan» exactly, we wrote a separate piece:
+[vegan vs เจ (jay) food, explained](/blog/vegan-vs-jay-food/).
 
 An easy everyday fallback is the fruit carts and smoothie stands: ripe mango, pineapple and
 watermelon are vegan all by themselves — just ask for your smoothie without condensed milk and
