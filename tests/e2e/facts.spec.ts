@@ -49,6 +49,32 @@ test('EN landings state the daily 7:00 opening', async ({ page }) => {
   }
 });
 
+const CATEGORIES = JSON.parse(readFileSync('src/content/categories.json', 'utf8')) as {
+  id: string;
+  slug: Record<string, string>;
+}[];
+
+for (const [prefix, locale] of [
+  ['', 'en'],
+  ['/th', 'th'],
+  ['/ru', 'ru'],
+] as const) {
+  test(`menu${prefix || '/en'} category chips target existing sections (slugs from categories.json)`, async ({
+    page,
+  }) => {
+    await page.goto(`${prefix}/menu/`);
+    for (const category of CATEGORIES) {
+      const slug = category.slug[locale]!;
+      const chip = page.locator(`nav a[href="#${slug}"]`);
+      await expect(chip, `chip for ${category.id} (#${slug})`).toHaveCount(1);
+      await expect(
+        page.locator(`section[id="${slug}"]`),
+        `section #${slug} for ${category.id}`,
+      ).toHaveCount(1);
+    }
+  });
+}
+
 test('home and contact expose OrderAction pointing at Grab', async ({ page }) => {
   for (const path of ['/', '/contact/']) {
     await page.goto(path);
