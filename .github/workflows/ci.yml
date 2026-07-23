@@ -43,6 +43,9 @@ jobs:
       # is live those would fail DNS — internal <a> links are relative and checked.
       # Instagram intermittently returns 429 to GitHub Actions link crawlers.
       # TODO after launch: keep only stable external URLs in the crawler.
+      - name: Audit internal links and anchors
+        run: pnpm audit:links
+
       - name: Check links
         run: pnpm exec linkinator ./dist --recurse --silent --skip "^(https://apple-vegan-cafe.com|https://www.instagram.com/apple\\.vegan\\.restaurant/)"
 
