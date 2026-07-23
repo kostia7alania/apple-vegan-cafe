@@ -55,7 +55,10 @@ const jsonld = [
 ];
 
 const menuPath = localePath(locale, '/menu/');
-const breakfastAnchor = `${menuPath}#osnovnye-blyuda`;
+// Категорийные якоря на /menu/ локализованы — берём слаг из коллекции.
+const onePlate = (await getCollection('categories')).find((c) => c.id === 'one-plate');
+if (!onePlate) throw new Error('one-plate category is missing');
+const breakfastAnchor = `${menuPath}#${onePlate.data.slug[locale]}`;
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
