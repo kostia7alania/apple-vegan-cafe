@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildArticle, buildBreadcrumb, buildRestaurant } from '../../src/lib/jsonld';
+import { buildArticle, buildBreadcrumb, buildMenu, buildRestaurant } from '../../src/lib/jsonld';
 
 const restaurantInput = {
   name: 'Apple Vegan Cafe & Restaurant',
@@ -35,6 +35,60 @@ describe('buildRestaurant', () => {
     expect(
       buildRestaurant({ ...restaurantInput, geo: { lat: 12.93, lng: 100.88 } }),
     ).toHaveProperty('geo');
+  });
+
+  it('emits OrderAction only when an ordering URL exists', () => {
+    expect(buildRestaurant(restaurantInput)).not.toHaveProperty('potentialAction');
+    const withOrder = buildRestaurant({
+      ...restaurantInput,
+      orderUrl: 'https://r.grab.com/o/Fj6Zvya2',
+    });
+    expect(withOrder.potentialAction).toEqual({
+      '@type': 'OrderAction',
+      target: 'https://r.grab.com/o/Fj6Zvya2',
+    });
+  });
+});
+
+describe('buildMenu', () => {
+  const menu = buildMenu({
+    url: 'https://apple-vegan-cafe.com/menu/',
+    locale: 'th',
+    sections: [
+      {
+        name: 'อาหารจานเดียว',
+        items: [
+          { name: 'ผัดไทยเจ', price: 149, description: 'ไม่ใส่น้ำปลา' },
+          { name: 'ข้าวสวย', price: 40 },
+        ],
+      },
+      { name: 'เครื่องดื่ม', items: [{ name: 'ลาเต้เย็น', price: 110 }] },
+    ],
+  });
+  const sections = menu.hasMenuSection as {
+    name: string;
+    hasMenuItem: { name: string; description?: string; offers: { price: number } }[];
+  }[];
+
+  it('maps sections and items with THB offers', () => {
+    expect(menu['@type']).toBe('Menu');
+    expect(menu.inLanguage).toBe('th');
+    expect(sections).toHaveLength(2);
+    expect(sections[0]!.hasMenuItem).toHaveLength(2);
+    expect(sections[0]!.hasMenuItem[0]!.offers).toEqual({
+      '@type': 'Offer',
+      price: 149,
+      priceCurrency: 'THB',
+    });
+  });
+
+  it('omits description when a dish has none', () => {
+    expect(sections[0]!.hasMenuItem[0]).toHaveProperty('description');
+    expect(sections[0]!.hasMenuItem[1]).not.toHaveProperty('description');
+  });
+
+  it('never smuggles rating markup into the menu', () => {
+    expect(JSON.stringify(menu)).not.toContain('aggregateRating');
   });
 });
 
