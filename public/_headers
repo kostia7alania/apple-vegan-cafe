@@ -19,3 +19,7 @@
   X-Robots-Tag: noindex
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'none'; script-src 'self' https://unpkg.com https://static.cloudflareinsights.com; worker-src 'self' blob:; connect-src 'self' data: https://api.github.com https://raw.githubusercontent.com https://github.com https://auth.apple-vegan-cafe.com https://unpkg.com https://www.githubstatus.com https://cloudflareinsights.com; img-src 'self' blob: data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' blob:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+
+# Content-hashed build assets never change — cache them for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
