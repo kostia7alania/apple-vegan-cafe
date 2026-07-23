@@ -1,0 +1,8 @@
+/* TEAM */
+Kitchen & content: the family behind Apple Vegan Cafe & Restaurant, Pattaya
+Site: kostia7alania (github.com/kostia7alania) — built as a free open-source project
+
+/* SITE */
+Stack: Astro, Tailwind CSS, Cloudflare Workers Static Assets, Sveltia CMS
+Source: https://github.com/kostia7alania/apple-vegan-cafe
+Content license: photos, texts and the menu belong to the family (see CONTENT-LICENSE.md)

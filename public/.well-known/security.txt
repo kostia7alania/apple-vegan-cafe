@@ -1,0 +1,4 @@
+Contact: mailto:kostia7alania@gmail.com
+Expires: 2027-07-24T00:00:00.000Z
+Preferred-Languages: en, th, ru
+Canonical: https://apple-vegan-cafe.com/.well-known/security.txt
