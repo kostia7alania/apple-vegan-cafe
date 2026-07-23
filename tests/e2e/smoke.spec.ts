@@ -319,9 +319,19 @@ test('canonical and head hreflang stay coherent across page types', async ({ pag
       },
     },
     {
+      path: '/blog/vegan-guide-pattaya/',
+      alternates: {
+        en: '/blog/vegan-guide-pattaya/',
+        ru: '/ru/blog/vegan-gid-po-pattaye/',
+        'x-default': '/blog/vegan-guide-pattaya/',
+      },
+    },
+    {
       path: '/ru/blog/vegan-gid-po-pattaye/',
       alternates: {
+        en: '/blog/vegan-guide-pattaya/',
         ru: '/ru/blog/vegan-gid-po-pattaye/',
+        'x-default': '/blog/vegan-guide-pattaya/',
       },
     },
   ];
