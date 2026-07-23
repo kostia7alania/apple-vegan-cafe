@@ -10,6 +10,9 @@ import { localePath, normalizePath } from '../lib/urls';
 import { SITE_LAUNCHED } from '../lib/site';
 import { t, type UiKey } from '../lib/ui';
 import '../styles/global.css';
+// Hashed URL of the latin subset — every page shows Latin glyphs above the fold
+// (brand name, prices), so preloading it removes the HTML→CSS→font chain.
+import literataLatinUrl from '@fontsource-variable/literata/files/literata-latin-wght-normal.woff2?url';
 
 interface Props {
   locale: Locale;
@@ -78,6 +81,7 @@ const actionLink =
     <meta name="theme-color" content="#faf6ed" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="preload" as="font" type="font/woff2" href={literataLatinUrl} crossorigin />
     <Seo {locale} {title} {description} {alternates} noindex={effectiveNoindex} {ogType} />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <Analytics />
