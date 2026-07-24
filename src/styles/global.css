@@ -440,3 +440,66 @@
     break-after: avoid;
   }
 }
+
+/* Back-to-top FAB. Reveal is scroll-driven (Chrome/Edge 115+, Safari 26);
+   Firefox and older browsers gracefully keep the button always visible.
+   Zero JS. Note: scroll-state queries can't observe the root scroller —
+   the html element propagates overflow to the viewport — hence scroll(root). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+.to-top {
+  position: fixed;
+  right: 1rem;
+  /* clear the CSS-only mobile bottom bar */
+  bottom: calc(4.75rem + env(safe-area-inset-bottom));
+  z-index: 35;
+}
+@media (min-width: 768px) {
+  .to-top {
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+}
+@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+  /* Split across two selectors on purpose: Lightning CSS otherwise merges
+     animation-timeline into the `animation` shorthand, producing an invalid
+     declaration that Chrome drops wholesale. The :where() shorthand carries
+     zero specificity, so the .to-top longhands below always win. */
+  :where(.to-top) {
+    animation: to-top-reveal linear both;
+  }
+  .to-top {
+    animation-timeline: scroll(root);
+    animation-range: 24rem 40rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .to-top {
+      animation-name: to-top-reveal-fade;
+    }
+  }
+}
+@keyframes to-top-reveal {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes to-top-reveal-fade {
+  from {
+    visibility: hidden;
+    opacity: 0;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}

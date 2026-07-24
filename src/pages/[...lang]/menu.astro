@@ -211,14 +211,6 @@ const jsonld = [
                 </li>
               ))}
             </ul>
-            <p class="mt-2 text-right print:hidden">
-              <a
-                href="#top"
-                class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-leaf-700 transition-colors hover:text-leaf-900"
-              >
-                ↑ {t(locale, 'menu.backToTop')}
-              </a>
-            </p>
           </section>
         );
       })
@@ -240,4 +232,24 @@ const jsonld = [
       )
     }
   </div>
+
+  <a
+    href="#top"
+    aria-label={t(locale, 'menu.backToTop')}
+    class="to-top inline-flex h-12 w-12 items-center justify-center rounded-full bg-leaf-700 text-cream-50 shadow-lg transition-colors hover:bg-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mango-300 print:hidden"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      class="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 19V5"></path>
+      <path d="m5 12 7-7 7 7"></path>
+    </svg>
+  </a>
 </Base>
