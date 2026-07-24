@@ -1,102 +1,107 @@
-# Apple Vegan Cafe & Restaurant — official website
+# 🌱 Apple Vegan Cafe & Restaurant — official website
 
-Static, multilingual (EN / ไทย / Русский) website for a family-run 100% vegan
-cafe in Pattaya, Thailand. Built to cost **$0/month** and to keep working for
-years without a maintainer.
+[![CI](https://github.com/kostia7alania/apple-vegan-cafe/actions/workflows/ci.yml/badge.svg)](https://github.com/kostia7alania/apple-vegan-cafe/actions/workflows/ci.yml)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-100%20%2F%20100%20%2F%20100%20%2F%20100-brightgreen)](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fapple-vegan-cafe.com%2F)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+[![Content: family-owned](https://img.shields.io/badge/content-family--owned-orange)](CONTENT-LICENSE.md)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
-**Stack:** Astro 7 (pure SSG, zero client JS) · Tailwind CSS 4 · TypeScript 6
-(pinned — see ADR) · pnpm · Sveltia CMS (git-based, Decap-compatible) ·
-Cloudflare Workers Static Assets.
+**Live: [apple-vegan-cafe.com](https://apple-vegan-cafe.com)** — the real website
+of a real family-run 100% vegan cafe in Pattaya, Thailand (141 dishes, open
+7:00–22:00 every day). Built for free as an open-source project so the family
+owns their little corner of the internet.
+
+Three languages (EN / ไทย / Русский) · **$0/month** hosting · **zero client-side
+JavaScript** on content pages (enforced by a test) · quadruple-100 Lighthouse ·
+designed to keep working for years even if nobody maintains it.
+
+## Why this repo is fun to read
+
+| Constraint                 | How it's solved                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| The family has no laptops  | Git-based CMS ([Sveltia](https://github.com/sveltia/sveltia-cms)) at `/admin` — price edits from a phone become commits |
+| $0/month forever           | Astro SSG → Cloudflare Workers Static Assets (static requests are free and unlimited)                                   |
+| Must survive neglect       | Content lives in git; the deployed site outlives the CMS, CI and the maintainer. `git clone` = full backup              |
+| Zero JS, still interactive | CSS-only language dropdown (`<details>`), scroll-driven back-to-top, container-query menu chips                         |
+| Three writing systems      | Single-file i18n (`{en,th,ru}` fields), reciprocal hreflang, Thai-script URLs, per-locale slugs                         |
+| Honesty as a feature       | CI guards: article prices must match the menu, no invented facts, no self-serving review markup                         |
+
+## Quick start
+
+```bash
+git clone https://github.com/kostia7alania/apple-vegan-cafe && cd apple-vegan-cafe
+corepack enable   # pnpm comes from the packageManager field
+pnpm install
+pnpm dev          # http://localhost:4321
+```
+
+Node 24 LTS in CI (`.nvmrc`); Node 26 works locally. Full command list and
+project tour: **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ## Architecture in one paragraph
 
 All content lives in this repository (`src/content/` — JSON for dishes/settings,
-Markdown for articles/pages) and is validated by Zod schemas at build time. The
-family edits content from a phone at `/admin` (Sveltia CMS → commits via GitHub
-API → Cloudflare Workers Builds rebuilds and deploys, ~1–3 min). The public site
-is plain static HTML: it stays up even if the CMS, GitHub, or the build pipeline
-is down. `git clone` = full backup.
+Markdown for articles) and is validated by Zod schemas at build time. The family
+edits content from a phone at `/admin` (Sveltia CMS → commits via GitHub API →
+rebuild and deploy in ~1–3 min). The public site is plain static HTML: it stays
+up even if the CMS, GitHub, or the build pipeline is down.
 
-## Development
-
-```bash
-corepack enable          # pnpm from the packageManager field
-pnpm install
-pnpm dev                 # local dev server
-pnpm build               # generates redirects + builds ./dist
-pnpm check               # astro check + tsc
-pnpm lint / pnpm test    # eslint+prettier / vitest
-pnpm test:e2e            # playwright smoke (build first)
-pnpm validate:content    # cross-entity content rules (CI runs this)
+```
+src/content/     dishes/*.json, articles/{en,th,ru}/*.md, settings, locations, faqs
+src/pages/       EN at root, /th/…, /ru/… + SEO landing pages
+src/lib/         seo/hreflang, JSON-LD builders, i18n helpers, UI strings
+scripts/         menu import from Grab export, content validators, link audit
+public/admin/    Sveltia CMS (static page + config.yml)
+docs/            ADRs, runbook, BACKLOG, owner's guide in Thai
+tests/           vitest units + Playwright e2e (44 tests incl. a11y and honesty guards)
 ```
 
-Node: 24 LTS in CI/production (`.nvmrc`), Node 26 works locally.
+## Contributing
 
-## Content model
+Yes please — see **[CONTRIBUTING.md](CONTRIBUTING.md)** for the tour, the rules
+that protect the family (this is a real business, not a demo), and where to
+start. Open tasks live in [docs/BACKLOG.md](docs/BACKLOG.md).
 
-- `src/content/dishes/*.json` — one file per dish. Price and photos exist
-  **once**; names/descriptions/slugs are `{en,th,ru}` objects. `available:
-false` removes a dish from the menu (the owner's stop-list button).
-- `src/content/articles/{en,th,ru}/*.md` — blog posts, linked across languages
-  by `translationKey`, with per-language slugs.
-- `src/content/settings.json`, `locations.json` — NAP, hours, links: the single
-  source of truth reused by pages, footer and JSON-LD.
-- The live menu was imported from the owner's Grab Bulk Update export. Dish
-  files keep `reviewedAt: null` until the family checks them by hand, but the
-  site is indexable because the published prices and dishes already match the
-  official export.
+## Supporting the cafe ❤️
 
-## Menu import (from Grab)
+The best donation doesn't go through a payment processor:
 
-`pnpm import:menu -- --input menu.csv [--write]`
+- **Eat there.** Bang Lamung, Pattaya — open 7:00–22:00 every day, or order on
+  [GrabFood](https://r.grab.com/o/Fj6Zvya2).
+- **Leave a review** on [HappyCow](https://www.happycow.net/reviews/apple-vegan-cafe-and-restaurant-pattaya-386893)
+  or Google Maps — for a small family restaurant this is worth more than money.
+- **Star the repo / contribute** — it keeps the project alive.
 
-The only permitted source is the **owner's own export** from the GrabMerchant
-Portal (Menu → Bulk Update → download) or a hand-filled sheet. Scraping
-food.grab.com violates Grab's ToS and is deliberately not implemented. Every
-imported dish gets `reviewedAt: null` — the owner must verify each one.
+Monetary sponsorship rails (GitHub Sponsors etc.) are not set up yet; if that
+changes, `.github/FUNDING.yml` is where they will appear.
 
-The live menu (141 dishes, July 2026) was imported from such an export.
-**Quarterly re-syncs**: `scripts/data/grab-item-map.json` maps every Grab
-`ItemID` to its dish file (survives renames and slug changes) — see
-[docs/grab-resync.md](docs/grab-resync.md) for the runbook.
+## Content model & guides
 
-## SEO rules baked in
-
-- `/` = English (x-default), `/th/…`, `/ru/…`; reciprocal hreflang in `<head>`
-  only; self-canonicals; no Accept-Language redirects.
-- Restaurant + Breadcrumb + Article JSON-LD. **Never** `aggregateRating`/
-  `review` of our own business (Google self-serving-review policy) and no
-  `FAQPage` markup (rich results retired May 2026).
-- One honest page per topic per language — no doorway pages, no machine
-  translation published without human review.
-
-## Deployment
-
-Cloudflare Workers Static Assets, config in `infrastructure/wrangler.jsonc`:
-`pnpm deploy`, or connect the repo to Workers Builds (build command
-`pnpm build`, deploy command `pnpm deploy`). Secrets (CMS OAuth) live only in
-the Cloudflare dashboard — this repo contains none. See
-`infrastructure/sveltia-auth/README.md` for the one-time CMS auth setup.
-
-## Analytics
-
-Analytics is optional and build-time configured:
-
-- `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` — recommended default for the cafe:
-  lightweight, cookieless pageview analytics in Cloudflare.
-- `PUBLIC_GA_MEASUREMENT_ID` — optional GA4 measurement ID (`G-...`) if Google
-  Ads/campaign attribution is needed.
-
-When GA4 is enabled, the site also records simple conversion-style events for
-phone, GrabFood, review, maps and outbound clicks. Phone numbers are not sent as
-event values.
-
-For GitHub deploys, set these as repository **Variables** (not secrets) because
-they are public IDs used at build time.
+- **Dishes**: one JSON per dish; price and photos exist once, names/slugs are
+  `{en,th,ru}`. `available: false` = the owner's stop-list button.
+- **Menu import**: `pnpm import:menu -- --input menu.csv [--write]` — the only
+  permitted source is the **owner's own GrabMerchant Bulk Update export**.
+  Scraping food.grab.com violates Grab's ToS and is deliberately not
+  implemented. Quarterly re-syncs: [docs/grab-resync.md](docs/grab-resync.md).
+- **SEO rules**: reciprocal hreflang in `<head>` only, self-canonicals, one
+  honest page per topic per language, **never** `aggregateRating`/`review` of
+  our own business, no `FAQPage` markup (retired May 2026).
+- **Deployment**: `pnpm deploy` (Wrangler → Cloudflare Workers Static Assets),
+  config in `infrastructure/wrangler.jsonc`. No secrets in the repo.
+- **Analytics**: optional; Cloudflare Web Analytics beacon is currently injected
+  at the edge (dashboard). Do not also set
+  `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` or the beacon will double.
+  `PUBLIC_GA_MEASUREMENT_ID` enables GA4 with click-through conversion events.
 
 ## Docs
 
-- [docs/adr/](docs/adr/) — architecture decision records
+- [docs/adr/](docs/adr/) — architecture decision records (why Astro, why git-CMS…)
+- [docs/BACKLOG.md](docs/BACKLOG.md) — living task list («работай» protocol)
 - [docs/runbook.md](docs/runbook.md) — "site is down", recovery, dashboard settings
-- [docs/HANDOVER-th.md](docs/HANDOVER-th.md) — owner's guide (Thai)
-- [CONTENT-LICENSE.md](CONTENT-LICENSE.md) — code is MIT; content is the family's
+- [docs/HANDOVER-th.md](docs/HANDOVER-th.md) — owner's guide (Thai, phone-first)
+
+## Licenses
+
+Code is [MIT](LICENSE). Photos, texts, the menu and the brand belong to the
+family — see [CONTENT-LICENSE.md](CONTENT-LICENSE.md). Fork the code freely;
+don't ship the family's content with it.
