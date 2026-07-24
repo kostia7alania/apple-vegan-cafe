@@ -6,9 +6,8 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 
 ## READY (могу делать автономно)
 
-| #   | Задача                                                                                                                                  | DoD                                                                          | Размер |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------ |
-| R31 | SEO schema spike: проверить лучший schema.org способ отразить `Restaurant & Cafe` без fake reviews/ratings и без поломки JSON-LD guards | Короткий ADR/вывод; если безопасно — schema обновлена и валидируется тестами | S      |
+| #   | Задача | DoD | Размер |
+| --- | ------ | --- | ------ |
 
 ## BLOCKED (ждут тебя или владельца кафе)
 
@@ -31,11 +30,11 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 - Catering-страница — когда услуга реальна
 - Онлайн-заказ на сайте (корзина → LINE/телефон; Workers Paid $5/мес при SSR)
 - Приватный модуль: рецептуры/граммовки/себестоимость/чек-листы (отдельное приложение Workers+D1+Access, отдельный private-репо)
-- Pagefind-поиск по меню (если блюд станет >40)
 - Мультифилиальность (locations[] уже готова)
 
 ## DONE
 
+- 2026-07-24: **чат-долги закрыты**: `/search/` ×3 локали на Pagefind (языковые индексы по html[lang], noindex + вне sitemap, единственная JS-страница — санкционирована планом §7; чип 🔍 в навигации меню); `public/llms.txt` (факты для ИИ-агентов: часы, Grab, «без чеснока/лука», без халяль-заявлений); **R31**: ADR-0005 — Restaurant + `additionalType: CafeOrCoffeeShop` (массив @type отвергнут: Google хочет один точный тип, гарды целы)
 - 2026-07-24 (смена «20 тасок»): **N1–N20 все выполнены.** Контент: EN-гид `/blog/vegan-guide-pattaya/` (hreflang-пара с RU), RU-перелинковка (audit:links 0 warnings), +2 FAQ (ночные заказы, самовывоз) ×3 локали, тайский เจ-лендинг ограничен образцом из 12 блюд, описания и цены сверены. Качество: e2e 44 (страж якорей категорий по categories.json, axe a11y 10 страниц — контраст-фиксы задеплоены), юниты 17 (buildMenu, OrderAction, absoluteUrl, Thai-encoding), **price guard** в validate:content (поймал устаревший TH-драфт: пад тай 120→149, массаман 150→189, «пн–сб»→ежедневно), audit:links в CI. Перф: preload латинского сабсета Literata, immutable-кэш `/_astro/*` (был max-age=0), Lighthouse RU-лендингов 97/95 perf, 100 SEO, LCP 2.0с, CLS 0. Инфра: печатная версия меню (@media print, print-контакты), security.txt/humans.txt, Sveltia 0.171→0.172.4 (смок логина), deps-патчи (astro 7.1.3, wrangler 4.113; linkinator-мажор и TS7 удержаны). GSC-готовность: robots/sitemap/noindex-снятие проверены на проде — осталось подтвердить домен в GSC (B7).
 
 - 2026-07-22: **R30 SEO outbound link context pass** — проверены повторяющиеся GrabFood/HappyCow/Instagram ссылки в сгенерированном HTML: GrabFood оставлен как conversion CTA, Instagram остаётся единственным footer social-link, HappyCow оставлен как endorsed trust/review ссылка без `nofollow`; убран шумный fallback, который дублировал тот же HappyCow URL вторым footer CTA «Leave us a review» на каждой странице. Добавлен Playwright guard на один contextual HappyCow footer link.

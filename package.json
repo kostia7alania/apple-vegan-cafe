@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Official website of Apple Vegan Cafe & Restaurant, Pattaya — static, multilingual (EN/TH/RU), zero-JS Astro site",
+  "description": "Official website of Apple Vegan Cafe & Restaurant, Pattaya \u2014 static, multilingual (EN/TH/RU), zero-JS Astro site",
   "license": "MIT",
   "packageManager": "pnpm@11.13.0",
   "engines": {
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "pnpm run generate:redirects && astro build --force",
+    "build": "pnpm run generate:redirects && astro build --force && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
     "lint": "eslint . && prettier --check .",
@@ -41,6 +41,7 @@
     "eslint": "^10.7.0",
     "eslint-plugin-astro": "^3.0.1",
     "linkinator": "^7.6.1",
+    "pagefind": "^1.5.2",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.23.1",

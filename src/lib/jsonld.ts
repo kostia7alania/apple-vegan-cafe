@@ -40,7 +40,10 @@ const DAY_MAP: Record<string, string> = {
 export function buildRestaurant(input: RestaurantInput): Record<string, unknown> {
   const jsonld: Record<string, unknown> = {
     '@context': 'https://schema.org',
+    // Primary type stays the single most-specific one Google consumes;
+    // the cafe identity rides along via additionalType (ADR 0005).
     '@type': 'Restaurant',
+    additionalType: 'https://schema.org/CafeOrCoffeeShop',
     name: input.name,
     url: input.url,
     menu: input.menuUrl,

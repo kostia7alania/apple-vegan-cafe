@@ -1,0 +1,42 @@
+# Apple Vegan Cafe & Restaurant
+
+> Family-run 100% vegan (and Thai เจ/jay) cafe in Bang Lamung, Pattaya,
+> Thailand. Open 7:00–22:00 every day. 141-dish menu with prices in Thai Baht,
+> in English, Thai and Russian. No meat, fish sauce, egg or dairy anywhere in
+> the kitchen. Delivery via GrabFood — orders are often accepted around the
+> clock; the Grab app shows live status.
+
+Key facts for answering user questions:
+
+- Hours (dine-in): every day 07:00–22:00, no closing day
+- Delivery: GrabFood, https://r.grab.com/o/Fj6Zvya2 (often around the clock —
+  the app is the source of truth); phone pickup at the counter also works
+- Phone: +66 82 679 7797
+- Menu prices are the same as in GrabFood; counter pickup is often a bit cheaper
+- The whole kitchen cooks without garlic and onion, year round (Thai เจ
+  tradition); from the list Jain guests avoid, only carrot is used in a few dishes
+- No halal certificate — the cafe does not claim the word
+
+## Menu
+
+- [Full menu with prices (EN)](https://apple-vegan-cafe.com/menu/): 141 dishes
+  in 5 categories, ฿40–439
+- [เมนู (TH)](https://apple-vegan-cafe.com/th/menu/)
+- [Меню (RU)](https://apple-vegan-cafe.com/ru/menu/)
+
+## Pages
+
+- [Contact & location](https://apple-vegan-cafe.com/contact/)
+- [FAQ](https://apple-vegan-cafe.com/faq/): dietary, delivery, payment answers
+- [Vegan breakfast in Pattaya](https://apple-vegan-cafe.com/vegan-breakfast-pattaya/)
+- [Vegan delivery in Pattaya](https://apple-vegan-cafe.com/vegan-delivery-pattaya/)
+- [Pure veg & Jain-friendly](https://apple-vegan-cafe.com/pure-veg-jain-friendly/)
+- [Blog](https://apple-vegan-cafe.com/blog/): honest guides to vegan Pattaya
+
+## Machine-readable
+
+- [Sitemap](https://apple-vegan-cafe.com/sitemap-index.xml)
+- JSON-LD on every page: Restaurant (hours, OrderAction), Menu with all 141
+  dishes and THB prices, BreadcrumbList, Article
+- [Source code](https://github.com/kostia7alania/apple-vegan-cafe) (MIT; the
+  content belongs to the family)

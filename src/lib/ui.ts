@@ -57,6 +57,13 @@ const strings = {
   'menu.categoriesNav': { en: 'Menu categories', th: 'หมวดเมนู', ru: 'Разделы меню' },
   'menu.contains': { en: 'Contains', th: 'มีส่วนผสม', ru: 'Содержит' },
   'menu.backToTop': { en: 'Back to top', th: 'กลับขึ้นบน', ru: 'Наверх' },
+  'search.title': { en: 'Search the site', th: 'ค้นหาในเว็บ', ru: 'Поиск по сайту' },
+  'search.hint': {
+    en: 'Dishes, prices, articles — in your language. Try «pad thai» or «smoothie».',
+    th: 'ค้นหาเมนู ราคา และบทความ ลองพิมพ์ «ผัดไทย» หรือ «สมูทตี้» ดูค่ะ',
+    ru: 'Блюда, цены, статьи — на вашем языке. Попробуйте «пад тай» или «смузи».',
+  },
+  'search.link': { en: 'Search', th: 'ค้นหา', ru: 'Поиск' },
   'menu.orderGrab': {
     en: 'Order delivery on GrabFood',
     th: 'สั่งเดลิเวอรีผ่าน GrabFood',

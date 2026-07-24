@@ -17,6 +17,7 @@ describe('buildRestaurant', () => {
   it('includes the required and recommended fields', () => {
     const jsonld = buildRestaurant(restaurantInput);
     expect(jsonld['@type']).toBe('Restaurant');
+    expect(jsonld.additionalType).toBe('https://schema.org/CafeOrCoffeeShop');
     expect(jsonld.name).toBeTruthy();
     expect(jsonld.address).toBeTruthy();
     expect(jsonld.menu).toBe('https://apple-vegan-cafe.com/menu/');
