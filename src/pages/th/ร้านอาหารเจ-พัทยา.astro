@@ -21,12 +21,16 @@ const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// Every available dish the family marked เจ, cheapest first.
+// A sample of the เจ kitchen (copy above the list already says «ตัวอย่าง»):
+// savoury dishes only, cheapest first, capped — all 141 live on /th/menu/.
+const JAY_SAMPLE_LIMIT = 12;
 const jayDishes = (
   await getCollection('dishes', ({ data }) => data.available && data.dietaryTags.includes('jay'))
 )
   .map((e) => e.data)
-  .sort((a, b) => a.price_thb - b.price_thb);
+  .filter((d) => d.category.id !== 'drinks')
+  .sort((a, b) => a.price_thb - b.price_thb)
+  .slice(0, JAY_SAMPLE_LIMIT);
 
 const alternates = { th: PAGE_PATH };
 const site = Astro.site!;
