@@ -20,8 +20,7 @@ export default defineConfig({
     // No `fallback` map on purpose: untranslated pages simply do not exist in
     // that locale — no auto-generated duplicates, no soft-redirect pages.
   },
-  // /search/ is noindex (thin content) and therefore excluded from the sitemap
-  integrations: [sitemap({ filter: (page) => !page.includes('/search/') })],
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },

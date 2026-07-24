@@ -110,14 +110,6 @@ const jsonld = [
   >
     <div class="wrap">
       <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
-        <li>
-          <a
-            href={localePath(locale, '/search/')}
-            class="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-leaf-700/20 bg-leaf-700 px-4 text-sm font-semibold whitespace-nowrap text-cream-50 transition-colors hover:bg-leaf-800"
-          >
-            🔍 {t(locale, 'search.link')}
-          </a>
-        </li>
         {
           nonEmptyCategories.map((category) => (
             <li>
