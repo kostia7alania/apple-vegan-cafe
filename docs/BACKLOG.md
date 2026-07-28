@@ -29,6 +29,7 @@ Definition of Done (CI зелёный, задеплоено, отмечено з
 - Языки phase 2 (zh-Hans, ko, de) — только с носителем-редактором
 - Catering-страница — когда услуга реальна
 - Онлайн-заказ на сайте (корзина → LINE/телефон; Workers Paid $5/мес при SSR)
+- WebMCP — решено НЕ внедрять (2026-07-24): требует клиентского JS (ломает наш enforced zero-JS), экспонировать нечего (сайт read-only, действия = ссылки tel:/Grab, агенты уже получают всё из JSON-LD Menu/OrderAction + llms.txt, Agentic Browsing 2/2), спека сырая (origin trial Chrome 149–156, API переехал navigator→document посреди триала, W3C Community Group ≠ standards track). Пересмотреть ТОЛЬКО если появится онлайн-заказ на сайте — тогда тул «place order» станет реальным юзкейсом
 - Приватный модуль: рецептуры/граммовки/себестоимость/чек-листы (отдельное приложение Workers+D1+Access, отдельный private-репо)
 - Мультифилиальность (locations[] уже готова)
 
