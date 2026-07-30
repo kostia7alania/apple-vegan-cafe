@@ -11,6 +11,13 @@
 # price exists exactly once per dish. We intentionally do NOT use the CMS i18n
 # feature for JSON data collections — object widgets match our schema exactly.
 # Categories/allergens/FAQs/redirects are developer-edited in git (rarely change).
+#
+# Label language: Thai first, English in parentheses. The admin is used by the
+# Thai-speaking family; the English tail lets the developer guide them over the
+# phone. Sveltia's own UI chrome ships only en/ja locales (verified in the
+# pinned 0.172.4 bundle), so config labels are the translatable 90% of what the
+# owner sees. Thai option labels for categories/tags mirror the site content
+# (categories.json, src/lib/ui.ts) — keep them in sync.
 
 backend:
   name: github
@@ -23,310 +30,326 @@ public_folder: /uploads
 
 collections:
   - name: dishes
-    label: Menu dishes
-    label_singular: Dish
+    label: 'รายการอาหาร (Menu dishes)'
+    label_singular: 'อาหาร (Dish)'
     folder: src/content/dishes
     format: json
     extension: json
     create: true
     slug: '{{fields.name.en | slugify}}'
-    summary: '{{fields.name.en}} — ฿{{fields.price_thb}}'
+    summary: '{{fields.name.th}} · {{fields.name.en}} — ฿{{fields.price_thb}}'
     fields:
-      - {
-          name: name,
-          label: Name,
-          widget: object,
-          fields:
-            [
-              { name: en, label: English, widget: string },
-              { name: th, label: ไทย, widget: string },
-              { name: ru, label: Русский, widget: string },
-            ],
-        }
-      - { name: price_thb, label: 'Price (THB)', widget: number, value_type: float, min: 1 }
-      - {
-          name: category,
-          label: Category,
-          widget: select,
-          options: [one-plate, mains-share, snacks, pizza-fastfood, drinks],
-        }
-      - {
-          name: available,
-          label: 'Available (uncheck = stop list)',
-          widget: boolean,
-          default: true,
-        }
-      - {
-          name: featured,
-          label: 'Show on home page',
-          widget: boolean,
-          default: false,
-          required: false,
-        }
-      - {
-          name: description,
-          label: Description,
-          widget: object,
-          required: false,
-          fields:
-            [
-              { name: en, label: English, widget: text, required: false },
-              { name: th, label: ไทย, widget: text, required: false },
-              { name: ru, label: Русский, widget: text, required: false },
-            ],
-        }
-      - {
-          name: slug,
-          label: 'URL slug (per language)',
-          widget: object,
-          fields:
-            [
-              { name: en, label: English, widget: string },
-              { name: th, label: ไทย, widget: string },
-              { name: ru, label: Русский, widget: string },
-            ],
-        }
-      - {
-          name: images,
-          label: Photos,
-          widget: list,
-          required: false,
-          field: { name: image, label: Image, widget: image },
-        }
-      - {
-          name: dietaryTags,
-          label: 'Dietary tags',
-          widget: select,
-          multiple: true,
-          default: [vegan],
-          options: [vegan, jay, jain-friendly, gluten-free, raw, nut-free],
-        }
-      - {
-          name: allergens,
-          label: Allergens,
-          widget: select,
-          multiple: true,
-          required: false,
-          options: [peanut, soy, gluten],
-        }
-      - {
-          name: spicyLevel,
-          label: 'Spicy level (0–3)',
-          widget: number,
-          value_type: int,
-          min: 0,
-          max: 3,
-          default: 0,
-        }
-      - {
-          name: source,
-          label: 'Data source',
-          widget: select,
-          options: [grab_export, owner, retyped],
-          default: owner,
-        }
-      - { name: reviewedAt, label: 'Reviewed on', widget: datetime, required: false, default: '' }
-      - {
-          name: previousSlugs,
-          label: 'Previous slugs (for redirects)',
-          widget: list,
-          required: false,
-          field: { name: slug, label: Slug, widget: string },
-        }
+      - name: name
+        label: 'ชื่ออาหาร (Name)'
+        widget: object
+        fields:
+          - { name: en, label: 'อังกฤษ (English)', widget: string }
+          - { name: th, label: 'ไทย', widget: string }
+          - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+      - name: price_thb
+        label: 'ราคา บาท (Price, THB)'
+        widget: number
+        value_type: float
+        min: 1
+      - name: category
+        label: 'หมวดหมู่ (Category)'
+        widget: select
+        options:
+          - { label: 'อาหารจานเดียว (One-plate)', value: one-plate }
+          - { label: 'กับข้าว (Mains to share)', value: mains-share }
+          - { label: 'ของทานเล่น (Snacks)', value: snacks }
+          - { label: 'ฟาสต์ฟู้ด (Pizza & fast food)', value: pizza-fastfood }
+          - { label: 'เครื่องดื่ม (Drinks)', value: drinks }
+      - name: available
+        label: 'ยังขายอยู่ (Available)'
+        widget: boolean
+        default: true
+        hint: 'ของหมด/พักขาย → ปิดสวิตช์นี้แล้วกด Save จานจะหายจากเว็บ พอมีของค่อยเปิดกลับค่ะ'
+      - name: featured
+        label: 'โชว์หน้าแรก (Show on home page)'
+        widget: boolean
+        default: false
+        required: false
+      - name: description
+        label: 'คำอธิบาย (Description)'
+        widget: object
+        required: false
+        fields:
+          - { name: en, label: 'อังกฤษ (English)', widget: text, required: false }
+          - { name: th, label: 'ไทย', widget: text, required: false }
+          - { name: ru, label: 'รัสเซีย (Русский)', widget: text, required: false }
+      - name: slug
+        label: 'ลิงก์ URL (slug)'
+        widget: object
+        hint: 'เรื่องเทคนิค — ถ้าไม่แน่ใจอย่าแก้ ให้ทักผู้พัฒนาค่ะ'
+        fields:
+          - { name: en, label: 'อังกฤษ (English)', widget: string }
+          - { name: th, label: 'ไทย', widget: string }
+          - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+      - name: images
+        label: 'รูปภาพ (Photos)'
+        widget: list
+        required: false
+        field: { name: image, label: 'รูป (Image)', widget: image }
+      - name: dietaryTags
+        label: 'แท็กอาหาร (Dietary tags)'
+        widget: select
+        multiple: true
+        default: [vegan]
+        options:
+          - { label: 'วีแกน (vegan)', value: vegan }
+          - { label: 'อาหารเจ (jay)', value: jay }
+          - { label: 'เหมาะกับแขกเชน (jain-friendly)', value: jain-friendly }
+          - { label: 'ไร้กลูเตน (gluten-free)', value: gluten-free }
+          - { label: 'โรว์ฟู้ด (raw)', value: raw }
+          - { label: 'ไม่มีถั่ว (nut-free)', value: nut-free }
+      - name: allergens
+        label: 'สารก่อภูมิแพ้ (Allergens)'
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: 'ถั่วลิสง (peanut)', value: peanut }
+          - { label: 'ถั่วเหลือง (soy)', value: soy }
+          - { label: 'กลูเตน (gluten)', value: gluten }
+      - name: spicyLevel
+        label: 'ระดับความเผ็ด 0–3 (Spicy level)'
+        widget: number
+        value_type: int
+        min: 0
+        max: 3
+        default: 0
+      - name: source
+        label: 'ที่มาของข้อมูล (Data source)'
+        widget: select
+        default: owner
+        options:
+          - { label: 'นำเข้าจากไฟล์ Grab (grab_export)', value: grab_export }
+          - { label: 'เจ้าของร้านบอกเอง (owner)', value: owner }
+          - { label: 'พิมพ์ใหม่จากเมนูกระดาษ (retyped)', value: retyped }
+      - name: reviewedAt
+        label: 'ครอบครัวตรวจแล้วเมื่อ (Reviewed on)'
+        widget: datetime
+        required: false
+        default: ''
+      - name: previousSlugs
+        label: 'slug เก่า — สำหรับ redirect (Previous slugs)'
+        widget: list
+        required: false
+        field: { name: slug, label: slug, widget: string }
 
   - name: articles_en
-    label: Blog (English)
+    label: 'บล็อก — อังกฤษ (Blog EN)'
     folder: src/content/articles/en
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
-      - { name: locale, label: Language, widget: hidden, default: en }
-      - { name: title, label: Title, widget: string }
-      - { name: description, label: 'Short description (meta)', widget: text }
-      - { name: slug, label: 'URL slug', widget: string }
-      - { name: author, label: Author, widget: select, options: [family], default: family }
-      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
-      - { name: draft, label: Draft, widget: boolean, default: true }
-      - { name: body, label: Text, widget: markdown }
+      - name: translationKey
+        label: 'รหัสเชื่อมคำแปล (Translation key)'
+        widget: string
+        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: en }
+      - { name: title, label: 'หัวข้อ (Title)', widget: string }
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
+      - name: author
+        label: 'ผู้เขียน (Author)'
+        widget: select
+        default: family
+        options:
+          - { label: 'ครอบครัว (family)', value: family }
+      - name: publishedAt
+        label: 'วันที่เผยแพร่ (Published)'
+        widget: datetime
+        format: 'YYYY-MM-DD'
+      - name: draft
+        label: 'ฉบับร่าง (Draft)'
+        widget: boolean
+        default: true
+        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: articles_th
-    label: Blog (ไทย)
+    label: 'บล็อก — ไทย (Blog TH)'
     folder: src/content/articles/th
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
-      - { name: locale, label: Language, widget: hidden, default: th }
-      - { name: title, label: Title, widget: string }
-      - { name: description, label: 'Short description (meta)', widget: text }
-      - { name: slug, label: 'URL slug', widget: string }
-      - { name: author, label: Author, widget: select, options: [family], default: family }
-      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
-      - { name: draft, label: Draft, widget: boolean, default: true }
-      - { name: body, label: Text, widget: markdown }
+      - name: translationKey
+        label: 'รหัสเชื่อมคำแปล (Translation key)'
+        widget: string
+        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: th }
+      - { name: title, label: 'หัวข้อ (Title)', widget: string }
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
+      - name: author
+        label: 'ผู้เขียน (Author)'
+        widget: select
+        default: family
+        options:
+          - { label: 'ครอบครัว (family)', value: family }
+      - name: publishedAt
+        label: 'วันที่เผยแพร่ (Published)'
+        widget: datetime
+        format: 'YYYY-MM-DD'
+      - name: draft
+        label: 'ฉบับร่าง (Draft)'
+        widget: boolean
+        default: true
+        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: articles_ru
-    label: Blog (Русский)
+    label: 'บล็อก — รัสเซีย (Blog RU)'
     folder: src/content/articles/ru
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
-      - { name: locale, label: Language, widget: hidden, default: ru }
-      - { name: title, label: Title, widget: string }
-      - { name: description, label: 'Short description (meta)', widget: text }
-      - { name: slug, label: 'URL slug', widget: string }
-      - { name: author, label: Author, widget: select, options: [family], default: family }
-      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
-      - { name: draft, label: Draft, widget: boolean, default: true }
-      - { name: body, label: Text, widget: markdown }
+      - name: translationKey
+        label: 'รหัสเชื่อมคำแปล (Translation key)'
+        widget: string
+        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: ru }
+      - { name: title, label: 'หัวข้อ (Title)', widget: string }
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
+      - name: author
+        label: 'ผู้เขียน (Author)'
+        widget: select
+        default: family
+        options:
+          - { label: 'ครอบครัว (family)', value: family }
+      - name: publishedAt
+        label: 'วันที่เผยแพร่ (Published)'
+        widget: datetime
+        format: 'YYYY-MM-DD'
+      - name: draft
+        label: 'ฉบับร่าง (Draft)'
+        widget: boolean
+        default: true
+        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: pages
-    label: Static pages
+    label: 'หน้าเว็บถาวร (Static pages)'
     folder: src/content/pages
     create: false
     fields:
-      - { name: translationKey, label: 'Translation key', widget: string }
-      - { name: locale, label: Language, widget: select, options: [en, th, ru] }
-      - { name: title, label: Title, widget: string }
-      - { name: description, label: 'Short description (meta)', widget: text }
-      - { name: body, label: Text, widget: markdown }
+      - { name: translationKey, label: 'รหัสเชื่อมคำแปล (Translation key)', widget: string }
+      - name: locale
+        label: 'ภาษา (Language)'
+        widget: select
+        options:
+          - { label: 'อังกฤษ (EN)', value: en }
+          - { label: 'ไทย (TH)', value: th }
+          - { label: 'รัสเซีย (RU)', value: ru }
+      - { name: title, label: 'หัวข้อ (Title)', widget: string }
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
+      - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: site
-    label: Site settings
+    label: 'ตั้งค่าเว็บไซต์ (Site settings)'
     files:
       - name: settings
-        label: 'Cafe info (name, phone, links)'
+        label: 'ข้อมูลร้าน — ชื่อ เบอร์โทร ลิงก์ (Cafe info)'
         file: src/content/settings.json
         fields:
           - name: site
-            label: Settings
+            label: 'ตั้งค่า (Settings)'
             widget: object
             fields:
-              - { name: name, label: 'Official name', widget: string }
-              - {
-                  name: nameLocalized,
-                  label: 'Displayed name',
-                  widget: object,
-                  fields:
-                    [
-                      { name: en, label: English, widget: string },
-                      { name: th, label: ไทย, widget: string },
-                      { name: ru, label: Русский, widget: string },
-                    ],
-                }
-              - {
-                  name: tagline,
-                  label: Tagline,
-                  widget: object,
-                  fields:
-                    [
-                      { name: en, label: English, widget: string },
-                      { name: th, label: ไทย, widget: string },
-                      { name: ru, label: Русский, widget: string },
-                    ],
-                }
-              - { name: phone, label: Phone, widget: string }
-              - { name: whatsapp, label: 'WhatsApp link', widget: string, required: false }
+              - { name: name, label: 'ชื่อทางการ (Official name)', widget: string }
+              - name: nameLocalized
+                label: 'ชื่อที่แสดงบนเว็บ (Displayed name)'
+                widget: object
+                fields:
+                  - { name: en, label: 'อังกฤษ (English)', widget: string }
+                  - { name: th, label: 'ไทย', widget: string }
+                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+              - name: tagline
+                label: 'สโลแกน (Tagline)'
+                widget: object
+                fields:
+                  - { name: en, label: 'อังกฤษ (English)', widget: string }
+                  - { name: th, label: 'ไทย', widget: string }
+                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+              - { name: phone, label: 'เบอร์โทร (Phone)', widget: string }
+              - { name: whatsapp, label: 'ลิงก์ WhatsApp', widget: string, required: false }
               - { name: lineId, label: 'LINE ID', widget: string, required: false }
-              - { name: email, label: Email, widget: string, required: false }
-              - {
-                  name: social,
-                  label: 'Social links',
-                  widget: list,
-                  required: false,
-                  fields:
-                    [
-                      { name: platform, label: Platform, widget: string },
-                      { name: url, label: URL, widget: string },
-                    ],
-                }
-              - {
-                  name: orderingLinks,
-                  label: 'Ordering links (Grab…)',
-                  widget: list,
-                  required: false,
-                  fields:
-                    [
-                      { name: provider, label: Provider, widget: string },
-                      { name: url, label: URL, widget: string },
-                    ],
-                }
-              - {
-                  name: reviewLinks,
-                  label: 'Review links',
-                  widget: object,
-                  fields:
-                    [
-                      { name: google, label: Google, widget: string, required: false },
-                      { name: happycow, label: HappyCow, widget: string, required: false },
-                      { name: tripadvisor, label: TripAdvisor, widget: string, required: false },
-                    ],
-                }
+              - { name: email, label: 'อีเมล (Email)', widget: string, required: false }
+              - name: social
+                label: 'โซเชียลมีเดีย (Social links)'
+                widget: list
+                required: false
+                fields:
+                  - { name: platform, label: 'แพลตฟอร์ม (Platform)', widget: string }
+                  - { name: url, label: 'ลิงก์ (URL)', widget: string }
+              - name: orderingLinks
+                label: 'ลิงก์สั่งอาหาร — Grab ฯลฯ (Ordering links)'
+                widget: list
+                required: false
+                fields:
+                  - { name: provider, label: 'ผู้ให้บริการ (Provider)', widget: string }
+                  - { name: url, label: 'ลิงก์ (URL)', widget: string }
+              - name: reviewLinks
+                label: 'ลิงก์รีวิว (Review links)'
+                widget: object
+                fields:
+                  - { name: google, label: Google, widget: string, required: false }
+                  - { name: happycow, label: HappyCow, widget: string, required: false }
+                  - { name: tripadvisor, label: TripAdvisor, widget: string, required: false }
       - name: location
-        label: 'Address & opening hours'
+        label: 'ที่อยู่และเวลาเปิด-ปิด (Address & opening hours)'
         file: src/content/locations.json
         fields:
           - name: pattaya
-            label: Pattaya
+            label: 'พัทยา (Pattaya)'
             widget: object
             fields:
-              - {
-                  name: address,
-                  label: Address,
-                  widget: object,
-                  fields:
-                    [
-                      { name: en, label: English, widget: string },
-                      { name: th, label: ไทย, widget: string },
-                      { name: ru, label: Русский, widget: string },
-                    ],
-                }
-              - {
-                  name: geo,
-                  label: 'Coordinates (from the exact Google Maps pin)',
-                  widget: object,
-                  required: false,
-                  fields:
-                    [
-                      { name: lat, label: Latitude, widget: number, value_type: float },
-                      { name: lng, label: Longitude, widget: number, value_type: float },
-                    ],
-                }
-              - { name: mapsUrl, label: 'Google Maps link', widget: string, required: false }
-              - {
-                  name: hours,
-                  label: 'Opening hours',
-                  widget: list,
-                  fields:
-                    [
-                      {
-                        name: days,
-                        label: Days,
-                        widget: select,
-                        multiple: true,
-                        options: [mon, tue, wed, thu, fri, sat, sun],
-                      },
-                      { name: open, label: 'Opens (HH:MM)', widget: string },
-                      { name: close, label: 'Closes (HH:MM)', widget: string },
-                    ],
-                }
-              - {
-                  name: specialHours,
-                  label: 'Special days (holidays)',
-                  widget: list,
-                  required: false,
-                  fields:
-                    [
-                      { name: date, label: 'Date (YYYY-MM-DD)', widget: string },
-                      {
-                        name: open,
-                        label: 'Opens (empty = closed)',
-                        widget: string,
-                        required: false,
-                      },
-                      { name: close, label: Closes, widget: string, required: false },
-                      { name: note, label: Note, widget: string, required: false },
-                    ],
-                }
+              - name: address
+                label: 'ที่อยู่ (Address)'
+                widget: object
+                fields:
+                  - { name: en, label: 'อังกฤษ (English)', widget: string }
+                  - { name: th, label: 'ไทย', widget: string }
+                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+              - name: geo
+                label: 'พิกัดจากหมุด Google Maps (Coordinates)'
+                widget: object
+                required: false
+                fields:
+                  - { name: lat, label: 'ละติจูด (Latitude)', widget: number, value_type: float }
+                  - { name: lng, label: 'ลองจิจูด (Longitude)', widget: number, value_type: float }
+              - { name: mapsUrl, label: 'ลิงก์ Google Maps', widget: string, required: false }
+              - name: hours
+                label: 'เวลาเปิด-ปิด (Opening hours)'
+                widget: list
+                fields:
+                  - name: days
+                    label: 'วัน (Days)'
+                    widget: select
+                    multiple: true
+                    options:
+                      - { label: 'จันทร์ (Mon)', value: mon }
+                      - { label: 'อังคาร (Tue)', value: tue }
+                      - { label: 'พุธ (Wed)', value: wed }
+                      - { label: 'พฤหัสบดี (Thu)', value: thu }
+                      - { label: 'ศุกร์ (Fri)', value: fri }
+                      - { label: 'เสาร์ (Sat)', value: sat }
+                      - { label: 'อาทิตย์ (Sun)', value: sun }
+                  - { name: open, label: 'เปิด (HH:MM)', widget: string }
+                  - { name: close, label: 'ปิด (HH:MM)', widget: string }
+              - name: specialHours
+                label: 'วันพิเศษ/วันหยุด (Special days)'
+                widget: list
+                required: false
+                fields:
+                  - { name: date, label: 'วันที่ (YYYY-MM-DD)', widget: string }
+                  - name: open
+                    label: 'เปิด (Opens)'
+                    widget: string
+                    required: false
+                    hint: 'เว้นว่าง = ปิดทั้งวันค่ะ'
+                  - { name: close, label: 'ปิด (Closes)', widget: string, required: false }
+                  - { name: note, label: 'หมายเหตุ (Note)', widget: string, required: false }
