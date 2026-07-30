@@ -18,6 +18,8 @@
 # pinned 0.172.4 bundle), so config labels are the translatable 90% of what the
 # owner sees. Thai option labels for categories/tags mirror the site content
 # (categories.json, src/lib/ui.ts) — keep them in sync.
+# Developer's English twin: public/admin/en/config.yml (served at /admin/en) —
+# structural parity is enforced by scripts/check-admin-config-parity.ts.
 
 backend:
   name: github

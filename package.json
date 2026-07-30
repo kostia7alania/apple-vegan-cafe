@@ -18,7 +18,7 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "validate:content": "tsx scripts/validate-content.ts && tsx scripts/check-article-prices.ts",
+    "validate:content": "tsx scripts/validate-content.ts && tsx scripts/check-article-prices.ts && tsx scripts/check-admin-config-parity.ts",
     "audit:links": "tsx scripts/audit-links.ts",
     "generate:redirects": "tsx scripts/generate-redirects.ts",
     "import:menu": "tsx scripts/import-menu.ts",
