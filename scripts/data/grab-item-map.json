@@ -1,7 +1,10 @@
 {
-  "_comment": "Grab Bulk-Update ItemID -> dish file in src/content/dishes/. Regenerated 2026-07-18 from the owner CSV export. Used by quarterly re-syncs so renames/slug changes never orphan a Grab item.",
-  "export_file": "3-C4N2RUMDHB5DFA_20260718 (owner Grab Merchant Bulk Update download)",
+  "_comment": "Grab Bulk-Update ItemID -> dish file in src/content/dishes/. Reconciled 2026-08-14 against the owner GrabMerchant CSV/API export. Used by quarterly re-syncs so renames/slug changes never orphan a Grab item.",
+  "export_file": "3-C4N2RUMDHB5DFA_20260814 (owner GrabMerchant Bulk Update download)",
   "items": {
+    "THITE2023122800272082453": "mushroom-naem.json",
+    "THITE2026052714264160265": "vegan-spring-rolls.json",
+    "THITE2026052814053122594": "vegan-luuk-chuey.json",
     "THITE2026070605495767257": "green-tea-with-milk-foam.json",
     "THITE2026052808223806767": "vegan-som-tum-vegan-papaya-salad-with-fermented-soybean-sauce.json",
     "THITE2023122800120373952": "vegan-grilled-pork.json",

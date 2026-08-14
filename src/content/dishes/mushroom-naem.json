@@ -1,0 +1,32 @@
+{
+  "category": "snacks",
+  "price_thb": 159,
+  "name": {
+    "en": "Mushroom naem",
+    "th": "แหนมเห็ด",
+    "ru": "Грибной нэм"
+  },
+  "slug": {
+    "en": "mushroom-naem",
+    "th": "แหนมเห็ด",
+    "ru": "gribnoy-naem"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

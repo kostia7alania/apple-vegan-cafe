@@ -1,0 +1,32 @@
+{
+  "category": "snacks",
+  "price_thb": 149,
+  "name": {
+    "en": "Vegan spring rolls",
+    "th": "เปาะเปี๊ยะทอดไส้ผัก",
+    "ru": "Веганские спринг-роллы"
+  },
+  "slug": {
+    "en": "vegan-spring-rolls",
+    "th": "เปาะเปี๊ยะทอดไส้ผัก",
+    "ru": "veganskie-spring-rolly"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}

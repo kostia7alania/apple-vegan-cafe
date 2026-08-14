@@ -1,5 +1,5 @@
 # Legal menu sync with human confirmation (see imports/README.md).
-# - On any change to imports/menu.csv: dry-run diff into the job summary.
+# - On any change to a sanitized imports/menu.csv: dry-run diff into the job summary.
 # - Manual "Run workflow": applies the import and opens a PR — the family
 #   reviews dish-by-dish and merges to confirm.
 # NOTE: PRs opened with the default GITHUB_TOKEN do not trigger the CI
@@ -68,6 +68,6 @@ jobs:
           git commit -m "menu: sync from owner's Grab export (needs family review)"
           git push origin "$branch"
           gh pr create \
-            --title "Menu sync — review each dish and merge to confirm" \
-            --body "Imported from \`imports/menu.csv\` (owner's Grab Bulk-Update export). One file = one dish: review prices/names, remove any dish you don't want, then merge. Every dish has \`reviewedAt: null\` — set it after checking." \
+            --title "Menu sync — review source-field changes" \
+            --body "Reconciled from the owner's sanitized Grab export by exact ItemID. Review price, category and permanent availability changes. Editorial names, slugs, descriptions, media, featured flags, review dates and food facts are preserved." \
             --base main --head "$branch"

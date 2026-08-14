@@ -1,221 +1,287 @@
 /**
- * Menu import pipeline (Grab Merchant Portal → website).
+ * Exact-identity menu reconciliation (GrabMerchant export → website).
  *
- * LEGAL: the ONLY permitted data source is the owner's own export from the
- * GrabMerchant Portal ("Menu → Bulk Update → download catalogue") or a sheet
- * the owner filled in by hand. NEVER fetch anything from food.grab.com —
- * automated scraping violates Grab's Terms of Service (Cl. 3.1.11/3.1.12).
+ * Accepted inputs:
+ * - the owner's raw GrabMerchant Bulk Update CSV (`*ItemID,*ItemName,...`);
+ * - a sanitized CSV with
+ *   `grab_item_id,name_en,name_th,price_thb,category,availability`.
  *
- * Usage:
- *   pnpm import:menu -- --input menu.csv           # dry run: prints the diff
- *   pnpm import:menu -- --input menu.csv --write   # writes dish JSON files
- *
- * Expected CSV columns (header row required):
- *   name_en,name_th,price_thb,category,description,photo_file,availability
- * XLSX exports: save/convert as CSV first.
- *
- * Every imported dish is written with source="grab_export" and reviewedAt=null.
- * A human (the owner) must verify each dish and set reviewedAt before launch.
+ * The stable identity is always Grab ItemID. The importer never matches by a
+ * display name, never downloads Photo columns and never overwrites editorial
+ * names, slugs, descriptions, media, featured flags or verified food facts.
+ * It reconciles only price, site category and permanent catalogue availability.
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { basename, join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const dishesDir = join(root, 'src/content/dishes');
 const categoriesFile = join(root, 'src/content/categories.json');
+const itemMapFile = join(root, 'scripts/data/grab-item-map.json');
+const ITEM_ID_RE = /^THITE\d{19}$/;
 
-// --- minimal RFC 4180 CSV parser (quotes, escaped quotes, newlines in cells) ---
+type Availability = 'AVAILABLE' | 'UNAVAILABLE_PERMANENTLY' | 'UNAVAILABLE_TODAY';
+
+interface ImportRow {
+  line: number;
+  itemId: string;
+  sourceName: string;
+  price: number;
+  category: string;
+  availability: Availability;
+}
+
+interface DishRecord {
+  category: string;
+  price_thb: number;
+  available: boolean;
+  [key: string]: unknown;
+}
+
+interface PlannedWrite {
+  itemId: string;
+  file: string;
+  changedFields: string[];
+  content: string;
+}
+
 function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
   let cell = '';
   let inQuotes = false;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
     if (inQuotes) {
-      if (ch === '"') {
+      if (char === '"') {
         if (text[i + 1] === '"') {
           cell += '"';
-          i++;
+          i += 1;
         } else {
           inQuotes = false;
         }
       } else {
-        cell += ch;
+        cell += char;
       }
-    } else if (ch === '"') {
+    } else if (char === '"') {
       inQuotes = true;
-    } else if (ch === ',') {
+    } else if (char === ',') {
       row.push(cell);
       cell = '';
-    } else if (ch === '\n' || ch === '\r') {
-      if (ch === '\r' && text[i + 1] === '\n') i++;
+    } else if (char === '\n' || char === '\r') {
+      if (char === '\r' && text[i + 1] === '\n') i += 1;
       row.push(cell);
       cell = '';
-      if (row.some((c) => c.trim() !== '')) rows.push(row);
+      if (row.some((value) => value.trim() !== '')) rows.push(row);
       row = [];
     } else {
-      cell += ch;
+      cell += char;
     }
   }
+
+  if (inQuotes) throw new Error('CSV has an unmatched quote');
   row.push(cell);
-  if (row.some((c) => c.trim() !== '')) rows.push(row);
+  if (row.some((value) => value.trim() !== '')) rows.push(row);
   return rows;
 }
 
-function slugifyLatin(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+function parseAvailability(value: string, line: number): Availability {
+  const normalized = value.trim().toUpperCase().replaceAll('-', '_');
+  const aliases: Record<string, Availability> = {
+    TRUE: 'AVAILABLE',
+    YES: 'AVAILABLE',
+    '1': 'AVAILABLE',
+    FALSE: 'UNAVAILABLE_PERMANENTLY',
+    NO: 'UNAVAILABLE_PERMANENTLY',
+    '0': 'UNAVAILABLE_PERMANENTLY',
+    OUT: 'UNAVAILABLE_PERMANENTLY',
+  };
+  const status = aliases[normalized] ?? normalized;
+  if (!['AVAILABLE', 'UNAVAILABLE_PERMANENTLY', 'UNAVAILABLE_TODAY'].includes(status)) {
+    throw new Error(`line ${line}: unsupported availability "${value}"`);
+  }
+  return status as Availability;
 }
 
-/** Thai slugs keep Thai script (Google-endorsed); just normalize whitespace. */
-function slugifyThai(value: string): string {
-  return value.trim().replace(/\s+/g, '-');
-}
-
-// --- args ---------------------------------------------------------------------
 const args = process.argv.slice(2);
 const inputIndex = args.indexOf('--input');
 const inputPath = inputIndex >= 0 ? args[inputIndex + 1] : undefined;
 const write = args.includes('--write');
 if (!inputPath) {
-  console.error('usage: pnpm import:menu -- --input <file.csv> [--write]');
+  console.error('usage: pnpm import:menu -- --input <grab-export.csv> [--write]');
   process.exit(1);
 }
 
-const categories = JSON.parse(readFileSync(categoriesFile, 'utf8')) as { id: string }[];
-const categoryIds = new Set(categories.map((c) => c.id));
+const categoryIds = new Set(
+  (JSON.parse(readFileSync(categoriesFile, 'utf8')) as { id: string }[]).map(({ id }) => id),
+);
+const grabCategoryToSite: Record<string, string> = {
+  เครื่องดื่ม: 'drinks',
+  อาหารจานเดียว: 'one-plate',
+  ของทานเล่น: 'snacks',
+  กับข้าว: 'mains-share',
+  ฟาดฟู้ดส์: 'pizza-fastfood',
+  ฟาสต์ฟู้ด: 'pizza-fastfood',
+};
+
+const itemMap = JSON.parse(readFileSync(itemMapFile, 'utf8')) as {
+  items?: Record<string, string>;
+};
+if (!itemMap.items || typeof itemMap.items !== 'object') {
+  throw new Error('grab-item-map.json must contain an items object');
+}
+
+const mappedTargets = new Set<string>();
+for (const [itemId, file] of Object.entries(itemMap.items)) {
+  if (!ITEM_ID_RE.test(itemId)) throw new Error(`invalid mapped Grab ItemID: ${itemId}`);
+  if (basename(file) !== file || !file.endsWith('.json')) {
+    throw new Error(`unsafe mapped dish filename for ${itemId}: ${file}`);
+  }
+  if (mappedTargets.has(file)) throw new Error(`duplicate dish target in ItemID map: ${file}`);
+  if (!existsSync(join(dishesDir, file))) throw new Error(`mapped dish file is missing: ${file}`);
+  mappedTargets.add(file);
+}
 
 const rows = parseCsv(readFileSync(resolve(inputPath), 'utf8'));
-const header = rows.shift();
-if (!header) {
-  console.error('empty CSV');
-  process.exit(1);
-}
-const col = (name: string) => header.findIndex((h) => h.trim().toLowerCase() === name);
-const idx = {
-  name_en: col('name_en'),
-  name_th: col('name_th'),
-  price_thb: col('price_thb'),
-  category: col('category'),
-  description: col('description'),
-  photo_file: col('photo_file'),
-  availability: col('availability'),
-};
-for (const [name, i] of Object.entries(idx)) {
-  if (
-    i < 0 &&
-    (name === 'name_en' || name === 'name_th' || name === 'price_thb' || name === 'category')
-  ) {
-    console.error(`missing required CSV column: ${name}`);
-    process.exit(1);
-  }
-}
-
-// existing dishes, keyed by normalized English name, for diffing
-interface ExistingDish {
-  file: string;
-  price_thb: number;
-  available: boolean;
-}
-const existing = new Map<string, ExistingDish>();
-if (existsSync(dishesDir)) {
-  for (const file of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))) {
-    const data = JSON.parse(readFileSync(join(dishesDir, file), 'utf8'));
-    existing.set(
-      String(data.name?.en ?? '')
-        .trim()
-        .toLowerCase(),
-      {
-        file,
-        price_thb: data.price_thb,
-        available: data.available,
-      },
+const rawHeader = rows.shift();
+if (!rawHeader) throw new Error('empty CSV');
+const header = rawHeader.map((value, index) =>
+  (index === 0 ? value.replace(/^\uFEFF/, '') : value).trim(),
+);
+if (new Set(header).size !== header.length) throw new Error('CSV contains duplicate headers');
+for (const [index, row] of rows.entries()) {
+  if (row.length !== header.length) {
+    throw new Error(
+      `logical row ${index + 2}: expected ${header.length} columns, received ${row.length}`,
     );
   }
 }
 
+const column = (name: string) => header.indexOf(name);
+const rawGrabExport = column('*ItemID') >= 0;
+const requiredHeaders = rawGrabExport
+  ? ['*ItemID', '*ItemName', '*Price', '*CategoryName', '*AvailableStatus']
+  : ['grab_item_id', 'name_en', 'name_th', 'price_thb', 'category', 'availability'];
+for (const name of requiredHeaders) {
+  if (column(name) < 0) throw new Error(`missing required CSV column: ${name}`);
+}
+
+const dataRows = rawGrabExport
+  ? rows.filter(
+      (row) => !row[column('*ItemID')]?.startsWith('[Please refrain from deleting or editing'),
+    )
+  : rows;
+const imported: ImportRow[] = [];
 const errors: string[] = [];
-const report = { new: 0, changed: 0, unchanged: 0 };
-const seenNames = new Set<string>();
+const seenItemIds = new Set<string>();
 
-rows.forEach((row, rowIndex) => {
-  const line = rowIndex + 2; // 1-based + header
-  const nameEn = (row[idx.name_en] ?? '').trim();
-  const nameTh = (row[idx.name_th] ?? '').trim();
-  const priceRaw = (row[idx.price_thb] ?? '').trim();
-  const category = (row[idx.category] ?? '').trim();
-  const description = idx.description >= 0 ? (row[idx.description] ?? '').trim() : '';
-  const photo = idx.photo_file >= 0 ? (row[idx.photo_file] ?? '').trim() : '';
-  const availability = idx.availability >= 0 ? (row[idx.availability] ?? '').trim() : 'true';
+for (const [index, row] of dataRows.entries()) {
+  const line = index + (rawGrabExport ? 3 : 2);
+  const itemId = row[column(rawGrabExport ? '*ItemID' : 'grab_item_id')]?.trim() ?? '';
+  const sourceName = row[column(rawGrabExport ? '*ItemName' : 'name_en')]?.trim() ?? '';
+  const priceRaw = row[column(rawGrabExport ? '*Price' : 'price_thb')]?.trim() ?? '';
+  const sourceCategory = row[column(rawGrabExport ? '*CategoryName' : 'category')]?.trim() ?? '';
+  const availabilityRaw =
+    row[column(rawGrabExport ? '*AvailableStatus' : 'availability')]?.trim() ?? '';
 
-  if (!nameEn) return errors.push(`line ${line}: empty name_en`);
-  if (!nameTh) errors.push(`line ${line}: empty name_th`);
+  if (!ITEM_ID_RE.test(itemId)) {
+    errors.push(`line ${line}: invalid Grab ItemID "${itemId}"`);
+    continue;
+  }
+  if (seenItemIds.has(itemId)) {
+    errors.push(`line ${line}: duplicate Grab ItemID ${itemId}`);
+    continue;
+  }
+  seenItemIds.add(itemId);
   const price = Number(priceRaw);
   if (!Number.isFinite(price) || price <= 0) {
-    return errors.push(`line ${line}: invalid price "${priceRaw}"`);
+    errors.push(`line ${line}: invalid price "${priceRaw}" for ${itemId}`);
+    continue;
   }
-  if (!categoryIds.has(category)) {
-    return errors.push(
-      `line ${line}: unknown category "${category}" (add it to src/content/categories.json first)`,
+  const category = rawGrabExport ? grabCategoryToSite[sourceCategory] : sourceCategory;
+  if (!category || !categoryIds.has(category)) {
+    errors.push(`line ${line}: unsupported category "${sourceCategory}" for ${itemId}`);
+    continue;
+  }
+  try {
+    imported.push({
+      line,
+      itemId,
+      sourceName,
+      price,
+      category,
+      availability: parseAvailability(availabilityRaw, line),
+    });
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : String(error));
+  }
+}
+
+const plannedWrites: PlannedWrite[] = [];
+let unchanged = 0;
+let temporaryUnavailable = 0;
+for (const row of imported) {
+  const file = itemMap.items[row.itemId];
+  if (!file) {
+    errors.push(
+      `line ${row.line}: unmapped Grab ItemID ${row.itemId} (${row.sourceName || 'unnamed item'}); add an exact file mapping before importing`,
     );
+    continue;
   }
-  const nameKey = nameEn.toLowerCase();
-  if (seenNames.has(nameKey)) return errors.push(`line ${line}: duplicate dish "${nameEn}"`);
-  seenNames.add(nameKey);
-  if (photo && !existsSync(resolve(root, 'public/uploads', photo))) {
-    errors.push(`line ${line}: photo file not found in public/uploads/: "${photo}"`);
+  const dish = JSON.parse(readFileSync(join(dishesDir, file), 'utf8')) as DishRecord;
+  const nextAvailability =
+    row.availability === 'UNAVAILABLE_TODAY' ? dish.available : row.availability === 'AVAILABLE';
+  if (row.availability === 'UNAVAILABLE_TODAY') temporaryUnavailable += 1;
+
+  const changedFields: string[] = [];
+  if (dish.price_thb !== row.price) changedFields.push(`price ฿${dish.price_thb}→฿${row.price}`);
+  if (dish.category !== row.category) {
+    changedFields.push(`category ${dish.category}→${row.category}`);
+  }
+  if (dish.available !== nextAvailability) {
+    changedFields.push(`available ${dish.available}→${nextAvailability}`);
+  }
+  if (changedFields.length === 0) {
+    unchanged += 1;
+    continue;
   }
 
-  const available = !/^(false|0|no|out)$/i.test(availability);
-  const prior = existing.get(nameKey);
-  if (prior && prior.price_thb === price && prior.available === available) {
-    report.unchanged++;
-    return;
-  }
-  report[prior ? 'changed' : 'new']++;
-  console.log(
-    prior
-      ? `CHANGED ${nameEn}: ฿${prior.price_thb}→฿${price}, available ${prior.available}→${available}`
-      : `NEW     ${nameEn} — ฿${price} (${category})`,
-  );
-
-  if (!write) return;
-  const fileName = prior?.file ?? `${slugifyLatin(nameEn)}.json`;
-  const dish = {
-    category,
-    price_thb: price,
-    name: { en: nameEn, th: nameTh, ru: nameEn }, // RU translation: human task, seeded with EN
-    description: description ? { en: description } : undefined,
-    slug: {
-      en: slugifyLatin(nameEn),
-      th: slugifyThai(nameTh || nameEn),
-      ru: slugifyLatin(nameEn),
-    },
-    previousSlugs: [],
-    images: photo ? [`/uploads/${photo}`] : [],
-    dietaryTags: ['vegan'],
-    allergens: [],
-    spicyLevel: 0,
-    available,
-    featured: false,
-    source: 'grab_export',
-    reviewedAt: null, // REQUIRED: the owner reviews every dish, then sets this
+  const nextDish = {
+    ...dish,
+    category: row.category,
+    price_thb: row.price,
+    available: nextAvailability,
   };
-  mkdirSync(dishesDir, { recursive: true });
-  writeFileSync(join(dishesDir, fileName), `${JSON.stringify(dish, null, 2)}\n`);
-});
+  plannedWrites.push({
+    itemId: row.itemId,
+    file,
+    changedFields,
+    content: `${JSON.stringify(nextDish, null, 2)}\n`,
+  });
+}
 
-console.log(
-  `\nimport ${write ? 'APPLIED' : 'dry run'}: ${report.new} new, ${report.changed} changed, ${report.unchanged} unchanged`,
-);
+const missingMapped = Object.keys(itemMap.items).filter((itemId) => !seenItemIds.has(itemId));
 if (errors.length > 0) {
-  console.error(`\n${errors.length} problem(s):`);
-  for (const e of errors) console.error(`  - ${e}`);
+  console.error(`import rejected — ${errors.length} problem(s), no files written:`);
+  for (const error of errors) console.error(`  - ${error}`);
   process.exit(1);
 }
-if (!write) console.log('re-run with --write to apply');
+
+for (const plan of plannedWrites) {
+  console.log(`CHANGED ${plan.itemId} → ${plan.file}: ${plan.changedFields.join(', ')}`);
+}
+for (const itemId of missingMapped) {
+  console.log(`MISSING ${itemId} → ${itemMap.items[itemId]} (reported only; never auto-deleted)`);
+}
+
+if (write) {
+  // All rows, mappings and intended outputs were validated above. Only now may
+  // writes begin; each write preserves every field outside the three-source fields.
+  for (const plan of plannedWrites) writeFileSync(join(dishesDir, plan.file), plan.content);
+}
+
+console.log(
+  `\nimport ${write ? 'APPLIED' : 'dry run'}: ${imported.length} source rows, ${plannedWrites.length} changed, ${unchanged} unchanged, ${temporaryUnavailable} temporary sold-out no-op, ${missingMapped.length} mapped IDs missing from this export`,
+);
+if (!write && plannedWrites.length > 0) console.log('re-run with --write to apply this exact plan');

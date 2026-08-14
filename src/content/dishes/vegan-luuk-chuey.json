@@ -1,0 +1,32 @@
+{
+  "category": "mains-share",
+  "price_thb": 189,
+  "name": {
+    "en": "Vegan Luuk Chuey",
+    "th": "ไข่ลูกเขยเจ",
+    "ru": "Веганские «яйца зятя»"
+  },
+  "slug": {
+    "en": "vegan-luuk-chuey",
+    "th": "ไข่ลูกเขยเจ",
+    "ru": "veganskie-yaytsa-zyatya"
+  },
+  "previousSlugs": [],
+  "images": [],
+  "dietaryTags": ["vegan", "jay"],
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
+  "available": true,
+  "featured": false,
+  "source": "grab_export",
+  "reviewedAt": null
+}
