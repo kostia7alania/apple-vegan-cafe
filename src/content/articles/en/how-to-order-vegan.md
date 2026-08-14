@@ -4,15 +4,14 @@ locale: en
 title: 'Order vegan food in Thailand: Thai phrases and เจ'
 description: 'Key Thai phrases with script and romanization, the animal ingredients hiding in Thai dishes, and the yellow เจ flag that marks safe street food.'
 slug: how-to-order-vegan-food-in-thailand
-author: family
+author: editorial
 publishedAt: 2026-07-17
 draft: false
 ---
 
 Thai food looks like paradise for vegans — vegetables, tofu, rice, fruit everywhere. Then you
 learn how many dishes quietly contain fish sauce. The good news: with a handful of words and a
-little caution, ordering vegan in Thailand is very doable. Here is what we tell friends who visit,
-written by a family that cooks Thai food for a living.
+little caution, ordering vegan in Thailand is very doable. Here is what we tell friends who visit.
 
 ## The one word that does most of the work
 
@@ -66,15 +65,14 @@ usually reveal whether a kitchen really understands "no fish sauce".
 
 If you are ordering to a hotel instead of walking in, check whether the restaurant explains
 delivery clearly. Our own [vegan food delivery page](/vegan-delivery-pattaya/) keeps the GrabFood
-and pickup details in one place.
+status and delivery-area guidance in one place.
 
 ## And a note from us
 
-At our cafe, none of this vigilance is needed. The whole kitchen is plant-based: no fish sauce, no
-egg, no dairy anywhere on the premises, every day of the year. The pad thai (฿149) is made without
-egg or fish sauce by design, and the Thai iced tea uses our house-made oat milk instead of
-condensed milk. Come practise your "mai sai nam pla" on us — we will smile, because there was
-never any nam pla here to begin with.
+At our cafe, the whole menu is plant-based: no fish sauce, egg or dairy in the recipes, every day of
+the year. For severe allergies, still tell the team your needs before ordering because we have not
+published a verified cross-contact protocol. Come practise your "mai sai nam pla" on us — we will
+smile, because fish sauce is not part of our menu.
 
 The [full menu with prices](/menu/) is online, and if you are an early riser, so is
-[breakfast from 7:00](/vegan-breakfast-pattaya/).
+[vegan breakfast](/vegan-breakfast-pattaya/).

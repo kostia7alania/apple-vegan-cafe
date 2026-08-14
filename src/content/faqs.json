@@ -9,9 +9,9 @@
       "ru": "Всё ли меню веганское?"
     },
     "answer": {
-      "en": "Yes — 100%. We are a fully vegan (เจ) kitchen: no meat, no fish sauce, no egg, no dairy.",
-      "th": "ใช่ 100% ครัวของเราเป็นเจทั้งหมด ไม่มีเนื้อสัตว์ น้ำปลา ไข่ หรือนม",
-      "ru": "Да, на 100%. Наша кухня полностью веганская (เจ): без мяса, рыбного соуса, яиц и молочных продуктов."
+      "en": "Yes — 100%. We are a fully vegan (เจ) kitchen: no meat, no fish sauce, no egg, no dairy. Names such as vegan chicken, pork, fish and egg always refer to plant-based alternatives.",
+      "th": "ใช่ 100% ครัวของเราเป็นเจทั้งหมด ไม่มีเนื้อสัตว์ น้ำปลา ไข่ หรือนม ชื่อเมนู เช่น ไก่เจ หมูเจ ปลาเจ หรือไข่เจ หมายถึงผลิตภัณฑ์จากพืชทั้งหมด",
+      "ru": "Да, на 100%. Наша кухня полностью веганская (เจ): без мяса, рыбного соуса, яиц и молочных продуктов. Слова «курица», «свинина», «рыба» и «яйцо» в названиях означают растительные аналоги."
     }
   },
   {
@@ -24,9 +24,9 @@
       "ru": "Используете ли вы рыбный или устричный соус?"
     },
     "answer": {
-      "en": "Never. We season with soy sauce, salt and Thai herbs only — the whole kitchen is plant-based.",
-      "th": "ไม่ใช้เลย เราปรุงด้วยซีอิ๊ว เกลือ และสมุนไพรไทยเท่านั้น",
-      "ru": "Никогда. Мы готовим только на соевом соусе, соли и тайских травах — вся кухня растительная."
+      "en": "No. Fish sauce and oyster sauce are animal products, and our entire menu is plant-based.",
+      "th": "ไม่ใช้ค่ะ น้ำปลาและน้ำมันหอยเป็นผลิตภัณฑ์จากสัตว์ ส่วนเมนูทั้งร้านของเราเป็นอาหารจากพืช",
+      "ru": "Нет. Рыбный и устричный соусы — продукты животного происхождения, а всё наше меню растительное."
     }
   },
   {
@@ -39,9 +39,9 @@
       "ru": "Есть ли риск контакта с продуктами животного происхождения?"
     },
     "answer": {
-      "en": "No. Ours is a single, fully plant-based kitchen — no meat, dairy, eggs or fish products are ever on the premises, so there is nothing to cross-contact with.",
-      "th": "ไม่มี ครัวของเราเป็นครัวเจล้วนเพียงครัวเดียว ไม่มีเนื้อสัตว์ นม ไข่ หรือผลิตภัณฑ์จากปลาเข้ามาในร้านเลย จึงไม่มีอะไรให้ปนเปื้อน",
-      "ru": "Нет. У нас одна, полностью растительная кухня: мясо, молочные продукты, яйца и рыба вообще не попадают в заведение, поэтому контактировать просто не с чем."
+      "en": "The menu is fully vegan. We have not yet published a verified cross-contact protocol, so guests with severe allergies should explain their needs to the team before ordering.",
+      "th": "เมนูทั้งหมดเป็นวีแกน แต่เรายังไม่ได้เผยแพร่ขั้นตอนป้องกันการปนเปื้อนที่ตรวจสอบแล้ว ผู้ที่มีอาการแพ้รุนแรงควรแจ้งพนักงานก่อนสั่งอาหาร",
+      "ru": "Меню полностью веганское, но подтверждённый протокол по перекрёстному контакту пока не опубликован. При тяжёлой аллергии обязательно сообщите команде до заказа."
     }
   },
   {
@@ -54,9 +54,9 @@
       "ru": "Есть ли у вас блюда без глютена?"
     },
     "answer": {
-      "en": "Yes — several dishes are gluten-free and marked on the menu. To be honest with you: we are not a certified gluten-free kitchen, so we cannot guarantee zero traces. Tell us when you order and we will help you choose.",
-      "th": "มีหลายจานที่ไม่มีกลูเตน และมีป้ายกำกับไว้ในเมนู แต่ขอบอกตามตรงว่าครัวของเราไม่ได้รับการรับรองปลอดกลูเตน จึงรับประกันไม่ได้ว่าไม่มีการปนเปื้อนเลย แจ้งเราตอนสั่งอาหารได้เลย เรายินดีช่วยเลือก",
-      "ru": "Да, несколько блюд без глютена — они отмечены в меню. Честно скажем: наша кухня не сертифицирована как безглютеновая, поэтому полное отсутствие следов гарантировать не можем. Скажите нам при заказе — поможем выбрать."
+      "en": "Some dishes may be made without gluten ingredients, but we do not currently publish verified gluten-free labels and cannot guarantee zero traces. Tell us about your restrictions before ordering so the team can explain the known ingredients.",
+      "th": "อาหารบางจานอาจทำโดยไม่มีส่วนผสมที่มีกลูเตน แต่ตอนนี้เรายังไม่ได้เผยแพร่ป้ายเมนูปลอดกลูเตนที่ตรวจสอบแล้ว และรับประกันไม่ได้ว่าไม่มีการปนเปื้อน กรุณาแจ้งข้อจำกัดก่อนสั่งเพื่อให้ทีมอธิบายส่วนผสมที่ทราบ",
+      "ru": "Некоторые блюда могут готовиться без ингредиентов с глютеном, но подтверждённых отметок в меню сейчас нет, а отсутствие следов мы не гарантируем. Сообщите об ограничениях до заказа, чтобы команда могла уточнить известный состав."
     }
   },
   {
@@ -69,9 +69,9 @@
       "ru": "Есть ли у вас доставка?"
     },
     "answer": {
-      "en": "Yes — via GrabFood: search for Apple Vegan Cafe in the app. The cafe itself runs 7:00–22:00, but we often keep Grab orders on around the clock — the app always shows our live status. You can also call us and pick your order up at the cafe.",
-      "th": "มีค่ะ ส่งผ่าน GrabFood ค้นหา Apple Vegan Cafe ในแอปได้เลย หน้าร้านเปิด 7:00–22:00 แต่ใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ หรือจะโทรสั่งแล้วมารับที่ร้านก็ได้",
-      "ru": "Да — через GrabFood: найдите Apple Vegan Cafe в приложении. Само кафе работает 7:00–22:00, но заказы в Grab мы часто принимаем почти круглосуточно — актуальный статус всегда виден в приложении. Можно также позвонить и забрать заказ в кафе."
+      "en": "Use the confirmed ordering link on this site and check your address in the delivery app for live availability.",
+      "th": "ใช้ลิงก์สั่งอาหารที่ยืนยันแล้วบนเว็บไซต์ และตรวจสอบที่อยู่ในแอปเพื่อดูสถานะล่าสุด",
+      "ru": "Используйте подтверждённую ссылку заказа на сайте и проверьте адрес в приложении — там показана актуальная доступность."
     }
   },
   {
@@ -84,9 +84,9 @@
       "ru": "Какие у вас часы работы? Когда выходной?"
     },
     "answer": {
-      "en": "We are open every day, 7:00–22:00. And we often keep Grab delivery orders on around the clock — the app shows our live status.",
-      "th": "เราเปิดทุกวัน เวลา 7:00–22:00 น. และใน Grab เรามักเปิดรับออเดอร์เกือบตลอดเวลา สถานะจริงดูในแอปได้เลยค่ะ",
-      "ru": "Мы открыты каждый день с 7:00 до 22:00. А заказы в Grab часто принимаем почти круглосуточно — статус виден в приложении."
+      "en": "Current regular and special hours are published on this site.",
+      "th": "เว็บไซต์นี้แสดงเวลาปกติและเวลาพิเศษล่าสุดของร้าน",
+      "ru": "Актуальные обычные и специальные часы опубликованы на сайте."
     }
   },
   {
@@ -99,9 +99,9 @@
       "ru": "Можно ли расплатиться картой?"
     },
     "answer": {
-      "en": "We currently accept cash. Payment options may change, so please check with us about bank transfers or QR payment before your visit.",
-      "th": "ตอนนี้เรารับเงินสด ช่องทางชำระเงินอาจเปลี่ยนแปลงได้ หากต้องการโอนหรือสแกน QR รบกวนสอบถามทางร้านก่อนมานะคะ",
-      "ru": "Сейчас мы принимаем наличные. Способы оплаты могут меняться, поэтому насчёт перевода или оплаты по QR-коду лучше уточнить у нас заранее."
+      "en": "We have not yet published a verified payment-method list. Please contact us before your visit if you need to pay by card, transfer or QR.",
+      "th": "เรายังไม่ได้เผยแพร่รายการช่องทางชำระเงินที่ยืนยันแล้ว หากต้องการชำระด้วยบัตร โอนเงิน หรือ QR กรุณาติดต่อร้านก่อนมา",
+      "ru": "Мы ещё не опубликовали подтверждённый список способов оплаты. Если вам нужна оплата картой, переводом или QR, уточните у нас до визита."
     }
   },
   {
@@ -114,9 +114,9 @@
       "ru": "Подходит ли еда для православного поста?"
     },
     "answer": {
-      "en": "Yes. Everything we cook is 100% plant-based all year — no meat, fish, egg or dairy — so it fits the Thai เจ observance and meat-free fasting traditions such as Orthodox Lent by definition.",
-      "th": "เหมาะค่ะ อาหารของเราเป็นเจแท้ 100% ตลอดทั้งปี ไม่ใช่เฉพาะช่วงเทศกาลกินเจ ทานเจได้อย่างสบายใจทุกวันค่ะ",
-      "ru": "Да. Вся наша еда круглый год на 100% растительная — без мяса, рыбы, яиц и молочного, — поэтому по определению подходит для православного поста, включая строгие дни."
+      "en": "The menu contains no meat, fish, egg or dairy. Religious fasting rules vary, including rules about oil, alcohol and strict days; compare this with your practice and ask the team before ordering if needed.",
+      "th": "เมนูไม่มีเนื้อสัตว์ ปลา ไข่ หรือนม แต่หลักการถือศีลหรือการกินเจของแต่ละท่านอาจต่างกัน รวมถึงเรื่องน้ำมัน แอลกอฮอล์ และข้อปฏิบัติในบางวัน กรุณาเทียบกับแนวทางของท่านและสอบถามทีมก่อนสั่งหากจำเป็น",
+      "ru": "В меню нет мяса, рыбы, яиц и молочных продуктов. Правила религиозного поста различаются, в том числе в отношении масла, алкоголя и строгих дней; сверьте меню со своей практикой и при необходимости уточните у команды до заказа."
     }
   },
   {
@@ -129,9 +129,9 @@
       "ru": "Ваша еда халяльная?"
     },
     "answer": {
-      "en": "We don't hold a halal certificate, so we won't claim the word. What we can promise: the kitchen is 100% plant-based — no meat of any kind, no pork, no lard, and nothing shares a pan with them, because they are simply never here. Many Muslim guests are comfortable with that; the choice is always yours.",
-      "th": "ร้านเราไม่มีใบรับรองฮาลาล จึงไม่ขอกล่าวอ้างคำนั้น แต่ที่รับรองได้คือ ครัวของเราเป็นพืช 100% ไม่มีเนื้อสัตว์ใด ๆ ไม่มีหมู ไม่มีน้ำมันหมูในร้านเลย แขกมุสลิมหลายท่านสบายใจที่จะทาน แล้วแต่ท่านพิจารณาค่ะ",
-      "ru": "Халяль-сертификата у нас нет, поэтому этим словом мы не разбрасываемся. Что можем обещать твёрдо: кухня на 100% растительная — никакого мяса, свинины и смальца в заведении просто не бывает. Многим гостям-мусульманам этого достаточно; решение всегда за вами."
+      "en": "Our menu is 100% plant-based. We have not yet published verified information about halal certification or cooking alcohol, so we do not describe the food as halal. If either point matters to you, please ask the team before ordering.",
+      "th": "เมนูของเราเป็นอาหารจากพืช 100% ขณะนี้เรายังไม่ได้เผยแพร่ข้อมูลที่ยืนยันแล้วเกี่ยวกับใบรับรองฮาลาลหรือการใช้แอลกอฮอล์ในการปรุงอาหาร จึงไม่กล่าวอ้างว่าอาหารเป็นฮาลาล หากข้อมูลสองข้อนี้สำคัญต่อคุณ โปรดสอบถามทีมงานก่อนสั่งอาหาร",
+      "ru": "Наше меню на 100% растительное. Мы пока не опубликовали подтверждённые данные о халяль-сертификации и использовании алкоголя в готовке, поэтому не называем еду халяльной. Если это важно для вас, уточните оба пункта у команды до заказа."
     }
   },
   {
@@ -144,24 +144,9 @@
       "ru": "Можно ли заказать еду поздно ночью?"
     },
     "answer": {
-      "en": "Often yes. The dining room closes at 22:00, but we are a family business and usually keep GrabFood orders on around the clock — a late order literally wakes the kitchen up. We can't promise every single night, so the Grab app is the source of truth: if it shows us open, we're cooking.",
-      "th": "ส่วนใหญ่ได้ค่ะ หน้าร้านปิด 22:00 แต่เราเป็นร้านครอบครัวและมักเปิดรับออเดอร์ใน GrabFood เกือบตลอดเวลา ออเดอร์ดึก ๆ ปลุกครัวได้จริง ๆ ค่ะ แต่รับปากทุกคืนไม่ได้ ให้ดูสถานะจริงในแอป Grab เลยนะคะ ถ้าขึ้นว่าเปิด แปลว่าเรากำลังทำอาหารค่ะ",
-      "ru": "Чаще всего — да. Зал закрывается в 22:00, но мы семейный бизнес и заказы в GrabFood обычно принимаем почти круглосуточно: ночной заказ буквально будит кухню. Обещать каждую ночь не можем, поэтому источник истины — приложение Grab: если там «открыто», мы уже готовим."
-    }
-  },
-  {
-    "id": "phone-takeaway",
-    "topic": "ordering",
-    "order": 11,
-    "question": {
-      "en": "Can I order takeaway by phone and pick it up?",
-      "th": "โทรสั่งแล้วมารับที่ร้านได้ไหม?",
-      "ru": "Можно ли заказать навынос по телефону и забрать самим?"
-    },
-    "answer": {
-      "en": "Of course. Call us, say what you'd like, and we'll have it packed and waiting at the counter when you arrive. Pickup at the counter is often a little cheaper than the delivery apps — just ask us.",
-      "th": "ได้แน่นอนค่ะ โทรมาบอกเมนูที่ต้องการ เราจะแพ็กเตรียมไว้ให้ มาถึงก็รับได้เลย รับเองที่ร้านมักถูกกว่าสั่งผ่านแอปนิดหน่อยด้วยค่ะ สอบถามได้เลย",
-      "ru": "Конечно. Позвоните, скажите, что собрать, — к вашему приходу заказ будет упакован и ждать у стойки. Самовывоз у стойки часто немного дешевле, чем в приложениях доставки, — просто спросите нас."
+      "en": "Sometimes. Dining-room hours and delivery hours are different, so check the live GrabFood status before ordering. If the cafe appears open late, an order can literally wake the family and send them to the kitchen — but the website does not promise late-night availability.",
+      "th": "บางครั้งได้ค่ะ เวลาเปิดหน้าร้านกับเวลารับเดลิเวอรีไม่เหมือนกัน จึงควรดูสถานะจริงใน GrabFood ก่อนสั่ง หากร้านขึ้นว่าเปิดตอนดึก ออเดอร์อาจปลุกครอบครัวให้ลุกมาทำอาหารได้จริง ๆ แต่เว็บไซต์ไม่ได้รับประกันว่าจะเปิดรับออเดอร์ดึกค่ะ",
+      "ru": "Иногда. Часы зала и доставки отличаются, поэтому перед заказом проверьте живой статус в GrabFood. Если поздно ночью кафе отмечено открытым, заказ действительно может разбудить семью и отправить её на кухню — но сайт не обещает ночную доступность."
     }
   }
 ]

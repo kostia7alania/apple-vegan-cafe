@@ -4,14 +4,13 @@ locale: en
 title: "Vegan vs เจ: Thailand's plant-based tradition"
 description: 'What เจ (jay) food means in Thailand, how it differs from vegetarian and Western vegan, and why a jay kitchen is a safe place for vegans to eat.'
 slug: vegan-vs-jay-food
-author: family
+author: editorial
 publishedAt: 2026-07-17
 draft: false
 ---
 
 There are two words on our sign: "vegan" and "เจ". Travellers usually ask about the second one.
-Thai guests rarely ask at all — they grew up with it. Here is the short version of what เจ means,
-from a family that cooks it every day.
+Thai guests rarely ask at all — they grew up with it. Here is the short version of what เจ means.
 
 ## Where เจ comes from
 
@@ -56,19 +55,19 @@ well. A cook preparing real jay food has already removed every animal ingredient
 without being asked.
 
 One honest caveat: during the festival, some regular restaurants add a เจ corner to the menu while
-still cooking meat in the same woks. If cross-contact matters to you, it is worth asking. A kitchen
-that is เจ through and through does not have that problem, because there is nothing non-vegan in
-the building to begin with.
+still cooking meat in the same woks. If cross-contact matters to you, it is worth asking anywhere.
+A fully plant-based menu removes animal ingredients from the recipes, but guests with severe
+allergies should still ask about the kitchen's current cross-contact process.
 
 ## Our kitchen cooks เจ year-round
 
-That last kind is us. We are a small family cafe in Pattaya, and our kitchen is 100% plant-based
-every day of the year — no fish sauce, no egg, no dairy on the premises, festival or no festival.
-Dishes on our menu that carry the เจ badge — the red curry (฿179), the pad thai (฿149),
-the mushroom pad krapao (฿159) — are cooked jay-style. If you keep the observance strictly and
-avoid pungent vegetables: our whole kitchen skips them year round, so every dish already qualifies.
+That last kind is us. We are a small family cafe in Pattaya, and our menu is 100% plant-based every
+day of the year — no fish sauce, egg or dairy in the recipes, festival or no festival.
+Dishes on our menu that carry the เจ badge — the red curry, pad thai and mushroom pad krapao —
+are cooked jay-style. If you keep the observance strictly or have specific ingredient requirements,
+ask the team about ingredients before ordering.
 
-If you read Thai, we have written a fuller page about jay food in Pattaya:
-[ร้านอาหารเจ พัทยา](/th/ร้านอาหารเจ-พัทยา/). For Indian guests comparing pure veg and Jain-friendly
-food, we also keep a separate [pure veg guide for Pattaya](/pure-veg-jain-friendly/). And if you
+If you read Thai, the [Thai menu](/th/menu/) lists every currently available dish. For Indian guests
+comparing pure veg and Jain-friendly food, we also keep a separate
+[pure veg guide for Pattaya](/pure-veg-jain-friendly/). And if you
 are simply hungry, the [menu with real prices](/menu/) is the best place to start.
