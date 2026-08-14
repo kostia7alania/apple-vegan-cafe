@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "state": "not-configured",
+  "targetProvider": "UptimeRobot or equivalent",
+  "alertContact": null,
+  "cadenceSeconds": 300,
+  "timeoutSeconds": 15,
+  "expectedKeyword": "Apple Vegan Cafe",
+  "checks": [
+    {
+      "id": "home",
+      "url": "https://apple-vegan-cafe.com/",
+      "expectedStatus": 200
+    },
+    {
+      "id": "menu",
+      "url": "https://apple-vegan-cafe.com/menu/",
+      "expectedStatus": 200
+    }
+  ]
+}
