@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Grab Photo Recovery'
+  short_description: 'Recover owner photos from Grab catalog data'
+  default_prompt: 'Use $grab-photo-recovery to recover and reconcile my Grab dish photos by ItemID.'
