@@ -19,7 +19,7 @@ for (const prefix of ['', '/th', '/ru']) {
     page,
   }) => {
     await page.goto(`${prefix}/menu/`);
-    await expect(page.locator('main section > ul > li')).toHaveCount(availableDishCount);
+    await expect(page.locator('[data-menu-item]')).toHaveCount(availableDishCount);
   });
 
   test(`menu${prefix || '/en'} keeps both GrabFood CTAs`, async ({ page }) => {
@@ -45,7 +45,9 @@ test('no page claims a closing day or Mon–Sat hours', async ({ page }) => {
 test('EN landings state the daily 7:00 opening', async ({ page }) => {
   for (const path of ['/vegan-breakfast-pattaya/', '/pure-veg-jain-friendly/']) {
     await page.goto(path);
-    await expect(page.locator('body')).toContainText('every day');
+    const body = (await page.locator('body').innerText()).toLowerCase();
+    expect(body, `${path} must state the daily regular schedule`).toContain('every day');
+    expect(body, `${path} must show the regular opening range`).toContain('07:00–22:00');
   }
 });
 
