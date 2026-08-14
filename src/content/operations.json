@@ -2,7 +2,7 @@
   "pattaya": {
     "paymentMethods": [],
     "paymentNote": null,
-    "pricePolicy": null,
+    "pricePolicy": "website_matches_grab",
     "dietaryQuestionsContact": null,
     "spiceRequests": null,
     "halalGuidance": null,

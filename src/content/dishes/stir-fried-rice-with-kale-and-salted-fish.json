@@ -12,7 +12,21 @@
     "ru": "stir-fried-rice-with-kale-and-salted-fish"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026052810100347728/photos/menueditor_item_c6bd08c1831f4baa9f32984d37913525_1779962433152319869.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026052810100347728/detail/menueditor_item_c6bd08c1831f4baa9f32984d37913525_1779962433152319869.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026052810100347728",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

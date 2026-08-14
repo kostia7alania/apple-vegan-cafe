@@ -12,7 +12,21 @@
     "ru": "green-curry-vegan"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026052903290396183/photos/menueditor_item_3f31636c6e7743deae0d40a2504bafa5_1780025261431214127.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026052903290396183/detail/menueditor_item_3f31636c6e7743deae0d40a2504bafa5_1780025261431214127.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026052903290396183",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

@@ -12,7 +12,21 @@
     "ru": "banana-smoothie"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026070606411374844/photos/menueditor_item_df11e84429ea447b8d6e5273a56a2c21_1783320038544320914.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026070606411374844/detail/menueditor_item_df11e84429ea447b8d6e5273a56a2c21_1783320038544320914.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026070606411374844",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

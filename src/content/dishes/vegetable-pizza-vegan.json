@@ -12,7 +12,21 @@
     "ru": "vegetable-pizza-vegan"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2025102104502425682/photos/menueditor_item_411fc29a3b3649c289ebce7f4fba402a_1780037159170491882.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2025102104502425682/detail/menueditor_item_411fc29a3b3649c289ebce7f4fba402a_1780037159170491882.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2025102104502425682",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

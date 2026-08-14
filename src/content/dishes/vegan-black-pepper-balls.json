@@ -12,7 +12,21 @@
     "ru": "vegan-black-pepper-balls"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2023122800200180463/photos/menueditor_item_f7e6029ca1404ebabaf359a711677a87_1779888115650149309.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2023122800200180463/detail/menueditor_item_f7e6029ca1404ebabaf359a711677a87_1779888115650149309.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2023122800200180463",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

@@ -12,7 +12,21 @@
     "ru": "fresh-vegetable-salad"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2025030509272446505/photos/menueditor_item_b3b1a54e72a249d39177dc8359444a2c_1741166807395054984.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2025030509272446505/detail/menueditor_item_b3b1a54e72a249d39177dc8359444a2c_1741166807395054984.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 473,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2025030509272446505",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

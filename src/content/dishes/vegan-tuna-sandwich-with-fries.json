@@ -12,7 +12,21 @@
     "ru": "vegan-tuna-sandwich-with-fries"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2024020311245934350/photos/menueditor_item_c8837e5ece064762b56536c0fd04db91_1706959458833909816.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2024020311245934350/detail/menueditor_item_c8837e5ece064762b56536c0fd04db91_1706959458833909816.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 387,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2024020311245934350",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

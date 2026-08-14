@@ -12,7 +12,21 @@
     "ru": "spicy-pad-cha-vegan-seabass"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2025030509223867217/photos/menueditor_item_4879c902920a4c828dd3da47e5dea032_1741166507426337641.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2025030509223867217/detail/menueditor_item_4879c902920a4c828dd3da47e5dea032_1741166507426337641.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 383,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2025030509223867217",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }
