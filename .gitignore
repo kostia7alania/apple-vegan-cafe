@@ -4,6 +4,7 @@ dist/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # environment — never commit real env values (secrets live in the Cloudflare dashboard)
 .env

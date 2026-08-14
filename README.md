@@ -7,24 +7,24 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 **Live: [apple-vegan-cafe.com](https://apple-vegan-cafe.com)** — the real website
-of a real family-run 100% vegan cafe in Pattaya, Thailand (141 dishes, open
+of a real family-run 100% vegan cafe in Pattaya, Thailand (144 dishes, open
 7:00–22:00 every day). Built for free as an open-source project so the family
 owns their little corner of the internet.
 
-Three languages (EN / ไทย / Русский) · **$0/month** hosting · **zero client-side
-JavaScript** on content pages (enforced by a test) · quadruple-100 Lighthouse ·
-designed to keep working for years even if nobody maintains it.
+Three languages (EN / ไทย / Русский) · **$0/month** hosting · minimal
+dependency-free progressive JavaScript · quadruple-100 Lighthouse · designed
+to keep working for years even if nobody maintains it.
 
 ## Why this repo is fun to read
 
-| Constraint                 | How it's solved                                                                                                         |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| The family has no laptops  | Git-based CMS ([Sveltia](https://github.com/sveltia/sveltia-cms)) at `/admin` — price edits from a phone become commits |
-| $0/month forever           | Astro SSG → Cloudflare Workers Static Assets (static requests are free and unlimited)                                   |
-| Must survive neglect       | Content lives in git; the deployed site outlives the CMS, CI and the maintainer. `git clone` = full backup              |
-| Zero JS, still interactive | CSS-only language dropdown (`<details>`), scroll-driven back-to-top, container-query menu chips                         |
-| Three writing systems      | Single-file i18n (`{en,th,ru}` fields), reciprocal hreflang, Thai-script URLs, per-locale slugs                         |
-| Honesty as a feature       | CI guards: article prices must match the menu, no invented facts, no self-serving review markup                         |
+| Constraint                | How it's solved                                                                                                         |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| The family has no laptops | Git-based CMS ([Sveltia](https://github.com/sveltia/sveltia-cms)) at `/admin` — price edits from a phone become commits |
+| $0/month forever          | Astro SSG → Cloudflare Workers Static Assets (static requests are free and unlimited)                                   |
+| Must survive neglect      | Content lives in git; the deployed site outlives the CMS, CI and the maintainer. `git clone` = full backup              |
+| Minimal progressive JS    | CSS-first navigation plus a small dependency-free menu filter and special-hours enhancement; no client framework bundle |
+| Three writing systems     | Single-file i18n (`{en,th,ru}` fields), reciprocal hreflang, Thai-script URLs, per-locale slugs                         |
+| Honesty as a feature      | CI guards: article prices must match the menu, no invented facts, no self-serving review markup                         |
 
 ## Quick start
 
@@ -79,19 +79,29 @@ changes, `.github/FUNDING.yml` is where they will appear.
 
 - **Dishes**: one JSON per dish; price and photos exist once, names/slugs are
   `{en,th,ru}`. `available: false` = the owner's stop-list button.
+- **Current catalogue**: 144 dishes as of the owner's 2026-08-14 GrabMerchant
+  export. Three current-active items absent from the previous site were
+  reconciled by exact Grab `ItemID`, not by display name.
 - **Menu import**: `pnpm import:menu -- --input menu.csv [--write]` — the only
   permitted source is the **owner's own GrabMerchant Bulk Update export**.
   Scraping food.grab.com violates Grab's ToS and is deliberately not
   implemented. Quarterly re-syncs: [docs/grab-resync.md](docs/grab-resync.md).
+- **Grab identity map**: `scripts/data/grab-item-map.json` maps each Grab
+  `ItemID` to its dish file so renames and slug changes do not break identity.
 - **SEO rules**: reciprocal hreflang in `<head>` only, self-canonicals, one
   honest page per topic per language, **never** `aggregateRating`/`review` of
   our own business, no `FAQPage` markup (retired May 2026).
 - **Deployment**: `pnpm deploy` (Wrangler → Cloudflare Workers Static Assets),
-  config in `infrastructure/wrangler.jsonc`. No secrets in the repo.
+  config in `infrastructure/wrangler.jsonc`. CMS OAuth secrets live only in
+  Cloudflare; see `infrastructure/sveltia-auth/README.md`.
 - **Analytics**: optional; Cloudflare Web Analytics beacon is currently injected
   at the edge (dashboard). Do not also set
   `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` or the beacon will double.
   `PUBLIC_GA_MEASUREMENT_ID` enables GA4 with click-through conversion events.
+  `PUBLIC_GOOGLE_SITE_VERIFICATION` optionally enables Search Console's HTML-tag
+  verification; when empty, no verification tag is emitted. These IDs are
+  public build-time values, but the current dashboard-injected analytics setup
+  remains the source of truth.
 
 ## Docs
 

@@ -7,7 +7,15 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
   {
-    ignores: ['dist/', '.astro/', 'node_modules/', 'playwright-report/', 'test-results/'],
+    ignores: [
+      'dist/',
+      '.astro/',
+      '.pnpm-store/',
+      'node_modules/',
+      'playwright-report/',
+      'test-results/',
+      '**/*.local/**',
+    ],
   },
   {
     files: ['scripts/**/*.ts'],
