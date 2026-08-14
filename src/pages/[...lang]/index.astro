@@ -520,27 +520,13 @@ const openChip = mainHours
               <article class="group relative flex h-full flex-col rounded-lg border border-cream-300 bg-cream-50 p-5 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_14px_34px_-20px_rgba(38,34,27,0.32)]">
                 {dish.images[0] && (
                   <figure class="mb-4">
-                    <div class="relative">
-                      <ResponsiveMedia
-                        asset={dish.images[0]}
-                        alt={dish.name[locale]}
-                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                        className="aspect-4/3 w-full rounded-md border border-cream-300 object-cover"
-                      />
-                      {dish.images[0].origin === 'ai-generated' && (
-                        <span
-                          class="absolute right-2 bottom-2 rounded-sm bg-ink-900/85 px-2 py-1 text-xs leading-tight font-bold text-cream-50 shadow-sm backdrop-blur-sm"
-                          aria-hidden="true"
-                        >
-                          {t(locale, 'media.aiIllustration')}
-                        </span>
-                      )}
-                    </div>
-                    {dish.images[0].origin === 'ai-generated' ? (
-                      <figcaption class="mt-1.5 text-xs leading-relaxed text-ink-500">
-                        {t(locale, 'media.aiIllustrationNote')}
-                      </figcaption>
-                    ) : dish.images[0].credit ? (
+                    <ResponsiveMedia
+                      asset={dish.images[0]}
+                      alt={dish.name[locale]}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover"
+                    />
+                    {dish.images[0].credit ? (
                       <figcaption class="mt-1.5 text-xs text-ink-500">
                         {t(locale, 'media.credit')}: {dish.images[0].credit}
                       </figcaption>
