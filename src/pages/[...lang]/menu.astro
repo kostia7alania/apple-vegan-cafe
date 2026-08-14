@@ -23,6 +23,7 @@ const { locale } = Astro.props;
 // small visual anchors for cross-cultural guests (เจ has its own JayBadge)
 const TAG_ICONS: Partial<Record<string, string>> = {
   vegan: '🌱',
+  vegetarian: '🌿',
 };
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
@@ -71,12 +72,13 @@ const spiceRequestText =
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
-const hasAiIllustrations = dishes.some(({ data }) =>
-  data.images.some((image) => image.origin === 'ai-generated'),
-);
 const featuredDishes = dishes.filter(({ data }) => data.featured);
 const allergens = await getCollection('allergens');
 const allergenName = (id: string) => allergens.find((a) => a.id === id)?.data.name[locale] ?? id;
+const displayDietaryTags = (dish: (typeof dishes)[number]['data']) => [
+  dish.grabDietaryPreference ?? 'vegan',
+  ...dish.dietaryTags.filter((tag) => tag === 'jay'),
+];
 const searchIndex = (dish: (typeof dishes)[number]['data'], categoryName: string) => {
   const description = getPublicDishDescription(dish);
   return [
@@ -87,7 +89,7 @@ const searchIndex = (dish: (typeof dishes)[number]['data'], categoryName: string
     description?.th,
     description?.ru,
     categoryName,
-    ...dish.dietaryTags.map((tag) => t(locale, `tag.${tag}` as UiKey)),
+    ...displayDietaryTags(dish).map((tag) => t(locale, `tag.${tag}` as UiKey)),
     ...(dish.foodFacts.allergens.status === 'verified'
       ? dish.foodFacts.allergens.contains.map((allergen) => allergenName(allergen.id))
       : []),
@@ -203,16 +205,6 @@ const jsonld = [
       <span>{t(locale, 'menu.plantNamesNote')}</span>
     </p>
   </aside>
-
-  {
-    hasAiIllustrations && (
-      <aside class="wrap pb-6" aria-label={t(locale, 'media.aiIllustration')}>
-        <p class="mx-auto max-w-2xl text-center text-sm leading-relaxed text-ink-700">
-          {t(locale, 'media.aiIllustrationNote')}
-        </p>
-      </aside>
-    )
-  }
 
   <aside class="wrap pb-6" aria-label={t(locale, 'menu.dietGuidance')}>
     <p
@@ -451,37 +443,15 @@ const jsonld = [
                   id={dish.slug[locale]}
                   class="scroll-mt-24 rounded-lg border border-cream-200 bg-cream-50/70 p-4 transition-colors hover:border-leaf-700/25 hover:bg-cream-50"
                 >
-                  <div class="flex gap-4">
-                    {dish.images[0] && (
-                      <figure class="w-24 shrink-0 sm:w-28">
-                        <div class="relative">
-                          <ResponsiveMedia
-                            asset={dish.images[0]}
-                            alt={dish.name[locale]}
-                            sizes="(min-width: 640px) 112px, 96px"
-                            className="h-24 w-24 rounded-md border border-cream-300 object-cover sm:h-28 sm:w-28"
-                          />
-                          {dish.images[0].origin === 'ai-generated' && (
-                            <span
-                              class="absolute right-1 bottom-1 rounded-sm bg-ink-900/85 px-1.5 py-0.5 text-xs leading-tight font-bold text-cream-50 shadow-sm backdrop-blur-sm"
-                              aria-hidden="true"
-                            >
-                              {t(locale, 'media.aiIllustration')}
-                            </span>
-                          )}
-                        </div>
-                        {dish.images[0].origin === 'ai-generated' ? (
-                          <figcaption class="sr-only">
-                            {t(locale, 'media.aiIllustrationNote')}
-                          </figcaption>
-                        ) : dish.images[0].credit ? (
-                          <figcaption class="mt-1 text-[9px] leading-tight break-words text-ink-500">
-                            {t(locale, 'media.credit')}: {dish.images[0].credit}
-                          </figcaption>
-                        ) : null}
-                      </figure>
-                    )}
-                    <div class="min-w-0 flex-1">
+                  <div
+                    class:list={[
+                      'grid items-start gap-4',
+                      dish.images[0]
+                        ? 'grid-cols-[minmax(0,1fr)_7rem] sm:grid-cols-[minmax(0,1fr)_9rem]'
+                        : 'grid-cols-1',
+                    ]}
+                  >
+                    <div class="min-w-0">
                       <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-3">
                         <h3 class="text-base leading-snug font-extrabold sm:text-lg">
                           {dish.name[locale]}
@@ -495,14 +465,14 @@ const jsonld = [
                           {getPublicDishDescription(dish, locale)}
                         </p>
                       )}
-                      {(dish.dietaryTags.length > 0 ||
+                      {(displayDietaryTags(dish).length > 0 ||
                         dish.foodFacts.spicyLevel !== null ||
                         (dish.foodFacts.allergens.status === 'verified' &&
                           dish.foodFacts.allergens.contains.length > 0) ||
                         dish.foodFacts.noGlutenIngredients === 'yes' ||
                         dish.foodFacts.jainFriendly === 'yes') && (
                         <p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                          {dish.dietaryTags.map((tag) =>
+                          {displayDietaryTags(dish).map((tag) =>
                             tag === 'jay' ? (
                               <JayBadge size="sm" label={t(locale, 'tag.jay')} />
                             ) : (
@@ -548,6 +518,21 @@ const jsonld = [
                         </p>
                       )}
                     </div>
+                    {dish.images[0] && (
+                      <figure class="w-28 sm:w-36">
+                        <ResponsiveMedia
+                          asset={dish.images[0]}
+                          alt={dish.name[locale]}
+                          sizes="(min-width: 640px) 144px, 112px"
+                          className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm"
+                        />
+                        {dish.images[0].credit && (
+                          <figcaption class="mt-1 text-[10px] leading-tight break-words text-ink-500">
+                            {t(locale, 'media.credit')}: {dish.images[0].credit}
+                          </figcaption>
+                        )}
+                      </figure>
+                    )}
                   </div>
                 </li>
               ))}
