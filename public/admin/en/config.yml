@@ -103,12 +103,31 @@ collections:
           widget: list,
           required: false,
           summary: '{{fields.src}} — approved for website',
-          hint: 'Add an image only after confirming the exact dish, rights holder and website publication permission. Leave this list empty while any point is unknown.',
+          hint: 'Grab catalogue images are synced automatically. Add a local image here only after confirming the exact dish, rights holder and website publication permission.',
           fields:
             [
               { name: src, label: 'Fallback image', widget: image },
-              { name: srcSmall, label: '960w optimized variant', widget: image, required: false },
-              { name: srcLarge, label: '1600w optimized variant', widget: image, required: false },
+              {
+                name: srcSmall,
+                label: 'Optional responsive variant',
+                widget: image,
+                required: false,
+              },
+              {
+                name: srcSmallWidth,
+                label: 'Variant width (px)',
+                widget: number,
+                value_type: int,
+                required: false,
+              },
+              { name: srcLarge, label: 'Optional largest variant', widget: image, required: false },
+              {
+                name: srcLargeWidth,
+                label: 'Largest variant width (px)',
+                widget: number,
+                value_type: int,
+                required: false,
+              },
               { name: width, label: 'Intrinsic width (px)', widget: number, value_type: int },
               { name: height, label: 'Intrinsic height (px)', widget: number, value_type: int },
               {
@@ -119,7 +138,6 @@ collections:
                   [
                     { label: 'Owner original', value: owner-original },
                     { label: Licensed, value: licensed },
-                    { label: 'AI-generated', value: ai-generated },
                   ],
               },
               { name: rightsHolder, label: 'Rights holder', widget: string },
@@ -840,14 +858,28 @@ collections:
                   - { name: src, label: 'Fallback image', widget: image }
                   - {
                       name: srcSmall,
-                      label: '960w optimized variant',
+                      label: 'Optional responsive variant',
                       widget: image,
                       required: false,
                     }
                   - {
+                      name: srcSmallWidth,
+                      label: 'Variant width (px)',
+                      widget: number,
+                      value_type: int,
+                      required: false,
+                    }
+                  - {
                       name: srcLarge,
-                      label: '1600w optimized variant',
+                      label: 'Optional largest variant',
                       widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: srcLargeWidth,
+                      label: 'Largest variant width (px)',
+                      widget: number,
+                      value_type: int,
                       required: false,
                     }
                   - {

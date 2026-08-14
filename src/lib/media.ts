@@ -1,12 +1,17 @@
 export type MediaKind = 'hero' | 'exterior' | 'family' | 'interior';
 
-export interface ApprovedMediaAsset {
+export interface ResponsiveMediaAsset {
   src: string;
   srcSmall: string | null;
   srcLarge: string | null;
+  srcSmallWidth: number | null;
+  srcLargeWidth: number | null;
   width: number;
   height: number;
-  origin: 'owner-original' | 'licensed' | 'ai-generated';
+}
+
+export interface ApprovedMediaAsset extends ResponsiveMediaAsset {
+  origin: 'owner-original' | 'licensed';
   rightsHolder: string | null;
   permission: 'unknown' | 'denied' | 'granted';
   permissionScope: 'website-only' | 'website-and-derivatives' | null;
@@ -16,6 +21,15 @@ export interface ApprovedMediaAsset {
   peopleConsent: 'not-applicable' | 'unknown' | 'denied' | 'granted';
   credit: string | null;
 }
+
+export interface GrabCatalogueMediaAsset extends ResponsiveMediaAsset {
+  origin: 'grab-merchant-catalogue';
+  grabItemId: string;
+  capturedAt: string;
+  credit: null;
+}
+
+export type DishMediaAsset = ApprovedMediaAsset | GrabCatalogueMediaAsset;
 
 export interface SiteMediaAsset extends ApprovedMediaAsset {
   kind: MediaKind;
@@ -37,5 +51,5 @@ export function getPublishableMedia(
   kind: MediaKind,
 ): SiteMediaAsset | null {
   const asset = assets.find((candidate) => candidate.kind === kind);
-  return asset && asset.origin !== 'ai-generated' && isPublishableMedia(asset) ? asset : null;
+  return asset && isPublishableMedia(asset) ? asset : null;
 }
