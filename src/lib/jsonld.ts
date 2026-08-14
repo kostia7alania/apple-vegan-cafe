@@ -13,6 +13,12 @@ export interface HoursSpec {
   close: string;
 }
 
+export interface SpecialHoursSpec {
+  date: string;
+  open: string | null;
+  close: string | null;
+}
+
 export interface RestaurantInput {
   name: string;
   url: string;
@@ -20,9 +26,11 @@ export interface RestaurantInput {
   telephone: string;
   address: string;
   geo: { lat: number; lng: number } | null;
+  hasMap?: string | null;
   images: string[];
   sameAs: string[];
   hours: HoursSpec[];
+  specialHours?: SpecialHoursSpec[];
   /** direct ordering URL (e.g. GrabFood); emits a machine-actionable OrderAction */
   orderUrl?: string | null;
 }
@@ -57,6 +65,17 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
       opens: h.open,
       closes: h.close,
     })),
+    ...(input.specialHours && input.specialHours.length > 0
+      ? {
+          specialOpeningHoursSpecification: input.specialHours.map((h) => ({
+            '@type': 'OpeningHoursSpecification',
+            validFrom: h.date,
+            validThrough: h.date,
+            opens: h.open ?? '00:00',
+            closes: h.close ?? '00:00',
+          })),
+        }
+      : {}),
   };
   if (input.geo) {
     jsonld.geo = {
@@ -65,6 +84,7 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
       longitude: input.geo.lng,
     };
   }
+  if (input.hasMap) jsonld.hasMap = input.hasMap;
   if (input.images.length > 0) jsonld.image = input.images;
   if (input.sameAs.length > 0) jsonld.sameAs = input.sameAs;
   if (input.orderUrl) {
@@ -129,6 +149,7 @@ export interface ArticleInput {
   url: string;
   locale: Locale;
   authorName: string;
+  authorType: 'Person' | 'Organization';
   publishedAt: Date;
   updatedAt?: Date;
   image?: string;
@@ -142,7 +163,7 @@ export function buildArticle(input: ArticleInput): Record<string, unknown> {
     description: input.description,
     url: input.url,
     inLanguage: input.locale,
-    author: { '@type': 'Person', name: input.authorName },
+    author: { '@type': input.authorType, name: input.authorName },
     datePublished: input.publishedAt.toISOString(),
   };
   if (input.updatedAt) jsonld.dateModified = input.updatedAt.toISOString();

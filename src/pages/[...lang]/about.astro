@@ -3,9 +3,11 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import LeafDivider from '../../components/LeafDivider.astro';
 import Sprig from '../../components/Sprig.astro';
+import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
+import { getPublishableMedia } from '../../lib/media';
 import { t } from '../../lib/ui';
 
 export function getStaticPaths() {
@@ -25,6 +27,10 @@ const entry = (
 )[0];
 if (!entry) throw new Error(`about page missing for locale ${locale}`);
 const { Content } = await render(entry);
+const [siteMedia] = (await getCollection('siteMedia')).map((item) => item.data);
+if (!siteMedia) throw new Error('site-media content is missing');
+const familyMedia = getPublishableMedia(siteMedia.assets, 'family');
+const interiorMedia = getPublishableMedia(siteMedia.assets, 'interior');
 
 const alternates = structuralAlternates('/about/');
 const site = Astro.site!;
@@ -50,9 +56,43 @@ const jsonld = [
         </h1>
         <LeafDivider class="mt-6 max-w-52 sm:mt-7 sm:max-w-60" />
       </header>
+      {
+        familyMedia && (
+          <figure class="mt-7 sm:mt-8">
+            <ResponsiveMedia
+              asset={familyMedia}
+              alt={familyMedia.alt[locale]}
+              sizes="(min-width: 640px) 650px, 100vw"
+              className="aspect-4/3 w-full rounded-lg border border-cream-300 object-cover sm:aspect-3/2"
+            />
+            {familyMedia.credit && (
+              <figcaption class="mt-1.5 text-xs text-ink-500">
+                {t(locale, 'media.credit')}: {familyMedia.credit}
+              </figcaption>
+            )}
+          </figure>
+        )
+      }
       <div class="prose-editorial mt-7 sm:mt-8">
         <Content />
       </div>
+      {
+        interiorMedia && (
+          <figure class="mt-8">
+            <ResponsiveMedia
+              asset={interiorMedia}
+              alt={interiorMedia.alt[locale]}
+              sizes="(min-width: 640px) 650px, 100vw"
+              className="aspect-3/2 w-full rounded-lg border border-cream-300 object-cover"
+            />
+            {interiorMedia.credit && (
+              <figcaption class="mt-1.5 text-xs text-ink-500">
+                {t(locale, 'media.credit')}: {interiorMedia.credit}
+              </figcaption>
+            )}
+          </figure>
+        )
+      }
     </div>
   </article>
 </Base>

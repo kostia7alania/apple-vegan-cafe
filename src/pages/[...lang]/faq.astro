@@ -6,7 +6,9 @@ import Sprig from '../../components/Sprig.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
-import { t } from '../../lib/ui';
+import { getRegularHours } from '../../lib/hours';
+import { t, type UiKey } from '../../lib/ui';
+import { orderingAnalyticsProvider, orderingCtaLabel } from '../../lib/ordering';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -18,6 +20,125 @@ interface Props {
 const { locale } = Astro.props;
 
 const faqs = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+const [settings] = (await getCollection('settings')).map((e) => e.data);
+const [location] = (await getCollection('locations')).map((e) => e.data);
+const [operations] = (await getCollection('operations')).map((e) => e.data);
+if (!settings || !location || !operations) {
+  throw new Error('settings/locations/operations content is missing');
+}
+const orderingLinks = settings.orderingLinks;
+const deliveryProviders = orderingLinks.map(({ provider }) => provider).join(' / ');
+const paymentLabels = operations.paymentMethods.map((method) =>
+  t(locale, `operations.payment.${method}` as UiKey),
+);
+const paymentAnswer =
+  paymentLabels.length > 0
+    ? `${t(locale, 'operations.paymentConfirmed')}: ${paymentLabels.join(', ')}.${operations.paymentNote ? ` ${operations.paymentNote[locale]}` : ''}`
+    : null;
+const regularHours = getRegularHours(location.hours);
+const hoursAnswer = regularHours
+  ? {
+      en: `Our regular hours are ${regularHours.range} every day. Any special closure or shorter day is shown on this site.`,
+      th: `เวลาปกติของเราคือทุกวัน ${regularHours.range} น. หากมีวันหยุดหรือเวลาพิเศษ เว็บไซต์จะแจ้งให้ทราบ`,
+      ru: `Обычные часы работы — ежедневно ${regularHours.range}. Закрытие или сокращённый график сайт показывает отдельно.`,
+    }[locale]
+  : null;
+const deliveryAnswer = t(locale, 'ordering.deliveryAnswer').replace(
+  '{providers}',
+  deliveryProviders,
+);
+const reservationPolicyText =
+  operations.reservations?.status === 'large-groups-only'
+    ? t(locale, 'operations.reservationLargeGroups').replace(
+        '{count}',
+        String(operations.reservations.minimumPartySize),
+      )
+    : operations.reservations?.status === 'accepted'
+      ? t(locale, 'operations.reservationAccepted')
+      : operations.reservations?.status === 'not-accepted'
+        ? t(locale, 'operations.reservationNotAccepted')
+        : null;
+const reservationContactIsAvailable = Boolean(
+  operations.reservations &&
+  (operations.reservations.status === 'not-accepted' ||
+    operations.reservations.contact === 'phone' ||
+    (operations.reservations.contact === 'line' && settings.lineUrl) ||
+    (operations.reservations.contact === 'whatsapp' && settings.whatsappUrl)),
+);
+const dietaryContact = operations.dietaryQuestionsContact;
+const dietaryContactHref =
+  dietaryContact === 'line'
+    ? settings.lineUrl
+    : dietaryContact === 'whatsapp'
+      ? settings.whatsappUrl
+      : dietaryContact === 'phone'
+        ? `tel:${settings.phone.replace(/\s/g, '')}`
+        : null;
+const dietaryContactChannel =
+  dietaryContact === 'phone'
+    ? t(locale, 'operations.channel.phone')
+    : dietaryContact === 'line'
+      ? 'LINE'
+      : dietaryContact === 'whatsapp'
+        ? 'WhatsApp'
+        : '';
+const dietaryContactLabel =
+  dietaryContact === 'phone'
+    ? t(locale, 'operations.dietaryAskPhone')
+    : t(locale, 'operations.dietaryAsk').replace('{channel}', dietaryContactChannel);
+const spiceRequests = operations.spiceRequests;
+const spiceRequestText =
+  spiceRequests?.status === 'offered'
+    ? t(locale, 'operations.spiceOffered').replace(
+        '{levels}',
+        spiceRequests.levels
+          .map((level) => t(locale, `operations.spiceLevel.${level}` as UiKey))
+          .join(', '),
+      )
+    : spiceRequests?.status === 'not-offered'
+      ? t(locale, 'operations.spiceNotOffered')
+      : null;
+const halalGuidance = operations.halalGuidance;
+const halalCertificationText =
+  halalGuidance?.certificationStatus === 'certified' && halalGuidance.certificationDetail
+    ? {
+        en: `Verified certification information: ${halalGuidance.certificationDetail.en}.`,
+        th: `ข้อมูลการรับรองที่ยืนยันแล้ว: ${halalGuidance.certificationDetail.th}`,
+        ru: `Подтверждённые сведения о сертификации: ${halalGuidance.certificationDetail.ru}.`,
+      }[locale]
+    : halalGuidance?.certificationStatus === 'not-certified'
+      ? {
+          en: 'The restaurant has verified that it does not hold a halal certificate.',
+          th: 'ทางร้านยืนยันแล้วว่าไม่มีใบรับรองฮาลาล',
+          ru: 'Ресторан подтвердил, что халяль-сертификата нет.',
+        }[locale]
+      : null;
+const halalAlcoholText = halalGuidance
+  ? halalGuidance.cookingAlcohol === 'used'
+    ? {
+        en: 'Cooking alcohol is used.',
+        th: 'มีการใช้แอลกอฮอล์ในการปรุงอาหาร',
+        ru: 'Алкоголь используется при приготовлении.',
+      }[locale]
+    : {
+        en: 'The restaurant has verified that cooking alcohol is not used.',
+        th: 'ทางร้านยืนยันแล้วว่าไม่ใช้แอลกอฮอล์ในการปรุงอาหาร',
+        ru: 'Ресторан подтвердил, что алкоголь при приготовлении не используется.',
+      }[locale]
+  : null;
+const halalLimitText = {
+  en: "These facts do not mean that every guest's halal requirements are met.",
+  th: 'ข้อมูลนี้ไม่ได้หมายความว่าอาหารตรงตามข้อกำหนดฮาลาลของผู้ใช้บริการทุกคน',
+  ru: 'Эти сведения не означают, что еда соответствует всем требованиям каждого гостя к халяльному питанию.',
+}[locale];
+const halalAnswer =
+  halalGuidance && halalCertificationText && halalAlcoholText
+    ? `${halalCertificationText} ${halalAlcoholText} ${halalGuidance.note[locale]} ${halalLimitText}`
+    : null;
+const visibleFaqs = faqs.filter(
+  ({ id }) =>
+    (id !== 'payment' || paymentAnswer) && (id !== 'delivery' || orderingLinks.length > 0),
+);
 
 const alternates = structuralAlternates('/faq/');
 const site = Astro.site!;
@@ -28,9 +149,9 @@ const title = {
   ru: 'Вопросы и ответы — Apple Vegan Cafe, Паттайя',
 }[locale];
 const description = {
-  en: 'Answers to common questions about Apple Vegan Cafe & Restaurant in Pattaya: vegan kitchen, gluten-free dishes, delivery, opening hours and payment.',
-  th: 'คำตอบสำหรับคำถามที่พบบ่อยเกี่ยวกับร้านอาหารเจ คาเฟ่เจ พัทยา: ครัวเจ เมนูไร้กลูเตน บริการส่ง เวลาเปิด-ปิด และการชำระเงิน',
-  ru: 'Ответы на частые вопросы об Apple Vegan Cafe в Паттайе: веганская кухня, блюда без глютена, доставка, часы работы и оплата.',
+  en: 'Answers about the plant-based kitchen, ingredients, delivery, opening hours and planning a visit to Apple Vegan Cafe in Pattaya.',
+  th: 'คำตอบเกี่ยวกับครัวอาหารจากพืช ส่วนผสม เดลิเวอรี เวลาเปิด-ปิด และการวางแผนมาที่ Apple Vegan Cafe พัทยา',
+  ru: 'Ответы о растительной кухне, составе блюд, доставке, часах работы и планировании визита в Apple Vegan Cafe в Паттайе.',
 }[locale];
 const heading = {
   en: 'Frequently asked questions',
@@ -65,8 +186,11 @@ const jsonld = [
       {/* CSS-only accordions: native details/summary, zero client JS. */}
       <div class="mt-8 space-y-3">
         {
-          faqs.map(({ data: faq }) => (
-            <details class="group rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40">
+          visibleFaqs.map(({ id, data: faq }) => (
+            <details
+              id={id}
+              class="group scroll-mt-32 rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40"
+            >
               <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-display text-lg leading-snug font-bold text-leaf-900 [&::-webkit-details-marker]:hidden">
                 {faq.question[locale]}
                 <svg
@@ -82,9 +206,165 @@ const jsonld = [
                   <path d="M6 9l6 6 6-6" />
                 </svg>
               </summary>
-              <p class="px-6 pb-5 leading-relaxed text-ink-700">{faq.answer[locale]}</p>
+              <p class="px-6 pb-5 leading-relaxed text-ink-700">
+                {id === 'payment' && paymentAnswer
+                  ? paymentAnswer
+                  : id === 'hours' && hoursAnswer
+                    ? hoursAnswer
+                    : id === 'delivery'
+                      ? deliveryAnswer
+                      : id === 'halal' && halalAnswer
+                        ? halalAnswer
+                        : faq.answer[locale]}
+              </p>
+              {id === 'delivery' && orderingLinks.length > 0 && (
+                <ul
+                  class="flex flex-wrap gap-2 px-6 pb-5"
+                  aria-label={t(locale, 'ordering.deliveryOptions')}
+                >
+                  {orderingLinks.map((link) => (
+                    <li>
+                      <a
+                        href={link.url}
+                        rel="noopener"
+                        data-analytics-event="order_click"
+                        data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                        class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-4 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                      >
+                        {orderingCtaLabel(locale, link.provider)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {id === 'cross-contact' && dietaryContactHref && (
+                <p class="px-6 pb-5 leading-relaxed text-ink-700">
+                  {t(locale, 'operations.dietaryLimit')}{' '}
+                  <a
+                    href={dietaryContactHref}
+                    rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
+                    data-analytics-event="dietary_contact_click"
+                    data-analytics-provider={dietaryContact}
+                    class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                  >
+                    {dietaryContactLabel} →
+                  </a>
+                </p>
+              )}
             </details>
           ))
+        }
+        {
+          spiceRequests && spiceRequestText && (
+            <details
+              id="spice-requests"
+              class="group scroll-mt-32 rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40"
+            >
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-display text-lg leading-snug font-bold text-leaf-900 [&::-webkit-details-marker]:hidden">
+                {t(locale, 'operations.spiceQuestion')}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  class="h-5 w-5 shrink-0 text-leaf-700 transition-transform group-open:rotate-180"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="px-6 pb-5 leading-relaxed text-ink-700">
+                <p>{spiceRequestText}</p>
+                {spiceRequests.scopeNote && <p class="mt-2">{spiceRequests.scopeNote[locale]}</p>}
+              </div>
+            </details>
+          )
+        }
+        {
+          operations.pickup?.enabled && (
+            <details
+              id="pickup"
+              class="group scroll-mt-32 rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40"
+            >
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-display text-lg leading-snug font-bold text-leaf-900 [&::-webkit-details-marker]:hidden">
+                {t(locale, 'operations.pickupQuestion')}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  class="h-5 w-5 shrink-0 text-leaf-700 transition-transform group-open:rotate-180"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="px-6 pb-5 leading-relaxed text-ink-700">
+                <p>{t(locale, 'operations.pickupAvailable')}</p>
+                {operations.pickup.leadTime && (
+                  <p class="mt-2">{operations.pickup.leadTime[locale]}</p>
+                )}
+                {operations.pickup.priceNote && (
+                  <p class="mt-2">{operations.pickup.priceNote[locale]}</p>
+                )}
+                <p class="mt-3">
+                  <a
+                    href={localePath(locale, '/contact/')}
+                    class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                  >
+                    {t(locale, 'nav.contact')} →
+                  </a>
+                </p>
+              </div>
+            </details>
+          )
+        }
+        {
+          operations.reservations && reservationContactIsAvailable && reservationPolicyText && (
+            <details
+              id="reservations"
+              class="group scroll-mt-32 rounded-2xl border border-cream-300 bg-cream-50 transition-colors open:border-leaf-700/40"
+            >
+              <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 font-display text-lg leading-snug font-bold text-leaf-900 [&::-webkit-details-marker]:hidden">
+                {t(locale, 'operations.reservationQuestion')}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  class="h-5 w-5 shrink-0 text-leaf-700 transition-transform group-open:rotate-180"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <div class="px-6 pb-5 leading-relaxed text-ink-700">
+                <p>{reservationPolicyText}</p>
+                {operations.reservations.leadTime && (
+                  <p class="mt-2">{operations.reservations.leadTime[locale]}</p>
+                )}
+                {operations.reservations.note && (
+                  <p class="mt-2">{operations.reservations.note[locale]}</p>
+                )}
+                {operations.reservations.status !== 'not-accepted' && (
+                  <p class="mt-3">
+                    <a
+                      href={`${localePath(locale, '/contact/')}#reservations`}
+                      class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                    >
+                      {t(locale, 'operations.reservationRequest')} →
+                    </a>
+                  </p>
+                )}
+              </div>
+            </details>
+          )
         }
       </div>
     </div>

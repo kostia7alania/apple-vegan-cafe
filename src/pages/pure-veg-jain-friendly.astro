@@ -6,9 +6,8 @@
 // self-referential hreflang plus x-default (EN is the default locale) —
 // correct while the page has no TH/RU translation.
 //
-// Honesty policy: we guarantee a 100% pure vegetarian (vegan/เจ) kitchen,
-// no garlic/onion ever (the family keeps เจ year-round). Root vegetables do
-// appear in some dishes, so a fully Jain menu is NOT claimed — copy says so.
+// Honesty policy: restaurant-wide vegan/เจ facts can be stated. Per-dish Jain,
+// pungent-vegetable and cross-contact facts stay unknown until family review.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import JayBadge from '../components/JayBadge.astro';
@@ -18,7 +17,9 @@ import Sprig from '../components/Sprig.astro';
 import type { Locale } from '../lib/i18n';
 import { absoluteUrl, localePath } from '../lib/urls';
 import { buildBreadcrumb } from '../lib/jsonld';
+import { getRegularHours } from '../lib/hours';
 import { t, type UiKey } from '../lib/ui';
+import { getPublicDishDescription } from '../lib/dishes';
 
 const locale: Locale = 'en';
 const PAGE_PATH = '/pure-veg-jain-friendly/';
@@ -27,8 +28,8 @@ const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// A taste of the เจ kitchen: savoury dishes only, cheapest first, capped —
-// the full menu (141 dishes at last count) lives on /menu/.
+// A taste of the เจ kitchen: savoury dishes only, cheapest first, capped;
+// the complete, dynamically counted catalogue lives on /menu/.
 const JAY_SAMPLE_LIMIT = 10;
 const allJay = (
   await getCollection('dishes', ({ data }) => data.available && data.dietaryTags.includes('jay'))
@@ -41,15 +42,16 @@ const jayDishes = allJay
 
 const alternates = { en: PAGE_PATH };
 const site = Astro.site!;
+const regularHours = getRegularHours(location.hours);
 
-const title = 'Pure Veg & Jain-Friendly Food in Pattaya | Apple Vegan Cafe';
+const title = 'Pure Veg & เจ Food in Pattaya | Apple Vegan Cafe';
 const description =
-  '100% pure veg kitchen in Pattaya: no meat, fish, egg or dairy on site, and no garlic or onion year round. Jain guests welcome.';
+  '100% plant-based Thai เจ cafe in Pattaya. Jain and allergy details are published only after family verification; ask before ordering.';
 
 const jsonld = [
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
-    { name: 'Pure veg & Jain-friendly food in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
+    { name: 'Pure veg & เจ food in Pattaya', url: absoluteUrl(site, PAGE_PATH) },
   ]),
 ];
 
@@ -82,16 +84,17 @@ const daysLabel = (days: readonly string[]) =>
       <h1
         class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
       >
-        Pure veg &amp; Jain-friendly food in Pattaya
+        Pure veg &amp; เจ food in Pattaya
       </h1>
       <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
-        A family kitchen that has never cooked meat, fish, egg or dairy — not once
+        A family-run 100% plant-based kitchen in Pattaya
       </p>
       <p
+        data-special-hours-replaced
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Open every day · 7:00–22:00
+        Regular hours · {regularHours?.range}
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -128,12 +131,9 @@ const daysLabel = (days: readonly string[]) =>
       What we can promise
     </h2>
     <p class="mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-      Ours is a <strong>100% pure vegetarian kitchen</strong> — strictly{' '}
-      <strong>no meat, no fish, no fish sauce, no egg and no dairy</strong> anywhere on the premises.
-      It's a vegan and เจ (jay) kitchen, so for pure-veg guests that means{' '}
-      <strong>zero cross-contact</strong> with animal products: nothing shares a wok, a fryer or a chopping
-      board with meat, because there simply is no meat in the house. You don't have to double-check, ask
-      twice or hope the kitchen understood — there is nothing to slip in.
+      Ours is a <strong>100% plant-based kitchen</strong>: no meat, fish sauce, egg or dairy in the
+      menu. We have not yet published a verified cross-contact protocol, so guests with severe
+      allergies should explain their needs to the team before ordering.
     </p>
   </section>
 
@@ -148,14 +148,10 @@ const daysLabel = (days: readonly string[]) =>
         An honest word for our Jain guests
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        Our family follows the เจ tradition <strong>all year round, as a matter of faith</strong> — not
-        just during the festival. That means the kitchen cooks{' '}
-        <strong>without garlic, onion, chives or other pungent vegetables, every day</strong>, and
-        of course without any animal products. One honest caveat remains: from the list Jain guests
-        usually avoid, our kitchen does use <strong>carrot — in a few dishes</strong>. Dishes marked <strong
-          >🪷 jain-friendly</strong
-        > on the menu contain none of it. Tell the staff you eat Jain — the family knows exactly what
-        is in every pot and will point you right. We'd rather be precise than guess with your faith.
+        เจ and Jain requirements are not identical. We are still checking garlic, onion, root
+        vegetables and other recipe details dish by dish with the family, so the menu currently
+        publishes no verified Jain-friendly labels. If you follow Jain rules, explain your exact
+        requirements to the team before ordering; do not treat a เจ label alone as confirmation.
       </p>
     </div>
   </section>
@@ -173,11 +169,9 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      The whole kitchen is เจ year round — no garlic, no onion, no animal products in any of our{
-        ' '
-      }
-      {jayCount} dishes. Here are a few of the most affordable savoury ones; for strict Jain requirements
-      (root vegetables), confirm details with the staff before ordering.
+      All {jayCount} dishes are published as plant-based เจ dishes. Here are a few of the most affordable
+      savoury options; this list is not a verified Jain selection, so confirm recipe details with the
+      team before ordering.
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -197,9 +191,9 @@ const daysLabel = (days: readonly string[]) =>
                 ฿{dish.price_thb}
               </span>
             </div>
-            {dish.description?.[locale] && (
+            {getPublicDishDescription(dish, locale) && (
               <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
-                {dish.description[locale]}
+                {getPublicDishDescription(dish, locale)}
               </p>
             )}
           </li>
@@ -226,9 +220,12 @@ const daysLabel = (days: readonly string[]) =>
       <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
         {t(locale, 'home.findUs')}
       </h2>
-      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        We open at <strong>7:00, every day of the week</strong> — early enough for breakfast before a
-        day trip.
+      <p
+        data-special-hours-replaced
+        class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700"
+      >
+        Our regular opening time is <strong>{regularHours?.open}</strong> — early enough for breakfast
+        before a day trip.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
@@ -273,7 +270,7 @@ const daysLabel = (days: readonly string[]) =>
             <tbody>
               {
                 location.hours.map((h) => (
-                  <tr>
+                  <tr data-special-hours-replaced>
                     <th scope="row" class="py-1 pr-6 font-medium">
                       {daysLabel(h.days)}
                     </th>

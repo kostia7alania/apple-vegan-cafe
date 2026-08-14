@@ -35,6 +35,7 @@ const alternates: PartiallyLocalized = Object.fromEntries(
 );
 
 const author = await getEntry(entry.data.author);
+if (!author) throw new Error(`Missing author for article ${entry.id}`);
 const { Content } = await render(entry);
 
 const site = Astro.site!;
@@ -46,7 +47,8 @@ const jsonld = [
     description: entry.data.description,
     url,
     locale,
-    authorName: author?.data.name ?? 'Apple Vegan Cafe',
+    authorName: author.data.name,
+    authorType: author.data.type,
     publishedAt: entry.data.publishedAt,
     updatedAt: entry.data.updatedAt,
   }),

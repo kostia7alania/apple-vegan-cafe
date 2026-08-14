@@ -1,0 +1,81 @@
+---
+import type { Locale } from '../lib/i18n';
+import { t } from '../lib/ui';
+
+interface SpecialHour {
+  date: string;
+  open: string | null;
+  close: string | null;
+  note?: string;
+}
+
+interface Props {
+  locale: Locale;
+  specialHours: readonly SpecialHour[];
+  className?: string;
+}
+
+const { locale, specialHours, className = '' } = Astro.props;
+const dateFormatter = new Intl.DateTimeFormat({ en: 'en-GB', th: 'th-TH', ru: 'ru-RU' }[locale], {
+  day: 'numeric',
+  month: 'short',
+  timeZone: 'UTC',
+});
+const displayDate = (date: string) => dateFormatter.format(new Date(`${date}T00:00:00Z`));
+const noScriptText = {
+  en: 'Special hours are scheduled and may override the regular hours below. Please call before visiting.',
+  th: 'มีเวลาเปิด-ปิดพิเศษซึ่งอาจแทนเวลาปกติด้านล่าง กรุณาโทรสอบถามก่อนเดินทางมาร้าน',
+  ru: 'Есть особые часы, которые могут заменять обычное расписание ниже. Перед визитом позвоните в кафе.',
+}[locale];
+---
+
+{
+  specialHours.length > 0 && (
+    <>
+      <div
+        hidden
+        data-special-hours-root
+        class:list={[
+          'rounded-lg bg-mango-100 px-3 py-2 text-sm font-semibold text-ink-900',
+          className,
+        ]}
+        aria-live="polite"
+      >
+        {specialHours.map((hours) => {
+          const todayText =
+            hours.open && hours.close
+              ? t(locale, 'hours.specialOpen')
+                  .replace('{open}', hours.open)
+                  .replace('{close}', hours.close)
+              : t(locale, 'hours.specialClosed');
+          const upcomingText =
+            hours.open && hours.close
+              ? t(locale, 'hours.specialOpenOn')
+                  .replace('{date}', displayDate(hours.date))
+                  .replace('{open}', hours.open)
+                  .replace('{close}', hours.close)
+              : t(locale, 'hours.specialClosedOn').replace('{date}', displayDate(hours.date));
+
+          return (
+            <p hidden data-special-hours-entry data-date={hours.date} class="not-last:mb-1.5">
+              <span data-special-hours-today>{todayText}</span>
+              <span hidden data-special-hours-upcoming>
+                {upcomingText}
+              </span>
+            </p>
+          );
+        })}
+      </div>
+      <noscript>
+        <p
+          class:list={[
+            'rounded-lg bg-mango-100 px-3 py-2 text-sm font-semibold text-ink-900',
+            className,
+          ]}
+        >
+          {noScriptText}
+        </p>
+      </noscript>
+    </>
+  )
+}

@@ -3,10 +3,13 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
 import LeafDivider from '../../components/LeafDivider.astro';
+import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb, buildMenu } from '../../lib/jsonld';
 import { t, type UiKey } from '../../lib/ui';
+import { getPublicDishDescription } from '../../lib/dishes';
+import { orderingAnalyticsProvider, orderingCtaLabel } from '../../lib/ordering';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -20,23 +23,93 @@ const { locale } = Astro.props;
 // small visual anchors for cross-cultural guests (เจ has its own JayBadge)
 const TAG_ICONS: Partial<Record<string, string>> = {
   vegan: '🌱',
-  'jain-friendly': '🪷',
-  'gluten-free': '🌾',
 };
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
-// Ordering links live in the CMS; the buttons appear once a «grab» provider exists.
-const grabLink = settings?.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
+const [operations] = (await getCollection('operations')).map((e) => e.data);
+if (!settings || !operations) throw new Error('settings/operations content is missing');
+// Only owner-confirmed links survive the schema/content gates and reach these CTAs.
+const orderingLinks = settings.orderingLinks;
+const pricePolicyText = t(
+  locale,
+  `operations.pricePolicy.${operations.pricePolicy ?? 'unknown'}` as UiKey,
+);
+const dietaryContact = operations.dietaryQuestionsContact;
+const dietaryContactHref =
+  dietaryContact === 'line'
+    ? settings.lineUrl
+    : dietaryContact === 'whatsapp'
+      ? settings.whatsappUrl
+      : dietaryContact === 'phone'
+        ? `tel:${settings.phone.replace(/\s/g, '')}`
+        : null;
+const dietaryContactChannel =
+  dietaryContact === 'phone'
+    ? t(locale, 'operations.channel.phone')
+    : dietaryContact === 'line'
+      ? 'LINE'
+      : dietaryContact === 'whatsapp'
+        ? 'WhatsApp'
+        : '';
+const dietaryContactLabel =
+  dietaryContact === 'phone'
+    ? t(locale, 'operations.dietaryAskPhone')
+    : t(locale, 'operations.dietaryAsk').replace('{channel}', dietaryContactChannel);
+const spiceRequests = operations.spiceRequests;
+const spiceRequestText =
+  spiceRequests?.status === 'offered'
+    ? t(locale, 'operations.spiceOffered').replace(
+        '{levels}',
+        spiceRequests.levels
+          .map((level) => t(locale, `operations.spiceLevel.${level}` as UiKey))
+          .join(', '),
+      )
+    : spiceRequests?.status === 'not-offered'
+      ? t(locale, 'operations.spiceNotOffered')
+      : null;
 
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
+const hasAiIllustrations = dishes.some(({ data }) =>
+  data.images.some((image) => image.origin === 'ai-generated'),
+);
+const featuredDishes = dishes.filter(({ data }) => data.featured);
 const allergens = await getCollection('allergens');
 const allergenName = (id: string) => allergens.find((a) => a.id === id)?.data.name[locale] ?? id;
+const searchIndex = (dish: (typeof dishes)[number]['data'], categoryName: string) => {
+  const description = getPublicDishDescription(dish);
+  return [
+    dish.name.en,
+    dish.name.th,
+    dish.name.ru,
+    description?.en,
+    description?.th,
+    description?.ru,
+    categoryName,
+    ...dish.dietaryTags.map((tag) => t(locale, `tag.${tag}` as UiKey)),
+    ...(dish.foodFacts.allergens.status === 'verified'
+      ? dish.foodFacts.allergens.contains.map((allergen) => allergenName(allergen.id))
+      : []),
+    ...(dish.foodFacts.noGlutenIngredients === 'yes'
+      ? [t(locale, 'menu.noGlutenIngredients')]
+      : []),
+    ...(dish.foodFacts.jainFriendly === 'yes' ? [t(locale, 'menu.jainRecipe')] : []),
+  ]
+    .filter(Boolean)
+    .join(' ');
+};
 
 const nonEmptyCategories = categories.filter((category) =>
   dishes.some((d) => d.data.category.id === category.id),
 );
+const verifiedDietFilters: { value: 'no-gluten' | 'jain'; label: string }[] = [];
+if (dishes.some(({ data }) => data.foodFacts.noGlutenIngredients === 'yes')) {
+  verifiedDietFilters.push({ value: 'no-gluten', label: t(locale, 'menu.noGlutenIngredients') });
+}
+if (dishes.some(({ data }) => data.foodFacts.jainFriendly === 'yes')) {
+  verifiedDietFilters.push({ value: 'jain', label: t(locale, 'menu.jainRecipe') });
+}
 
 const alternates = structuralAlternates('/menu/');
 const site = Astro.site!;
@@ -67,7 +140,7 @@ const jsonld = [
         .map(({ data: dish }) => ({
           name: dish.name[locale],
           price: dish.price_thb,
-          description: dish.description?.[locale],
+          description: getPublicDishDescription(dish, locale),
         })),
     })),
   }),
@@ -90,21 +163,241 @@ const jsonld = [
     </p>
     <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />
     {
-      grabLink && (
-        <p class="mt-5 text-center print:hidden">
-          <a
-            href={grabLink.url}
-            rel="noopener"
-            class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
-          >
-            {t(locale, 'menu.orderGrab')}
-          </a>
-        </p>
+      orderingLinks.length > 0 && (
+        <section
+          id="delivery-options"
+          aria-label={t(locale, 'ordering.deliveryOptions')}
+          class="mt-5 scroll-mt-28 print:hidden"
+        >
+          <ul class="flex flex-wrap justify-center gap-3">
+            {orderingLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  rel="noopener"
+                  data-analytics-event="order_click"
+                  data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                  class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                >
+                  {orderingCtaLabel(locale, link.provider)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
       )
     }
   </div>
 
+  <aside class="wrap pb-6" aria-label={t(locale, 'menu.priceFilter')}>
+    <p class="mx-auto max-w-2xl text-center text-sm leading-relaxed text-ink-500">
+      {pricePolicyText}
+    </p>
+  </aside>
+
+  <aside class="wrap pb-6" aria-label={t(locale, 'menu.plantNamesNote')}>
+    <p
+      class="mx-auto flex max-w-2xl items-start gap-3 rounded-lg border border-leaf-700/20 bg-leaf-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
+    >
+      <span aria-hidden="true">🌱</span>
+      <span>{t(locale, 'menu.plantNamesNote')}</span>
+    </p>
+  </aside>
+
+  {
+    hasAiIllustrations && (
+      <aside class="wrap pb-6" aria-label={t(locale, 'media.aiIllustration')}>
+        <p class="mx-auto max-w-2xl text-center text-sm leading-relaxed text-ink-700">
+          {t(locale, 'media.aiIllustrationNote')}
+        </p>
+      </aside>
+    )
+  }
+
+  <aside class="wrap pb-6" aria-label={t(locale, 'menu.dietGuidance')}>
+    <p
+      id={`diet-facts-note-${locale}`}
+      class="mx-auto max-w-2xl rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
+    >
+      {t(locale, 'menu.dietFactsNote')}{' '}
+      <a
+        href={`${localePath(locale, '/faq/')}#cross-contact`}
+        class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+      >
+        {t(locale, 'menu.dietGuidance')} →
+      </a>
+      {
+        dietaryContactHref && (
+          <span class="mt-2 block">
+            {t(locale, 'operations.dietaryPrompt')}{' '}
+            <a
+              href={dietaryContactHref}
+              rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
+              data-analytics-event="dietary_contact_click"
+              data-analytics-provider={dietaryContact}
+              class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+            >
+              {dietaryContactLabel} →
+            </a>
+          </span>
+        )
+      }
+    </p>
+  </aside>
+
+  {
+    spiceRequests && spiceRequestText && (
+      <aside class="wrap pb-6" aria-label={t(locale, 'operations.spiceQuestion')}>
+        <div class="mx-auto max-w-2xl rounded-lg border border-mango-500/30 bg-mango-200/25 px-4 py-3 text-sm leading-relaxed text-ink-700">
+          <p class="font-semibold text-leaf-900">{t(locale, 'operations.spiceQuestion')}</p>
+          <p class="mt-1">{spiceRequestText}</p>
+          {spiceRequests.scopeNote && <p class="mt-1">{spiceRequests.scopeNote[locale]}</p>}
+        </div>
+      </aside>
+    )
+  }
+
+  {
+    featuredDishes.length > 0 && (
+      <section data-menu-quick-picks class="wrap pb-7" aria-labelledby={`quick-picks-${locale}`}>
+        <div class="flex flex-wrap items-end justify-between gap-x-5 gap-y-1">
+          <h2 id={`quick-picks-${locale}`} class="text-xl font-black text-leaf-900 sm:text-2xl">
+            {t(locale, 'menu.quickPicks')}
+          </h2>
+          <p class="text-sm text-ink-500">{t(locale, 'menu.quickPicksHint')}</p>
+        </div>
+        <ul class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {featuredDishes.map(({ data: dish }) => (
+            <li data-menu-quick-pick data-menu-quick-pick-target={dish.slug[locale]}>
+              <a
+                href={`#${dish.slug[locale]}`}
+                class="group flex h-full min-h-24 flex-col rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/40 hover:bg-leaf-50"
+              >
+                <span class="text-[11px] font-bold tracking-wide text-terracotta-700 uppercase">
+                  {categories.find(({ id }) => id === dish.category.id)?.data.name[locale]}
+                </span>
+                <span class="mt-1 leading-snug font-extrabold text-ink-900 group-hover:text-leaf-800">
+                  {dish.name[locale]}
+                </span>
+                <span class="mt-auto pt-2 text-sm font-bold text-leaf-700 tabular-nums">
+                  ฿{dish.price_thb} ↓
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <div
+    data-menu-search
+    data-results-template={t(locale, 'menu.resultsCount')}
+    hidden
+    class="wrap pb-6"
+  >
+    <form
+      data-menu-search-form
+      role="search"
+      action={localePath(locale, '/menu/')}
+      method="get"
+      class="mx-auto max-w-2xl rounded-lg border border-cream-300 bg-cream-50 p-4 shadow-[0_12px_30px_-24px_rgba(38,34,27,0.35)] sm:p-5"
+    >
+      <label for={`menu-search-${locale}`} class="block font-bold text-leaf-900">
+        {t(locale, 'menu.searchLabel')}
+      </label>
+      <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+        <input
+          id={`menu-search-${locale}`}
+          data-menu-search-input
+          name="q"
+          type="search"
+          autocomplete="off"
+          enterkeyhint="search"
+          aria-describedby={`menu-search-hint-${locale} menu-search-status-${locale}`}
+          placeholder={t(locale, 'menu.searchPlaceholder')}
+          class="min-h-12 min-w-0 flex-1 rounded-lg border border-cream-400 bg-cream-100 px-4 text-base text-ink-900 placeholder:text-ink-500/80 focus:border-leaf-700"
+        />
+        <button
+          type="submit"
+          class="min-h-12 rounded-lg bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+        >
+          {t(locale, 'menu.searchAction')}
+        </button>
+      </div>
+      <fieldset class="mt-4">
+        <legend class="text-sm font-bold text-leaf-900">{t(locale, 'menu.priceFilter')}</legend>
+        <div class="mt-2 grid grid-cols-3 gap-2">
+          {
+            [
+              { value: 'all', label: t(locale, 'menu.priceAny') },
+              { value: '150', label: t(locale, 'menu.priceUpTo150') },
+              { value: '200', label: t(locale, 'menu.priceUpTo200') },
+            ].map((option, index) => (
+              <label class="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-lg border border-cream-300 bg-cream-100 px-2 py-2 text-center text-sm font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900">
+                <input
+                  data-menu-price-filter
+                  type="radio"
+                  name="price"
+                  value={option.value}
+                  checked={index === 0}
+                  class="h-4 w-4 shrink-0 accent-leaf-700"
+                />
+                <span>{option.label}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+      {
+        verifiedDietFilters.length > 0 && (
+          <fieldset class="mt-4">
+            <legend class="text-sm font-bold text-leaf-900">
+              {t(locale, 'menu.verifiedDietFilter')}
+            </legend>
+            <div class="mt-2 grid gap-2 sm:grid-cols-2">
+              {verifiedDietFilters.map((option) => (
+                <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-lg border border-cream-300 bg-cream-100 px-3 py-2 text-sm font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900">
+                  <input
+                    data-menu-diet-filter
+                    type="checkbox"
+                    name="diet"
+                    value={option.value}
+                    class="h-4 w-4 shrink-0 accent-leaf-700"
+                  />
+                  <span>{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )
+      }
+      <div class="mt-2 flex min-h-6 flex-wrap items-start justify-between gap-x-4 gap-y-1 text-sm">
+        <p id={`menu-search-hint-${locale}`} class="text-ink-500">
+          {t(locale, 'menu.searchHint')}
+        </p>
+        <button
+          data-menu-search-clear
+          type="button"
+          hidden
+          class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+        >
+          {t(locale, 'menu.clearSearch')}
+        </button>
+      </div>
+      <p
+        id={`menu-search-status-${locale}`}
+        data-menu-search-status
+        aria-live="polite"
+        aria-atomic="true"
+        class="mt-2 font-semibold text-leaf-800"
+      >
+      </p>
+    </form>
+  </div>
+
   <nav
+    data-menu-category-nav
     aria-label={t(locale, 'menu.categoriesNav')}
     class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem] print:hidden"
   >
@@ -112,7 +405,7 @@ const jsonld = [
       <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
         {
           nonEmptyCategories.map((category) => (
-            <li>
+            <li data-menu-category-link={category.id}>
               <a
                 href={`#${category.data.slug[locale]}`}
                 class="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-leaf-700/20 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
@@ -135,6 +428,7 @@ const jsonld = [
         const items = dishes.filter((d) => d.data.category.id === category.id);
         return (
           <section
+            data-menu-section={category.id}
             id={category.data.slug[locale]}
             class:list={['scroll-mt-24 pt-12', categoryIndex > 0 && 'menu-section-deferred']}
           >
@@ -147,19 +441,45 @@ const jsonld = [
             <ul class="mt-4 grid gap-2">
               {items.map(({ data: dish }) => (
                 <li
+                  data-menu-item
+                  data-menu-search-index={searchIndex(dish, category.data.name[locale])}
+                  data-menu-price={dish.price_thb}
+                  data-menu-diet-no-gluten={
+                    dish.foodFacts.noGlutenIngredients === 'yes' ? 'true' : 'false'
+                  }
+                  data-menu-diet-jain={dish.foodFacts.jainFriendly === 'yes' ? 'true' : 'false'}
                   id={dish.slug[locale]}
                   class="scroll-mt-24 rounded-lg border border-cream-200 bg-cream-50/70 p-4 transition-colors hover:border-leaf-700/25 hover:bg-cream-50"
                 >
                   <div class="flex gap-4">
                     {dish.images[0] && (
-                      <img
-                        src={dish.images[0]}
-                        alt={dish.name[locale]}
-                        loading="lazy"
-                        width="160"
-                        height="160"
-                        class="h-20 w-20 shrink-0 rounded-md border border-cream-300 object-cover"
-                      />
+                      <figure class="w-24 shrink-0 sm:w-28">
+                        <div class="relative">
+                          <ResponsiveMedia
+                            asset={dish.images[0]}
+                            alt={dish.name[locale]}
+                            sizes="(min-width: 640px) 112px, 96px"
+                            className="h-24 w-24 rounded-md border border-cream-300 object-cover sm:h-28 sm:w-28"
+                          />
+                          {dish.images[0].origin === 'ai-generated' && (
+                            <span
+                              class="absolute right-1 bottom-1 rounded-sm bg-ink-900/85 px-1.5 py-0.5 text-xs leading-tight font-bold text-cream-50 shadow-sm backdrop-blur-sm"
+                              aria-hidden="true"
+                            >
+                              {t(locale, 'media.aiIllustration')}
+                            </span>
+                          )}
+                        </div>
+                        {dish.images[0].origin === 'ai-generated' ? (
+                          <figcaption class="sr-only">
+                            {t(locale, 'media.aiIllustrationNote')}
+                          </figcaption>
+                        ) : dish.images[0].credit ? (
+                          <figcaption class="mt-1 text-[9px] leading-tight break-words text-ink-500">
+                            {t(locale, 'media.credit')}: {dish.images[0].credit}
+                          </figcaption>
+                        ) : null}
+                      </figure>
                     )}
                     <div class="min-w-0 flex-1">
                       <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-3">
@@ -170,14 +490,17 @@ const jsonld = [
                           ฿{dish.price_thb}
                         </span>
                       </div>
-                      {dish.description?.[locale] && (
+                      {getPublicDishDescription(dish, locale) && (
                         <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
-                          {dish.description[locale]}
+                          {getPublicDishDescription(dish, locale)}
                         </p>
                       )}
                       {(dish.dietaryTags.length > 0 ||
-                        dish.spicyLevel > 0 ||
-                        dish.allergens.length > 0) && (
+                        dish.foodFacts.spicyLevel !== null ||
+                        (dish.foodFacts.allergens.status === 'verified' &&
+                          dish.foodFacts.allergens.contains.length > 0) ||
+                        dish.foodFacts.noGlutenIngredients === 'yes' ||
+                        dish.foodFacts.jainFriendly === 'yes') && (
                         <p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
                           {dish.dietaryTags.map((tag) =>
                             tag === 'jay' ? (
@@ -189,19 +512,37 @@ const jsonld = [
                               </span>
                             ),
                           )}
-                          {dish.spicyLevel > 0 && (
-                            <span
-                              role="img"
-                              aria-label={`${t(locale, 'menu.spicy')} ${dish.spicyLevel}/3`}
-                              class="text-sm"
-                            >
-                              {'🌶'.repeat(dish.spicyLevel)}
+                          {dish.foodFacts.spicyLevel !== null &&
+                            (dish.foodFacts.spicyLevel === 0 ? (
+                              <span class="text-xs font-semibold text-ink-500">
+                                {t(locale, 'menu.notSpicy')}
+                              </span>
+                            ) : (
+                              <span
+                                role="img"
+                                aria-label={`${t(locale, 'menu.spicy')} ${dish.foodFacts.spicyLevel}/3`}
+                                class="text-sm"
+                              >
+                                {'🌶'.repeat(dish.foodFacts.spicyLevel)}
+                              </span>
+                            ))}
+                          {dish.foodFacts.allergens.status === 'verified' &&
+                            dish.foodFacts.allergens.contains.length > 0 && (
+                              <span class="text-xs text-ink-500 italic">
+                                {t(locale, 'menu.contains')}:{' '}
+                                {dish.foodFacts.allergens.contains
+                                  .map((allergen) => allergenName(allergen.id))
+                                  .join(', ')}
+                              </span>
+                            )}
+                          {dish.foodFacts.noGlutenIngredients === 'yes' && (
+                            <span class="rounded-full border border-leaf-700/25 bg-leaf-50 px-2 py-0.5 text-[11px] font-semibold text-leaf-800">
+                              {t(locale, 'menu.noGlutenIngredients')}
                             </span>
                           )}
-                          {dish.allergens.length > 0 && (
-                            <span class="text-xs text-ink-500 italic">
-                              {t(locale, 'menu.contains')}:{' '}
-                              {dish.allergens.map((a) => allergenName(a.id)).join(', ')}
+                          {dish.foodFacts.jainFriendly === 'yes' && (
+                            <span class="rounded-full border border-leaf-700/25 bg-leaf-50 px-2 py-0.5 text-[11px] font-semibold text-leaf-800">
+                              {t(locale, 'menu.jainRecipe')}
                             </span>
                           )}
                         </p>
@@ -215,19 +556,58 @@ const jsonld = [
         );
       })
     }
+    <div
+      data-menu-no-results
+      hidden
+      class="my-12 rounded-lg border border-cream-300 bg-cream-50 px-6 py-10 text-center text-lg font-semibold text-ink-700"
+    >
+      <p
+        data-menu-no-results-message
+        data-default-message={t(locale, 'menu.noResults')}
+        data-verified-message={t(locale, 'menu.noVerifiedResults')}
+      >
+        {t(locale, 'menu.noResults')}
+      </p>
+      <a
+        href={localePath(locale, '/menu/')}
+        class="mt-4 inline-flex min-h-11 items-center rounded-lg border border-leaf-700/30 bg-leaf-50 px-5 text-sm font-bold text-leaf-800 hover:bg-cream-100"
+      >
+        {t(locale, 'menu.showAllDishes')}
+      </a>
+    </div>
     {
-      grabLink && (
+      orderingLinks.length > 0 && (
         <section class="decor-card mt-14 mb-10 rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10 print:hidden">
           <p class="text-xl font-black text-leaf-900">{t(locale, 'menu.orderClosing')}</p>
-          <p class="mt-4">
-            <a
-              href={grabLink.url}
-              rel="noopener"
-              class="inline-flex min-h-12 items-center rounded-lg bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
-            >
-              {t(locale, 'menu.orderGrab')}
-            </a>
-          </p>
+          <ul class="mt-4 flex flex-wrap justify-center gap-3">
+            {orderingLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  rel="noopener"
+                  data-analytics-event="order_click"
+                  data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                  class="inline-flex min-h-12 items-center rounded-lg bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+                >
+                  {orderingCtaLabel(locale, link.provider)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          {dietaryContactHref && (
+            <p class="mt-4 text-sm leading-relaxed text-ink-700">
+              {t(locale, 'operations.dietaryPrompt')}{' '}
+              <a
+                href={dietaryContactHref}
+                rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
+                data-analytics-event="dietary_contact_click"
+                data-analytics-provider={dietaryContact}
+                class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+              >
+                {dietaryContactLabel} →
+              </a>
+            </p>
+          )}
         </section>
       )
     }
@@ -252,4 +632,169 @@ const jsonld = [
       <path d="m5 12 7-7 7 7"></path>
     </svg>
   </a>
+
+  <script>
+    const searchRoot = document.querySelector<HTMLElement>('[data-menu-search]');
+
+    if (searchRoot) {
+      const form = searchRoot.querySelector<HTMLFormElement>('[data-menu-search-form]');
+      const input = searchRoot.querySelector<HTMLInputElement>('[data-menu-search-input]');
+      const clearButton = searchRoot.querySelector<HTMLButtonElement>('[data-menu-search-clear]');
+      const status = searchRoot.querySelector<HTMLElement>('[data-menu-search-status]');
+      const priceInputs = Array.from(
+        searchRoot.querySelectorAll<HTMLInputElement>('[data-menu-price-filter]'),
+      );
+      const dietInputs = Array.from(
+        searchRoot.querySelectorAll<HTMLInputElement>('[data-menu-diet-filter]'),
+      );
+      const noResults = document.querySelector<HTMLElement>('[data-menu-no-results]');
+      const noResultsMessage = noResults?.querySelector<HTMLElement>(
+        '[data-menu-no-results-message]',
+      );
+      const items = Array.from(document.querySelectorAll<HTMLElement>('[data-menu-item]'));
+      const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-menu-section]'));
+      const categoryLinks = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-menu-category-link]'),
+      );
+      const quickPicksRoot = document.querySelector<HTMLElement>('[data-menu-quick-picks]');
+      const quickPicks = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-menu-quick-pick]'),
+      );
+      const resultsTemplate = searchRoot.dataset.resultsTemplate ?? '{count}';
+      const recognizedDietFilters = new Set(['no-gluten', 'jain']);
+      let unavailableInitialDietFilters = new Set<string>();
+      let updateTimer = 0;
+
+      const normalize = (value: string) =>
+        value.normalize('NFKD').replace(/\p{M}/gu, '').toLocaleLowerCase().trim();
+
+      const applySearch = (updateUrl = false) => {
+        if (!input || !status || !clearButton || !noResults || !noResultsMessage) return;
+
+        const query = normalize(input.value);
+        const selectedPrice = priceInputs.find((priceInput) => priceInput.checked)?.value ?? 'all';
+        const selectedDiet = dietInputs
+          .filter((dietInput) => dietInput.checked)
+          .map((dietInput) => dietInput.value);
+        unavailableInitialDietFilters.forEach((filter) => selectedDiet.push(filter));
+        const maxPrice = selectedPrice === 'all' ? Number.POSITIVE_INFINITY : Number(selectedPrice);
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          const matchesQuery =
+            !query || normalize(item.dataset.menuSearchIndex ?? '').includes(query);
+          const matchesPrice = Number(item.dataset.menuPrice) <= maxPrice;
+          const matchesDiet = selectedDiet.every((filter) =>
+            filter === 'no-gluten'
+              ? item.dataset.menuDietNoGluten === 'true'
+              : item.dataset.menuDietJain === 'true',
+          );
+          const matches = matchesQuery && matchesPrice && matchesDiet;
+          item.hidden = !matches;
+          if (matches) visibleCount += 1;
+        });
+
+        sections.forEach((section) => {
+          const hasVisibleItems = Array.from(
+            section.querySelectorAll<HTMLElement>('[data-menu-item]'),
+          ).some((item) => !item.hidden);
+          section.hidden = !hasVisibleItems;
+        });
+
+        categoryLinks.forEach((link) => {
+          const section = sections.find(
+            (candidate) => candidate.dataset.menuSection === link.dataset.menuCategoryLink,
+          );
+          link.hidden = Boolean(section?.hidden);
+        });
+
+        quickPicks.forEach((quickPick) => {
+          const target = items.find((item) => item.id === quickPick.dataset.menuQuickPickTarget);
+          quickPick.hidden = !target || target.hidden;
+        });
+        if (quickPicksRoot) {
+          quickPicksRoot.hidden = quickPicks.every((quickPick) => quickPick.hidden);
+        }
+
+        clearButton.hidden = query.length === 0;
+        noResults.hidden = visibleCount > 0;
+        noResultsMessage.textContent =
+          selectedDiet.length > 0
+            ? (noResultsMessage.dataset.verifiedMessage ?? '')
+            : (noResultsMessage.dataset.defaultMessage ?? '');
+        status.textContent = resultsTemplate.replace('{count}', String(visibleCount));
+
+        if (updateUrl) {
+          const nextUrl = new URL(window.location.href);
+          if (query) nextUrl.searchParams.set('q', input.value.trim());
+          else nextUrl.searchParams.delete('q');
+
+          if (selectedPrice === 'all') nextUrl.searchParams.delete('price');
+          else nextUrl.searchParams.set('price', selectedPrice);
+
+          if (selectedDiet.length > 0) {
+            nextUrl.searchParams.set('diet', selectedDiet.join(','));
+          } else {
+            nextUrl.searchParams.delete('diet');
+          }
+          nextUrl.hash = '';
+          window.history.replaceState({}, '', nextUrl);
+        }
+      };
+
+      const scheduleSearch = () => {
+        window.clearTimeout(updateTimer);
+        updateTimer = window.setTimeout(() => applySearch(true), 140);
+      };
+
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        window.clearTimeout(updateTimer);
+        applySearch(true);
+      });
+      input?.addEventListener('input', scheduleSearch);
+      priceInputs.forEach((priceInput) => priceInput.addEventListener('change', scheduleSearch));
+      dietInputs.forEach((dietInput) =>
+        dietInput.addEventListener('change', () => {
+          unavailableInitialDietFilters.clear();
+          scheduleSearch();
+        }),
+      );
+      input?.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && input.value) {
+          input.value = '';
+          applySearch(true);
+        }
+      });
+      clearButton?.addEventListener('click', () => {
+        if (!input) return;
+        input.value = '';
+        applySearch(true);
+        input.focus();
+      });
+
+      const searchParams = new URLSearchParams(window.location.search);
+      if (input) input.value = searchParams.get('q') ?? '';
+      const initialPrice = searchParams.get('price');
+      if (initialPrice) {
+        const matchingPrice = priceInputs.find((priceInput) => priceInput.value === initialPrice);
+        if (matchingPrice) matchingPrice.checked = true;
+      }
+      const initialDiet = new Set(
+        (searchParams.get('diet') ?? '')
+          .split(',')
+          .filter((value) => recognizedDietFilters.has(value)),
+      );
+      dietInputs.forEach((dietInput) => {
+        dietInput.checked = initialDiet.has(dietInput.value);
+      });
+      unavailableInitialDietFilters = new Set(
+        [...initialDiet].filter(
+          (filter) => !dietInputs.some((dietInput) => dietInput.value === filter),
+        ),
+      );
+      searchRoot.hidden = false;
+      applySearch();
+    }
+  </script>
 </Base>

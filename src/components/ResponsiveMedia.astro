@@ -1,0 +1,34 @@
+---
+import type { ApprovedMediaAsset } from '../lib/media';
+
+interface Props {
+  asset: ApprovedMediaAsset;
+  alt: string;
+  className?: string;
+  eager?: boolean;
+  sizes?: string;
+}
+
+const { asset, alt, className = '', eager = false, sizes = '100vw' } = Astro.props;
+const candidates = new Map<number, string>([[asset.width, asset.src]]);
+if (asset.srcSmall) candidates.set(960, asset.srcSmall);
+if (asset.srcLarge) candidates.set(1600, asset.srcLarge);
+const responsiveSources = [...candidates.entries()]
+  .sort(([left], [right]) => left - right)
+  .map(([width, src]) => `${src} ${width}w`)
+  .join(', ');
+---
+
+<picture>
+  <source srcset={responsiveSources} {sizes} />
+  <img
+    src={asset.src}
+    {alt}
+    width={asset.width}
+    height={asset.height}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+    decoding="async"
+    class={className}
+  />
+</picture>

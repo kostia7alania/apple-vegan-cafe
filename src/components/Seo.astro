@@ -36,6 +36,7 @@ const canonical = absoluteUrl(site, currentPath);
 // Not absoluteUrl(): that helper normalizes to a trailing slash, which would
 // mangle a file path like /og-default.png into /og-default.png/.
 const ogImageUrl = new URL(ogImage, site).href;
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() || null;
 const defaultAlternate = alternates[DEFAULT_LOCALE];
 const alternateEntries = Object.entries(alternates).filter(([, path]) => Boolean(path)) as [
   Locale,
@@ -46,6 +47,11 @@ const alternateEntries = Object.entries(alternates).filter(([, path]) => Boolean
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
+{
+  googleSiteVerification && (
+    <meta name="google-site-verification" content={googleSiteVerification} />
+  )
+}
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 {
   alternateEntries.map(([l, path]) => (

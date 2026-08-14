@@ -12,14 +12,19 @@ import Sprig from '../components/Sprig.astro';
 import type { Locale } from '../lib/i18n';
 import { absoluteUrl, localePath } from '../lib/urls';
 import { buildBreadcrumb } from '../lib/jsonld';
+import { getRegularHours } from '../lib/hours';
 import { t, type UiKey } from '../lib/ui';
+import { getPublicDishDescription } from '../lib/dishes';
 
 const locale: Locale = 'en';
 const PAGE_PATH = '/vegan-breakfast-pattaya/';
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
-if (!settings || !location) throw new Error('settings/locations content is missing');
+const [operations] = (await getCollection('operations')).map((e) => e.data);
+if (!settings || !location || !operations) {
+  throw new Error('settings/locations/operations content is missing');
+}
 
 // Every available breakfast dish, cheapest first.
 const BREAKFAST_PICK_IDS = [
@@ -44,10 +49,14 @@ const morningDrinks = (
 
 const alternates = { en: PAGE_PATH, ru: '/ru/veganskiy-zavtrak-v-pattaye/' };
 const site = Astro.site!;
+const regularHours = getRegularHours(location.hours);
+const pricePolicyText = t(
+  locale,
+  `operations.pricePolicy.${operations.pricePolicy ?? 'unknown'}` as UiKey,
+);
 
-const title = 'Vegan Breakfast in Pattaya from 7:00 — Apple Vegan Cafe';
-const description =
-  'One of the earliest vegan breakfasts in Pattaya — doors open 7:00, every day. 100% plant-based Thai breakfast plates, smoothies and fresh coffee.';
+const title = `Vegan Breakfast in Pattaya${regularHours ? ` from ${regularHours.open}` : ''} — Apple Vegan Cafe`;
+const description = `One of the earliest vegan breakfasts in Pattaya${regularHours ? `, from our regular ${regularHours.open} opening time` : ''}. 100% plant-based Thai breakfast plates, smoothies and fresh coffee.`;
 
 const jsonld = [
   buildBreadcrumb([
@@ -92,10 +101,11 @@ const daysLabel = (days: readonly string[]) =>
         A small family kitchen serving one of the earliest vegan breakfasts in town
       </p>
       <p
+        data-special-hours-replaced
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Doors open 7:00 · every day
+        Regular opening time · {regularHours?.open}
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -116,18 +126,19 @@ const daysLabel = (days: readonly string[]) =>
 
   <section class="wrap py-12 sm:py-14">
     <div class="prose-editorial">
-      <p>
+      <p data-special-hours-replaced>
         Seven in the morning is a quiet hour in Pattaya. The streets are still cool, the beach crowd
         hasn't arrived, and most vegan kitchens in town won't open for a while yet. Ours already
         has. We're <strong>Apple Vegan Cafe &amp; Restaurant</strong>, a small family-run cafe in
-        Bang Lamung, and breakfast here starts at <strong>7:00, every day of the week</strong> — one of
-        the earliest vegan breakfasts in Pattaya.
+        Bang Lamung, and on our regular schedule breakfast starts at <strong
+          >{regularHours?.open}</strong
+        > — one of the earliest vegan breakfasts in Pattaya.
       </p>
       <p>
         Everything we cook is 100% plant-based — not a vegan corner of a regular menu, but the whole
-        kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> anywhere on the premises,
-        so nothing needs double-checking and nothing is cooked next to meat. The morning coffee is made
-        with our house-made oat milk, and every single dish is plant-based — no egg anywhere.
+        kitchen. There is <strong>no egg, no dairy and no fish sauce</strong> in the menu. We have not
+        yet published a verified cross-contact protocol, so guests with severe allergies should tell the
+        team before ordering. Morning coffee is served with oat milk, and every dish is plant-based.
       </p>
       <p>
         Mornings here are unhurried. It's usually just us and a few regulars — someone reading
@@ -152,8 +163,9 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      The breakfast menu is short on purpose — a few things we make well every morning, at the same
-      prices you'll see on the table.
+      The breakfast menu is short on purpose — a few things we make well every morning.{' '}{
+        pricePolicyText
+      }
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -173,9 +185,9 @@ const daysLabel = (days: readonly string[]) =>
                 ฿{dish.price_thb}
               </span>
             </div>
-            {dish.description?.[locale] && (
+            {getPublicDishDescription(dish, locale) && (
               <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
-                {dish.description[locale]}
+                {getPublicDishDescription(dish, locale)}
               </p>
             )}
           </li>
@@ -203,8 +215,8 @@ const daysLabel = (days: readonly string[]) =>
         Also great in the morning
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        No latte art competitions here — just proper espresso with oat milk we make ourselves, and
-        fresh fruit smoothies, mango first among them.
+        No latte art competitions here — just proper espresso with oat milk and fresh fruit
+        smoothies, mango first among them.
       </p>
       <ul class="relative mt-4 max-w-xl divide-y divide-mango-500/20">
         {
@@ -224,9 +236,9 @@ const daysLabel = (days: readonly string[]) =>
                   ฿{drink.price_thb}
                 </span>
               </div>
-              {drink.description?.[locale] && (
+              {getPublicDishDescription(drink, locale) && (
                 <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-700">
-                  {drink.description[locale]}
+                  {getPublicDishDescription(drink, locale)}
                 </p>
               )}
             </li>
@@ -246,9 +258,12 @@ const daysLabel = (days: readonly string[]) =>
       <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
         {t(locale, 'home.findUs')}
       </h2>
-      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        We open at <strong>7:00</strong> — early enough for breakfast before a morning flight, a dive
-        trip or a long beach day.
+      <p
+        data-special-hours-replaced
+        class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700"
+      >
+        Our regular opening time is <strong>{regularHours?.open}</strong> — early enough for breakfast
+        before a morning flight, a dive trip or a long beach day.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
@@ -293,7 +308,7 @@ const daysLabel = (days: readonly string[]) =>
             <tbody>
               {
                 location.hours.map((h) => (
-                  <tr>
+                  <tr data-special-hours-replaced>
                     <th scope="row" class="py-1 pr-6 font-medium">
                       {daysLabel(h.days)}
                     </th>

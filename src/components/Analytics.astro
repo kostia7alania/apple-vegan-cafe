@@ -25,8 +25,13 @@ document.addEventListener('click', function (event) {
   var pagePath = window.location.pathname;
   var eventName = '';
   var params = { page_path: pagePath };
+  var explicitEvent = link.getAttribute('data-analytics-event');
+  var explicitProvider = link.getAttribute('data-analytics-provider');
 
-  if (href.indexOf('tel:') === 0) {
+  if (explicitEvent) {
+    eventName = explicitEvent;
+    if (explicitProvider) params.provider = explicitProvider;
+  } else if (href.indexOf('tel:') === 0) {
     eventName = 'phone_click';
     params.contact_method = 'phone';
   } else if (href.indexOf('grab.com') !== -1) {

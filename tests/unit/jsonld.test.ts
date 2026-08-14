@@ -111,11 +111,16 @@ describe('buildArticle', () => {
       description: 'Our site is live',
       url: 'https://apple-vegan-cafe.com/blog/welcome/',
       locale: 'en',
-      authorName: 'Family',
+      authorName: 'Apple Vegan Cafe & Restaurant',
+      authorType: 'Organization',
       publishedAt: new Date('2026-07-15'),
     });
     expect(jsonld['@type']).toBe('Article');
     expect(jsonld.inLanguage).toBe('en');
+    expect(jsonld.author).toEqual({
+      '@type': 'Organization',
+      name: 'Apple Vegan Cafe & Restaurant',
+    });
     expect(jsonld.datePublished).toMatch(/^2026-07-15/);
     expect(jsonld).not.toHaveProperty('dateModified');
   });

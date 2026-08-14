@@ -3,10 +3,14 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import LeafDivider from '../../components/LeafDivider.astro';
 import Sprig from '../../components/Sprig.astro';
+import SpecialHoursNotice from '../../components/SpecialHoursNotice.astro';
+import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
-import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { absoluteAssetUrl, absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb, buildRestaurant } from '../../lib/jsonld';
+import { getPublishableMedia, isPublishableMedia } from '../../lib/media';
 import { t, type UiKey } from '../../lib/ui';
+import { orderingAnalyticsProvider, orderingCtaLabel } from '../../lib/ordering';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -19,10 +23,23 @@ const { locale } = Astro.props;
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
-if (!settings || !location) throw new Error('settings/locations content is missing');
+const [operations] = (await getCollection('operations')).map((e) => e.data);
+const [siteMedia] = (await getCollection('siteMedia')).map((e) => e.data);
+if (!settings || !location || !operations || !siteMedia) {
+  throw new Error('settings/locations/operations/site-media content is missing');
+}
+const exteriorMedia = getPublishableMedia(siteMedia.assets, 'exterior');
+const restaurantImages = [
+  ...new Set(
+    siteMedia.assets
+      .filter(isPublishableMedia)
+      .map((asset) => absoluteAssetUrl(Astro.site!, asset.src)),
+  ),
+];
 
 const alternates = structuralAlternates('/contact/');
 const site = Astro.site!;
+const orderingLinks = settings.orderingLinks;
 
 const title = {
   en: 'Contact & location — Apple Vegan Cafe Pattaya',
@@ -43,10 +60,17 @@ const jsonld = [
     telephone: settings.phone,
     address: location.address.en,
     geo: location.geo,
-    images: [],
-    sameAs: settings.social.map((s) => s.url),
+    hasMap: location.mapsUrl,
+    images: restaurantImages,
+    sameAs: [
+      ...settings.social.map((s) => s.url),
+      ...(settings.reviewLinks.googleProfile ? [settings.reviewLinks.googleProfile] : []),
+      ...(settings.reviewLinks.happycow ? [settings.reviewLinks.happycow] : []),
+      ...(settings.reviewLinks.tripadvisor ? [settings.reviewLinks.tripadvisor] : []),
+    ],
     hours: location.hours,
-    orderUrl: settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'))?.url,
+    specialHours: location.specialHours,
+    orderUrl: orderingLinks[0]?.url,
   }),
   buildBreadcrumb([
     { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
@@ -62,6 +86,39 @@ const daysLabel = (days: readonly string[]) =>
       ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
       : days.map(dayLabel).join(', ');
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
+const pickupContact = operations.pickup?.contact;
+const pickupHref = !pickupContact
+  ? null
+  : pickupContact === 'line'
+    ? settings.lineUrl
+    : pickupContact === 'whatsapp'
+      ? settings.whatsappUrl
+      : phoneHref;
+const reservationContact = operations.reservations?.contact;
+const reservationHref = !reservationContact
+  ? null
+  : reservationContact === 'line'
+    ? settings.lineUrl
+    : reservationContact === 'whatsapp'
+      ? settings.whatsappUrl
+      : phoneHref;
+const reservationIsPublishable = Boolean(
+  operations.reservations && (operations.reservations.status === 'not-accepted' || reservationHref),
+);
+const reservationPolicyText =
+  operations.reservations?.status === 'large-groups-only'
+    ? t(locale, 'operations.reservationLargeGroups').replace(
+        '{count}',
+        String(operations.reservations.minimumPartySize),
+      )
+    : operations.reservations?.status === 'accepted'
+      ? t(locale, 'operations.reservationAccepted')
+      : operations.reservations?.status === 'not-accepted'
+        ? t(locale, 'operations.reservationNotAccepted')
+        : null;
+const paymentLabels = operations.paymentMethods.map((method) =>
+  t(locale, `operations.payment.${method}` as UiKey),
+);
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
@@ -100,6 +157,39 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
           </h2>
           <p class="mt-3 text-lg leading-relaxed">{location.address[locale]}</p>
           {
+            location.landmark && (
+              <p class="mt-3 text-sm leading-relaxed text-ink-700">
+                <strong>{t(locale, 'contact.landmark')}:</strong> {location.landmark[locale]}
+              </p>
+            )
+          }
+          {
+            location.parking && (
+              <p class="mt-2 text-sm leading-relaxed text-ink-700">
+                <strong>{t(locale, 'contact.parking')}:</strong> {location.parking[locale]}
+              </p>
+            )
+          }
+          {
+            location.arrivalNote && (
+              <p class="mt-2 text-sm leading-relaxed text-ink-700">
+                <strong>{t(locale, 'contact.arrivalNote')}:</strong> {location.arrivalNote[locale]}
+              </p>
+            )
+          }
+          {
+            locale !== 'th' && (
+              <div class="mt-4 rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+                <p class="text-xs font-bold tracking-wide text-terracotta-700 uppercase">
+                  {t(locale, 'contact.driverAddress')}
+                </p>
+                <p lang="th" class="mt-1.5 leading-relaxed text-ink-900">
+                  {location.address.th}
+                </p>
+              </div>
+            )
+          }
+          {
             location.mapsUrl && (
               <a
                 href={location.mapsUrl}
@@ -108,6 +198,23 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
               >
                 {t(locale, 'contact.findUs')}
               </a>
+            )
+          }
+          {
+            exteriorMedia && (
+              <figure class="mt-5">
+                <ResponsiveMedia
+                  asset={exteriorMedia}
+                  alt={exteriorMedia.alt[locale]}
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="aspect-4/3 w-full rounded-lg border border-cream-300 object-cover sm:aspect-3/2"
+                />
+                {exteriorMedia.credit && (
+                  <figcaption class="mt-1.5 text-xs text-ink-500">
+                    {t(locale, 'media.credit')}: {exteriorMedia.credit}
+                  </figcaption>
+                )}
+              </figure>
             )
           }
         </section>
@@ -140,15 +247,47 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
             {settings.phone}
           </a>
           {
-            settings.whatsapp && (
+            settings.lineUrl && (
               <p class="mt-4">
                 <a
-                  href={settings.whatsapp}
+                  href={settings.lineUrl}
+                  rel="noopener"
+                  class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                >
+                  LINE
+                </a>
+              </p>
+            )
+          }
+          {
+            settings.whatsappUrl && (
+              <p class="mt-3">
+                <a
+                  href={settings.whatsappUrl}
                   rel="noopener"
                   class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                 >
                   WhatsApp
                 </a>
+              </p>
+            )
+          }
+          {
+            settings.email && (
+              <p class="mt-3">
+                <a
+                  href={`mailto:${settings.email}`}
+                  class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                >
+                  {settings.email}
+                </a>
+              </p>
+            )
+          }
+          {
+            settings.responseHours && (
+              <p class="mt-4 text-sm leading-relaxed text-ink-500">
+                {t(locale, 'contact.responseHours')}: {settings.responseHours[locale]}
               </p>
             )
           }
@@ -180,10 +319,11 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
           {t(locale, 'contact.hours')}
         </h2>
         <table class="mt-4 w-full max-w-md text-base">
+          <caption class="sr-only">{t(locale, 'contact.hours')}</caption>
           <tbody class="divide-y divide-cream-200">
             {
               location.hours.map((h) => (
-                <tr>
+                <tr data-special-hours-replaced>
                   <th scope="row" class="py-2.5 pr-6 text-left font-medium">
                     {daysLabel(h.days)}
                   </th>
@@ -193,20 +333,153 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
                 </tr>
               ))
             }
-            <tr>
-              <th scope="row" class="py-2.5 pr-6 text-left font-medium">
-                {t(locale, 'hours.delivery')}
-              </th>
-              <td class="py-2.5 font-semibold text-leaf-800">
-                {t(locale, 'hours.deliveryValue')}
-              </td>
-            </tr>
+            {
+              orderingLinks.length > 0 && (
+                <tr>
+                  <th scope="row" class="py-2.5 pr-6 text-left font-medium">
+                    {t(locale, 'hours.delivery')}
+                  </th>
+                  <td class="py-2.5 font-semibold text-leaf-800">
+                    {t(locale, 'hours.deliveryValue')}
+                  </td>
+                </tr>
+              )
+            }
           </tbody>
         </table>
-        <p class="mt-4 max-w-[46ch] text-sm leading-relaxed text-ink-500">
-          🌙 {t(locale, 'contact.nightOrders')}
+        <SpecialHoursNotice
+          {locale}
+          specialHours={location.specialHours}
+          className="mt-4 max-w-md"
+        />
+        {
+          orderingLinks.length > 0 && (
+            <div class="mt-4 max-w-[46ch]">
+              <p class="text-sm leading-relaxed text-ink-500">
+                🌙 {t(locale, 'contact.nightOrders')}
+              </p>
+              <ul
+                class="mt-3 flex flex-wrap gap-2"
+                aria-label={t(locale, 'ordering.deliveryOptions')}
+              >
+                {orderingLinks.map((link) => (
+                  <li>
+                    <a
+                      href={link.url}
+                      rel="noopener"
+                      data-analytics-event="order_click"
+                      data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                      class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-4 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                    >
+                      {orderingCtaLabel(locale, link.provider)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        <p class="relative mt-5">
+          <a
+            href={`${localePath(locale, '/faq/')}${paymentLabels.length > 0 ? '#payment' : ''}`}
+            class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+          >
+            {
+              t(
+                locale,
+                paymentLabels.length > 0
+                  ? 'contact.visitQuestions'
+                  : 'contact.visitQuestionsWithoutPayment',
+              )
+            }{' '}
+            →
+          </a>
         </p>
       </section>
     </div>
+    {
+      (paymentLabels.length > 0 || operations.pickup?.enabled || reservationIsPublishable) && (
+        <section class="mt-5 grid gap-5 rounded-lg border border-cream-300 bg-cream-50 p-6 sm:grid-cols-2 sm:p-7">
+          {paymentLabels.length > 0 && (
+            <div>
+              <h2 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+                {t(locale, 'operations.payment')}
+              </h2>
+              <p class="mt-3 font-semibold text-leaf-900">{paymentLabels.join(' · ')}</p>
+              {operations.paymentNote && (
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                  {operations.paymentNote[locale]}
+                </p>
+              )}
+            </div>
+          )}
+          {operations.pickup?.enabled && (
+            <div>
+              <h2 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+                {t(locale, 'operations.pickup')}
+              </h2>
+              <p class="mt-3 font-semibold text-leaf-900">
+                {t(locale, 'operations.pickupAvailable')}
+              </p>
+              {operations.pickup.leadTime && (
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                  {operations.pickup.leadTime[locale]}
+                </p>
+              )}
+              {operations.pickup.priceNote && (
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                  {operations.pickup.priceNote[locale]}
+                </p>
+              )}
+              {pickupHref && (
+                <a
+                  href={pickupHref}
+                  rel={pickupHref.startsWith('https:') ? 'noopener' : undefined}
+                  class="mt-4 inline-flex min-h-11 items-center rounded-lg bg-leaf-700 px-5 font-bold text-cream-50 hover:bg-leaf-800"
+                >
+                  {operations.pickup.contact === 'phone'
+                    ? t(locale, 'actions.call')
+                    : operations.pickup.contact === 'line'
+                      ? 'LINE'
+                      : 'WhatsApp'}
+                </a>
+              )}
+            </div>
+          )}
+          {operations.reservations && reservationIsPublishable && reservationPolicyText && (
+            <div id="reservations" class="scroll-mt-32">
+              <h2 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+                {t(locale, 'operations.reservations')}
+              </h2>
+              <p class="mt-3 font-semibold text-leaf-900">{reservationPolicyText}</p>
+              {operations.reservations.leadTime && (
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                  {operations.reservations.leadTime[locale]}
+                </p>
+              )}
+              {operations.reservations.note && (
+                <p class="mt-2 text-sm leading-relaxed text-ink-500">
+                  {operations.reservations.note[locale]}
+                </p>
+              )}
+              {operations.reservations.status !== 'not-accepted' && reservationHref && (
+                <a
+                  href={reservationHref}
+                  rel={reservationHref.startsWith('https:') ? 'noopener' : undefined}
+                  class="mt-4 inline-flex min-h-11 items-center rounded-lg bg-leaf-700 px-5 font-bold text-cream-50 hover:bg-leaf-800"
+                >
+                  {t(locale, 'operations.reservationRequest')} ·{' '}
+                  {reservationContact === 'phone'
+                    ? t(locale, 'actions.call')
+                    : reservationContact === 'line'
+                      ? 'LINE'
+                      : 'WhatsApp'}
+                </a>
+              )}
+            </div>
+          )}
+        </section>
+      )
+    }
   </div>
 </Base>

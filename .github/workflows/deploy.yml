@@ -49,6 +49,7 @@ jobs:
         env:
           PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ vars.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
           PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
+          PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_SITE_VERIFICATION }}
         run: pnpm build
 
       - name: Deploy

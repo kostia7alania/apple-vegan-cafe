@@ -607,7 +607,7 @@ test('blog article renders with localized slug', async ({ page }) => {
   await expect(page.locator('h1')).toContainText('Добро пожаловать');
 });
 
-test('content pages ship zero client JavaScript', async ({ page }) => {
+test('content pages ship no external client bundle', async ({ page }) => {
   await page.goto('/menu/');
   const scripts = await page.locator('script[src]').count();
   expect(scripts).toBe(0);

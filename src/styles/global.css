@@ -227,7 +227,9 @@
   .site-main {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
+    /* Unlike hidden, clip does not create a scroll container that breaks
+       descendant position: sticky (the menu category navigation). */
+    overflow: clip;
   }
 
   .ambient-ornaments {

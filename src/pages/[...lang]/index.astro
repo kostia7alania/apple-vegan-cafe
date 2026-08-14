@@ -3,10 +3,17 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
 import Sprig from '../../components/Sprig.astro';
+import SpecialHoursNotice from '../../components/SpecialHoursNotice.astro';
+import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import { localeStaticPaths, type Locale } from '../../lib/i18n';
-import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
+import { absoluteAssetUrl, absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildRestaurant } from '../../lib/jsonld';
+import { getRegularHours } from '../../lib/hours';
+import { getPublishableMedia, isPublishableMedia } from '../../lib/media';
 import { t } from '../../lib/ui';
+import { getPublicDishDescription } from '../../lib/dishes';
+import { orderingAnalyticsProvider, orderingCtaLabel } from '../../lib/ordering';
+import { TH_JAY_LANDING_REVIEWED } from '../../lib/site';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -19,13 +26,27 @@ const { locale } = Astro.props;
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
-if (!settings || !location) throw new Error('settings/locations content is missing');
+const [siteMedia] = (await getCollection('siteMedia')).map((e) => e.data);
+if (!settings || !location || !siteMedia) {
+  throw new Error('settings/locations/site-media content is missing');
+}
+const heroMedia = getPublishableMedia(siteMedia.assets, 'hero');
+const exteriorMedia = getPublishableMedia(siteMedia.assets, 'exterior');
+const restaurantImages = [
+  ...new Set(
+    siteMedia.assets
+      .filter(isPublishableMedia)
+      .map((asset) => absoluteAssetUrl(Astro.site!, asset.src)),
+  ),
+];
 
 const availableDishes = await getCollection('dishes', ({ data }) => data.available);
 const featured = availableDishes.filter((e) => e.data.featured).map((e) => e.data);
 const categories = await getCollection('categories');
 const categoryName = (id: string) => categories.find((c) => c.id === id)?.data.name[locale];
-const grabLink = settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'));
+const orderingLinks = settings.orderingLinks;
+const grabLink = orderingLinks.find((link) => link.provider === 'GrabFood');
+const deliveryProviders = orderingLinks.map(({ provider }) => provider).join(' / ');
 
 const alternates = structuralAlternates('/');
 const site = Astro.site!;
@@ -38,13 +59,17 @@ const jsonld = [
     telephone: settings.phone,
     address: location.address.en,
     geo: location.geo,
-    images: [],
+    hasMap: location.mapsUrl,
+    images: restaurantImages,
     sameAs: [
       ...settings.social.map((s) => s.url),
+      ...(settings.reviewLinks.googleProfile ? [settings.reviewLinks.googleProfile] : []),
       ...(settings.reviewLinks.happycow ? [settings.reviewLinks.happycow] : []),
+      ...(settings.reviewLinks.tripadvisor ? [settings.reviewLinks.tripadvisor] : []),
     ],
     hours: location.hours,
-    orderUrl: settings.orderingLinks.find((l) => l.provider.toLowerCase().includes('grab'))?.url,
+    specialHours: location.specialHours,
+    orderUrl: orderingLinks[0]?.url,
   }),
 ];
 
@@ -53,10 +78,11 @@ const title = {
   th: 'ร้านอาหารเจ พัทยา | Apple Vegan Cafe',
   ru: 'Веганское кафе в Паттайе | Apple Vegan Cafe',
 }[locale];
+const regularHours = getRegularHours(location.hours);
 const description = {
-  en: '100% vegan restaurant and cafe in Pattaya serving Thai food, smoothies and coffee from 7:00. Family-run, plant-based only: no fish sauce, egg or dairy.',
-  th: 'ร้านอาหารเจ 100% ในพัทยา มีอาหารไทย สมูทตี้ กาแฟ เปิดทุกวันตั้งแต่ 7:00 น. ไม่มีน้ำปลา ไข่ หรือนม',
-  ru: '100% веганское кафе в Паттайе: тайская еда, смузи и кофе каждый день с 7:00. Без рыбного соуса, яиц и молочных продуктов.',
+  en: `100% vegan restaurant and cafe in Pattaya serving Thai food, smoothies and coffee${regularHours ? ` from ${regularHours.open}` : ''}. Family-run, plant-based only: no fish sauce, egg or dairy.`,
+  th: `ร้านอาหารเจ 100% ในพัทยา มีอาหารไทย สมูทตี้ กาแฟ${regularHours ? ` เวลาปกติเริ่ม ${regularHours.open} น.` : ''} ไม่มีน้ำปลา ไข่ หรือนม`,
+  ru: `100% веганское кафе в Паттайе: тайская еда, смузи и кофе${regularHours ? `, обычное открытие с ${regularHours.open}` : ''}. Без рыбного соуса, яиц и молочных продуктов.`,
 }[locale];
 const heroTitle = {
   en: 'Vegan Restaurant & Cafe in Pattaya',
@@ -64,9 +90,9 @@ const heroTitle = {
   ru: 'Веганское кафе в Паттайе',
 }[locale];
 const heroIntro = {
-  en: 'Apple Vegan Cafe is a family-run 100% plant-based Thai kitchen with 141 dishes, oat milk drinks and GrabFood delivery.',
-  th: 'Apple Vegan Cafe เป็นร้านอาหารเจ 100% ของครอบครัว มี 141 เมนู เครื่องดื่มนมโอ๊ต และสั่งผ่าน GrabFood ได้',
-  ru: 'Apple Vegan Cafe — семейная 100% растительная тайская кухня: 141 блюдо, напитки на овсяном молоке и доставка GrabFood.',
+  en: `Apple Vegan Cafe is a family-run 100% plant-based Thai kitchen with ${availableDishes.length} dishes and oat milk drinks${deliveryProviders ? `, with delivery via ${deliveryProviders}` : ''}.`,
+  th: `Apple Vegan Cafe เป็นร้านอาหารเจ 100% ของครอบครัว มี ${availableDishes.length} เมนูและเครื่องดื่มนมโอ๊ต${deliveryProviders ? ` พร้อมสั่งเดลิเวอรีผ่าน ${deliveryProviders}` : ''}`,
+  ru: `Apple Vegan Cafe — семейная 100% растительная тайская кухня. Позиций в меню: ${availableDishes.length}, есть напитки на овсяном молоке${deliveryProviders ? ` и доставка через ${deliveryProviders}` : ''}.`,
 }[locale];
 
 const menuPath = localePath(locale, '/menu/');
@@ -74,9 +100,10 @@ const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 
 const [mainHours] = location.hours;
 const openChip = mainHours
-  ? t(locale, 'home.openChip')
+  ? t(locale, orderingLinks.length > 0 ? 'home.openChip' : 'home.openChipDineIn')
       .replace('{open}', mainHours.open.replace(/^0/, ''))
       .replace('{close}', mainHours.close)
+      .replace('{providers}', deliveryProviders)
   : '';
 ---
 
@@ -84,26 +111,49 @@ const openChip = mainHours
   <section
     class="relative min-h-[78svh] overflow-hidden bg-leaf-900 text-cream-100 sm:min-h-[72svh]"
   >
-    <picture>
-      <source
-        type="image/avif"
-        srcset="/hero-vegan-table-960.avif 960w, /hero-vegan-table-1600.avif 1600w"
-        sizes="100vw"
-      />
-      <source
-        type="image/webp"
-        srcset="/hero-vegan-table-960.webp 960w, /hero-vegan-table-1600.webp 1600w"
-        sizes="100vw"
-      />
-      <img
-        src="/hero-vegan-table.webp"
-        alt=""
-        width="1600"
-        height="900"
-        fetchpriority="high"
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-    </picture>
+    {
+      heroMedia ? (
+        <ResponsiveMedia
+          asset={heroMedia}
+          alt={heroMedia.alt[locale]}
+          eager
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <>
+          <picture>
+            <source
+              type="image/avif"
+              srcset="/hero-vegan-table-960.avif 960w, /hero-vegan-table-1600.avif 1600w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcset="/hero-vegan-table-960.webp 960w, /hero-vegan-table-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <img
+              src="/hero-vegan-table.webp"
+              alt=""
+              width="1600"
+              height="900"
+              fetchpriority="high"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+          </picture>
+          <p class="absolute top-3 right-3 z-10 rounded-md bg-ink-900/70 px-2.5 py-1 text-[11px] font-medium text-cream-100 backdrop-blur-sm">
+            {t(locale, 'media.illustrative')}
+          </p>
+        </>
+      )
+    }
+    {
+      heroMedia?.credit && (
+        <p class="absolute top-3 right-3 z-10 rounded-md bg-ink-900/70 px-2.5 py-1 text-[11px] font-medium text-cream-100 backdrop-blur-sm">
+          {t(locale, 'media.credit')}: {heroMedia.credit}
+        </p>
+      )
+    }
     <div
       class="absolute inset-0 bg-linear-to-r from-leaf-900/95 via-leaf-900/70 to-leaf-900/10"
       aria-hidden="true"
@@ -130,7 +180,10 @@ const openChip = mainHours
       </p>
       {
         openChip && (
-          <p class="rise rise-2 mt-6 inline-flex w-fit items-center gap-2.5 rounded-lg border border-cream-100/25 bg-cream-50/10 px-4 py-2 text-sm font-semibold backdrop-blur-md">
+          <p
+            data-special-hours-replaced
+            class="rise rise-2 mt-6 inline-flex w-fit items-center gap-2.5 rounded-lg border border-cream-100/25 bg-cream-50/10 px-4 py-2 text-sm font-semibold backdrop-blur-md"
+          >
             <svg
               viewBox="0 0 24 24"
               class="h-4 w-4 shrink-0 text-mango-300"
@@ -148,23 +201,30 @@ const openChip = mainHours
           </p>
         )
       }
+      <SpecialHoursNotice
+        {locale}
+        specialHours={location.specialHours}
+        className="rise rise-2 mt-3 w-fit bg-mango-300"
+      />
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         {
-          grabLink && (
+          orderingLinks.map((link) => (
             <a
-              href={grabLink.url}
+              href={link.url}
               rel="noopener"
+              data-analytics-event="order_click"
+              data-analytics-provider={orderingAnalyticsProvider(link.provider)}
               class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
             >
-              {t(locale, 'home.orderGrab')}
+              {orderingCtaLabel(locale, link.provider)}
             </a>
-          )
+          ))
         }
         <a
           href={menuPath}
           class:list={[
             'inline-flex min-h-12 items-center rounded-lg px-7 text-base font-semibold transition-colors focus-visible:outline-mango-300',
-            grabLink
+            orderingLinks.length > 0
               ? 'border border-cream-100/45 bg-cream-50/10 text-cream-100 backdrop-blur-md hover:border-cream-100 hover:bg-cream-50/18'
               : 'bg-mango-500 text-ink-900 hover:bg-mango-300',
           ]}
@@ -215,25 +275,35 @@ const openChip = mainHours
             <circle cx="12" cy="12" r="9"></circle>
             <path d="M12 7v5l3 2"></path>
           </svg>
-          {t(locale, 'home.openDailyNote')}
+          {t(locale, orderingLinks.length > 0 ? 'home.openDailyNote' : 'hours.cafe')}
         </p>
-        <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'home.openDailyHint')}</p>
+        {
+          orderingLinks.length > 0 && (
+            <p class="mt-1 text-xs font-semibold text-ink-500">{t(locale, 'home.openDailyHint')}</p>
+          )
+        }
       </li>
-      <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
-        <a href={settings.reviewLinks.happycow} rel="noopener" class="group block">
-          <span class="flex items-center gap-2 font-black text-leaf-900">
-            <svg viewBox="0 0 24 24" class="h-4.5 w-4.5 shrink-0 fill-mango-500" aria-hidden="true">
-              <path
-                d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z"
-              ></path>
-            </svg>
-            {t(locale, 'trust.happycow')}
-          </span>
-          <span class="mt-1 block text-xs font-semibold text-ink-500 group-hover:text-leaf-800">
-            {t(locale, 'home.happyCowNote')}
-          </span>
-        </a>
-      </li>
+      {
+        settings.reviewLinks.happycow && (
+          <li class="rounded-lg border border-cream-300 bg-cream-100 px-4 py-3">
+            <a href={settings.reviewLinks.happycow} rel="noopener" class="group block">
+              <span class="flex items-center gap-2 font-black text-leaf-900">
+                <svg
+                  viewBox="0 0 24 24"
+                  class="h-4.5 w-4.5 shrink-0 fill-mango-500"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2l2.9 6.26 6.6 1.01-4.75 4.63L17.9 20.5 12 17.27 6.1 20.5l1.15-6.6L2.5 9.27l6.6-1.01z" />
+                </svg>
+                {t(locale, 'trust.happycow')}
+              </span>
+              <span class="mt-1 block text-xs font-semibold text-ink-500 group-hover:text-leaf-800">
+                {t(locale, 'home.happyCowNote')}
+              </span>
+            </a>
+          </li>
+        )
+      }
     </ul>
   </section>
 
@@ -264,10 +334,12 @@ const openChip = mainHours
         </span>
       </a>
       {
-        grabLink && (
+        orderingLinks.map((link) => (
           <a
-            href={grabLink.url}
+            href={link.url}
             rel="noopener"
+            data-analytics-event="order_click"
+            data-analytics-provider={orderingAnalyticsProvider(link.provider)}
             class="flex min-h-20 items-center gap-4 rounded-lg border border-mango-300 bg-mango-500 px-4 py-3 text-ink-900 transition-colors hover:bg-mango-300"
           >
             <svg
@@ -285,13 +357,13 @@ const openChip = mainHours
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
             <span>
-              <span class="block font-extrabold">{t(locale, 'home.orderGrab')}</span>
+              <span class="block font-extrabold">{orderingCtaLabel(locale, link.provider)}</span>
               <span class="mt-0.5 block text-sm text-ink-900">
                 {t(locale, 'hours.deliveryLive')}
               </span>
             </span>
           </a>
-        )
+        ))
       }
       <a
         href={phoneHref}
@@ -326,6 +398,7 @@ const openChip = mainHours
       <section class="wrap pt-10">
         <a
           href="/vegan-breakfast-pattaya/"
+          data-special-hours-replaced
           class="group flex flex-wrap items-center justify-between gap-x-6 gap-y-3 rounded-lg border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
         >
           <span class="flex min-w-0 items-center gap-3">
@@ -333,11 +406,11 @@ const openChip = mainHours
               class="font-display text-2xl leading-none font-bold whitespace-nowrap text-jay-700"
               aria-hidden="true"
             >
-              7:00
+              {regularHours?.open}
             </span>
             <span class="font-semibold text-ink-900">
-              Early riser? We serve one of the earliest vegan breakfasts in Pattaya — doors open
-              7:00, every day
+              Early riser? We serve one of the earliest vegan breakfasts in Pattaya — regular
+              opening is {regularHours?.open}
             </span>
           </span>
           <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">
@@ -355,6 +428,7 @@ const openChip = mainHours
         <div class="grid gap-3 sm:grid-cols-2">
           <a
             href="/ru/veganskiy-zavtrak-v-pattaye/"
+            data-special-hours-replaced
             class="group flex min-h-20 items-center justify-between gap-x-5 gap-y-3 rounded-lg border border-jay-500/25 bg-mango-200/35 px-6 py-5 transition-colors hover:border-jay-500/45 hover:bg-mango-200/55"
           >
             <span class="flex min-w-0 items-center gap-3">
@@ -362,35 +436,37 @@ const openChip = mainHours
                 class="font-display text-2xl leading-none font-bold whitespace-nowrap text-jay-700"
                 aria-hidden="true"
               >
-                7:00
+                {regularHours?.open}
               </span>
               <span class="font-semibold text-ink-900">
-                Рано встали? Веганский завтрак в Паттайе каждый день с 7:00
+                Рано встали? Веганский завтрак в Паттайе по обычному графику с {regularHours?.open}
               </span>
             </span>
             <span class="text-sm font-bold whitespace-nowrap text-jay-700 underline decoration-jay-500/50 decoration-2 underline-offset-4 group-hover:text-jay-500">
               Читать →
             </span>
           </a>
-          <a
-            href="/ru/veganskaya-dostavka-v-pattaye/"
-            class="group flex min-h-20 items-center justify-between gap-x-5 gap-y-3 rounded-lg border border-leaf-700/20 bg-leaf-50 px-6 py-5 transition-colors hover:border-leaf-700/40 hover:bg-leaf-100"
-          >
-            <span class="flex min-w-0 items-center gap-3">
-              <span
-                class="font-display text-2xl leading-none font-bold whitespace-nowrap text-leaf-700"
-                aria-hidden="true"
-              >
-                Grab
+          {grabLink && (
+            <a
+              href="/ru/veganskaya-dostavka-v-pattaye/"
+              class="group flex min-h-20 items-center justify-between gap-x-5 gap-y-3 rounded-lg border border-leaf-700/20 bg-leaf-50 px-6 py-5 transition-colors hover:border-leaf-700/40 hover:bg-leaf-100"
+            >
+              <span class="flex min-w-0 items-center gap-3">
+                <span
+                  class="font-display text-2xl leading-none font-bold whitespace-nowrap text-leaf-700"
+                  aria-hidden="true"
+                >
+                  Grab
+                </span>
+                <span class="font-semibold text-ink-900">
+                  Доставка через GrabFood: актуальный статус и зона — в приложении
+                </span>
               </span>
-              <span class="font-semibold text-ink-900">
-                Доставка через GrabFood и самовывоз, если не хочется выходить
+              <span class="text-sm font-bold whitespace-nowrap text-leaf-700 underline decoration-leaf-500/50 decoration-2 underline-offset-4 group-hover:text-leaf-900">
+                Читать →
               </span>
-            </span>
-            <span class="text-sm font-bold whitespace-nowrap text-leaf-700 underline decoration-leaf-500/50 decoration-2 underline-offset-4 group-hover:text-leaf-900">
-              Читать →
-            </span>
-          </a>
+            </a>
+          )}
         </div>
       </section>
     )
@@ -399,7 +475,7 @@ const openChip = mainHours
   {
     /* TH-only: internal link to the seasonal เจ landing page (backlog R1).
        Locale-conditional — the EN/RU home pages must not render this block. */
-    locale === 'th' && (
+    locale === 'th' && TH_JAY_LANDING_REVIEWED && (
       <section class="wrap pt-10">
         <a
           href="/th/ร้านอาหารเจ-พัทยา/"
@@ -443,14 +519,33 @@ const openChip = mainHours
             <li>
               <article class="group relative flex h-full flex-col rounded-lg border border-cream-300 bg-cream-50 p-5 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_14px_34px_-20px_rgba(38,34,27,0.32)]">
                 {dish.images[0] && (
-                  <img
-                    src={dish.images[0]}
-                    alt={dish.name[locale]}
-                    loading="lazy"
-                    width="640"
-                    height="480"
-                    class="mb-4 aspect-4/3 w-full rounded-md border border-cream-300 object-cover"
-                  />
+                  <figure class="mb-4">
+                    <div class="relative">
+                      <ResponsiveMedia
+                        asset={dish.images[0]}
+                        alt={dish.name[locale]}
+                        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                        className="aspect-4/3 w-full rounded-md border border-cream-300 object-cover"
+                      />
+                      {dish.images[0].origin === 'ai-generated' && (
+                        <span
+                          class="absolute right-2 bottom-2 rounded-sm bg-ink-900/85 px-2 py-1 text-xs leading-tight font-bold text-cream-50 shadow-sm backdrop-blur-sm"
+                          aria-hidden="true"
+                        >
+                          {t(locale, 'media.aiIllustration')}
+                        </span>
+                      )}
+                    </div>
+                    {dish.images[0].origin === 'ai-generated' ? (
+                      <figcaption class="mt-1.5 text-xs leading-relaxed text-ink-500">
+                        {t(locale, 'media.aiIllustrationNote')}
+                      </figcaption>
+                    ) : dish.images[0].credit ? (
+                      <figcaption class="mt-1.5 text-xs text-ink-500">
+                        {t(locale, 'media.credit')}: {dish.images[0].credit}
+                      </figcaption>
+                    ) : null}
+                  </figure>
                 )}
                 <p class="text-[11px] font-bold text-terracotta-700 uppercase">
                   {categoryName(dish.category.id)}
@@ -463,9 +558,9 @@ const openChip = mainHours
                     {dish.name[locale]}
                   </a>
                 </h3>
-                {dish.description?.[locale] && (
+                {getPublicDishDescription(dish, locale) && (
                   <p class="mt-2 text-sm leading-relaxed text-ink-500">
-                    {dish.description[locale]}
+                    {getPublicDishDescription(dish, locale)}
                   </p>
                 )}
                 <p class="mt-auto flex items-center justify-between pt-5">
@@ -504,7 +599,32 @@ const openChip = mainHours
           <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
             {t(locale, 'contact.address')}
           </h3>
+          {
+            exteriorMedia && (
+              <figure class="mt-3">
+                <ResponsiveMedia
+                  asset={exteriorMedia}
+                  alt={exteriorMedia.alt[locale]}
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="aspect-4/3 w-full rounded-lg border border-cream-300 object-cover"
+                />
+                {exteriorMedia.credit && (
+                  <figcaption class="mt-1.5 text-xs text-ink-500">
+                    {t(locale, 'media.credit')}: {exteriorMedia.credit}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          }
           <p class="mt-2 max-w-[36ch] leading-relaxed">{location.address[locale]}</p>
+          {
+            location.landmark && (
+              <p class="mt-3 max-w-[36ch] text-sm leading-relaxed text-ink-500">
+                <strong class="text-ink-700">{t(locale, 'contact.landmark')}:</strong>{' '}
+                {location.landmark[locale]}
+              </p>
+            )
+          }
           <a
             href={phoneHref}
             class="mt-5 inline-flex min-h-12 items-center gap-2.5 rounded-lg bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
@@ -531,20 +651,34 @@ const openChip = mainHours
             {t(locale, 'contact.hours')}
           </h3>
           <table class="mt-2 text-left">
+            <caption class="sr-only">{t(locale, 'contact.hours')}</caption>
             <tbody>
-              <tr>
+              <tr data-special-hours-replaced>
                 <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'hours.cafe')}</th>
-                <td class="py-1">{t(locale, 'contact.hours').toLowerCase()}</td>
+                <td class="py-1 font-semibold text-leaf-800 tabular-nums">
+                  {mainHours ? `${mainHours.open}–${mainHours.close}` : '—'}
+                </td>
               </tr>
-              <tr>
-                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'hours.delivery')}</th>
-                <td class="py-1">{t(locale, 'hours.deliveryLive')}</td>
-              </tr>
+              {
+                orderingLinks.length > 0 && (
+                  <tr>
+                    <th scope="row" class="py-1 pr-6 font-medium">
+                      {t(locale, 'hours.delivery')}
+                    </th>
+                    <td class="py-1">{t(locale, 'hours.deliveryLive')}</td>
+                  </tr>
+                )
+              }
             </tbody>
           </table>
-          <p class="mt-3 max-w-[40ch] text-sm leading-relaxed text-ink-500">
-            {t(locale, 'contact.nightOrders')}
-          </p>
+          <SpecialHoursNotice {locale} specialHours={location.specialHours} className="mt-3" />
+          {
+            orderingLinks.length > 0 && (
+              <p class="mt-3 max-w-[40ch] text-sm leading-relaxed text-ink-500">
+                {t(locale, 'contact.nightOrders')}
+              </p>
+            )
+          }
           <p class="mt-4">
             <a
               href={localePath(locale, '/contact/')}

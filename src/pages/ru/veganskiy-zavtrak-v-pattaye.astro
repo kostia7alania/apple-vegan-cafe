@@ -10,14 +10,19 @@ import Sprig from '../../components/Sprig.astro';
 import type { Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
+import { getRegularHours } from '../../lib/hours';
 import { t, type UiKey } from '../../lib/ui';
+import { getPublicDishDescription } from '../../lib/dishes';
 
 const locale: Locale = 'ru';
 const PAGE_PATH = '/ru/veganskiy-zavtrak-v-pattaye/';
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [location] = (await getCollection('locations')).map((e) => e.data);
-if (!settings || !location) throw new Error('settings/locations content is missing');
+const [operations] = (await getCollection('operations')).map((e) => e.data);
+if (!settings || !location || !operations) {
+  throw new Error('settings/locations/operations content is missing');
+}
 
 // Те же утренние блюда, что и на EN-версии, дешёвые первыми.
 const BREAKFAST_PICK_IDS = [
@@ -42,10 +47,14 @@ const morningDrinks = (
 
 const alternates = { en: '/vegan-breakfast-pattaya/', ru: PAGE_PATH };
 const site = Astro.site!;
+const regularHours = getRegularHours(location.hours);
+const pricePolicyText = t(
+  locale,
+  `operations.pricePolicy.${operations.pricePolicy ?? 'unknown'}` as UiKey,
+);
 
-const title = 'Веганский завтрак в Паттайе с 7:00 — Apple Vegan Cafe';
-const description =
-  'Веганский завтрак в Паттайе с 7:00 каждый день: растительные тайские блюда, смузи и свежий кофе на овсяном молоке.';
+const title = `Веганский завтрак в Паттайе${regularHours ? ` с ${regularHours.open}` : ''} — Apple Vegan Cafe`;
+const description = `Веганский завтрак в Паттайе${regularHours ? ` с обычного времени открытия в ${regularHours.open}` : ''}: растительные тайские блюда, смузи и свежий кофе на овсяном молоке.`;
 
 const jsonld = [
   buildBreadcrumb([
@@ -93,10 +102,11 @@ const daysLabel = (days: readonly string[]) =>
         Маленькая семейная кухня с одним из самых ранних веганских завтраков в городе
       </p>
       <p
+        data-special-hours-replaced
         class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
       >
         <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true"></span>
-        Открываемся в 7:00 · каждый день
+        Обычное время открытия · {regularHours?.open}
       </p>
       <div class="rise rise-3 mt-8 flex flex-wrap gap-3">
         <a
@@ -117,18 +127,18 @@ const daysLabel = (days: readonly string[]) =>
 
   <section class="wrap py-12 sm:py-14">
     <div class="prose-editorial">
-      <p>
+      <p data-special-hours-replaced>
         Семь утра — тихий час в Паттайе. Улицы ещё прохладные, пляжная публика не проснулась, а
         большинство веганских кухонь города откроются нескоро. Наша уже работает. Мы —{' '}
         <strong>Apple Vegan Cafe &amp; Restaurant</strong>, маленькое семейное кафе в Банг Ламунге,
-        и завтрак здесь начинается <strong>в 7:00, каждый день</strong> — один из самых ранних веганских
-        завтраков в Паттайе.
+        и по обычному графику завтрак здесь начинается <strong>в {regularHours?.open}</strong> — один
+        из самых ранних веганских завтраков в Паттайе.
       </p>
       <p>
         Всё, что мы готовим, — 100% растительное: не «веганский уголок» обычного меню, а вся кухня
-        целиком. У нас <strong>нет яиц, молочных продуктов и рыбного соуса</strong> — вообще нигде, поэтому
-        ничего не нужно перепроверять и ничто не жарится рядом с мясом. Утренний кофе — на овсяном молоке,
-        которое мы делаем сами.
+        целиком. В меню <strong>нет яиц, молочных продуктов и рыбного соуса</strong>. Подтверждённый
+        протокол перекрёстного контакта пока не опубликован, поэтому при тяжёлой аллергии сообщите
+        команде до заказа. Утренний кофе подают с овсяным молоком.
       </p>
       <p>
         Утро здесь неторопливое. Обычно только мы и несколько завсегдатаев: кто-то читает перед
@@ -139,9 +149,8 @@ const daysLabel = (days: readonly string[]) =>
       <p>
         А если вы читаете это вечером из отеля, посмотрите страницу про{' '}
         <a href="/ru/veganskaya-dostavka-v-pattaye/">доставку веганской еды в Паттайе</a> — там GrabFood,
-        самовывоз и честная заметка про цены. Планируете веганские вылазки по всему городу — держите наш{
-          ' '
-        }
+        актуальный статус и проверка зоны доставки по адресу. Планируете веганские вылазки по всему городу
+        — держите наш{' '}
         <a href="/ru/blog/vegan-gid-po-pattaye/">короткий честный гид по веганской Паттайе</a>.
       </p>
     </div>
@@ -161,8 +170,9 @@ const daysLabel = (days: readonly string[]) =>
       </a>
     </div>
     <p class="mt-3 max-w-[60ch] text-ink-500">
-      Утренний список нарочно короткий — несколько блюд, которые мы каждое утро готовим хорошо, по
-      тем же ценам, что и на столе.
+      Утренний список нарочно короткий — несколько блюд, которые мы каждое утро готовим хорошо.{
+        ' '
+      }{pricePolicyText}
     </p>
     <ul class="mt-4 divide-y divide-cream-200">
       {
@@ -182,9 +192,9 @@ const daysLabel = (days: readonly string[]) =>
                 ฿{dish.price_thb}
               </span>
             </div>
-            {dish.description?.[locale] && (
+            {getPublicDishDescription(dish, locale) && (
               <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
-                {dish.description[locale]}
+                {getPublicDishDescription(dish, locale)}
               </p>
             )}
           </li>
@@ -212,8 +222,8 @@ const daysLabel = (days: readonly string[]) =>
         И к завтраку
       </h2>
       <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        Без соревнований по латте-арту — просто честный эспрессо на овсяном молоке собственного
-        приготовления и свежие фруктовые смузи, манговый — первый среди них.
+        Без соревнований по латте-арту — просто честный эспрессо на овсяном молоке и свежие
+        фруктовые смузи, манговый — первый среди них.
       </p>
       <ul class="relative mt-4 max-w-xl divide-y divide-mango-500/20">
         {
@@ -233,9 +243,9 @@ const daysLabel = (days: readonly string[]) =>
                   ฿{drink.price_thb}
                 </span>
               </div>
-              {drink.description?.[locale] && (
+              {getPublicDishDescription(drink, locale) && (
                 <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-700">
-                  {drink.description[locale]}
+                  {getPublicDishDescription(drink, locale)}
                 </p>
               )}
             </li>
@@ -255,9 +265,12 @@ const daysLabel = (days: readonly string[]) =>
       <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
         {t(locale, 'home.findUs')}
       </h2>
-      <p class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700">
-        Открываемся в <strong>7:00</strong> — успеете позавтракать перед утренним рейсом, дайв-поездкой
-        или длинным пляжным днём.
+      <p
+        data-special-hours-replaced
+        class="relative mt-3 max-w-[62ch] leading-relaxed text-ink-700"
+      >
+        Обычное время открытия — <strong>{regularHours?.open}</strong>: успеете позавтракать перед
+        утренним рейсом, дайв-поездкой или длинным пляжным днём.
       </p>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
@@ -302,7 +315,7 @@ const daysLabel = (days: readonly string[]) =>
             <tbody>
               {
                 location.hours.map((h) => (
-                  <tr>
+                  <tr data-special-hours-replaced>
                     <th scope="row" class="py-1 pr-6 font-medium">
                       {daysLabel(h.days)}
                     </th>
