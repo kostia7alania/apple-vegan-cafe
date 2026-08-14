@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { parse as parseYaml } from 'yaml';
+import { TH_JAY_LANDING_PATH, TH_JAY_LANDING_REVIEWED } from '../../src/lib/site';
 
 const locales = [
   { prefix: '', hreflang: 'en', heading: 'Vegan Restaurant & Cafe in Pattaya' },
@@ -269,12 +270,14 @@ test('canonical and head hreflang stay coherent across page types', async ({ pag
         'x-default': '/pure-veg-jain-friendly/',
       },
     },
-    {
-      path: '/th/ร้านอาหารเจ-พัทยา/',
-      alternates: {
-        th: '/th/ร้านอาหารเจ-พัทยา/',
-      },
-    },
+    ...(TH_JAY_LANDING_REVIEWED
+      ? [
+          {
+            path: TH_JAY_LANDING_PATH,
+            alternates: { th: TH_JAY_LANDING_PATH },
+          },
+        ]
+      : []),
     {
       path: '/blog/welcome/',
       alternates: {
@@ -338,6 +341,11 @@ test('canonical and head hreflang stay coherent across page types', async ({ pag
 
   for (const { path, alternates } of localizedPageGroups) {
     await expectHeadSeoLinks(page, path, alternates);
+  }
+
+  if (!TH_JAY_LANDING_REVIEWED) {
+    await page.goto(TH_JAY_LANDING_PATH);
+    await expect(page).toHaveURL(/\/th\/menu\/$/);
   }
 });
 
@@ -468,6 +476,15 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
       absolute(publishedPath),
     );
   }
+  if (TH_JAY_LANDING_REVIEWED) {
+    expect(locs, 'sitemap must include the reviewed Thai Jay landing').toContain(
+      absolute(TH_JAY_LANDING_PATH),
+    );
+  } else {
+    expect(locs, 'sitemap must exclude the unreviewed Thai Jay landing').not.toContain(
+      absolute(TH_JAY_LANDING_PATH),
+    );
+  }
 
   expect(locs).toEqual(
     expect.arrayContaining([
@@ -483,7 +500,6 @@ test('sitemap lists canonical public pages and excludes service URLs', async ({
       absolute('/vegan-delivery-pattaya/'),
       absolute('/ru/veganskaya-dostavka-v-pattaye/'),
       absolute('/pure-veg-jain-friendly/'),
-      absolute('/th/ร้านอาหารเจ-พัทยา/'),
       absolute('/blog/how-to-order-vegan-food-in-thailand/'),
       absolute('/ru/blog/kak-zakazat-veganskuyu-edu-v-tailande/'),
       absolute('/ru/blog/vegan-gid-po-pattaye/'),
