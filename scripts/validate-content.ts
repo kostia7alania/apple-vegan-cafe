@@ -589,6 +589,10 @@ interface ApprovedMediaAsset {
   src?: string;
   srcSmall?: string | null;
   srcLarge?: string | null;
+  srcSmallWidth?: number | null;
+  srcLargeWidth?: number | null;
+  width?: number;
+  height?: number;
   origin?: string;
   rightsHolder?: string;
   permission?: string;
@@ -598,6 +602,8 @@ interface ApprovedMediaAsset {
   peopleVisibility?: string;
   peopleConsent?: string;
   credit?: string | null;
+  grabItemId?: string;
+  capturedAt?: string;
 }
 interface SiteMediaAsset extends ApprovedMediaAsset {
   kind?: string;
@@ -609,6 +615,9 @@ interface SiteMedia {
 const siteMedia = JSON.parse(
   readFileSync(join(contentDir, 'site-media.json'), 'utf8'),
 ) as SiteMedia;
+const grabItemMap = JSON.parse(
+  readFileSync(join(root, 'scripts/data/grab-item-map.json'), 'utf8'),
+) as { items?: Record<string, string> };
 const mediaKinds = new Set<string>();
 const approvedMediaKinds = new Set(['hero', 'exterior', 'family', 'interior']);
 const mediaPathPattern = /^\/uploads\/[A-Za-z0-9][A-Za-z0-9._/-]*\.(?:avif|webp|jpe?g|png)$/i;
@@ -673,6 +682,91 @@ function validateApprovedMedia(
   if (asset.origin === 'licensed' && !hasText(asset.credit)) {
     fail(`${label}.credit is required for licensed media`);
   }
+  if (Boolean(asset.srcSmall) !== Boolean(asset.srcSmallWidth)) {
+    fail(`${label}.srcSmall and srcSmallWidth must be provided together`);
+  }
+  if (Boolean(asset.srcLarge) !== Boolean(asset.srcLargeWidth)) {
+    fail(`${label}.srcLarge and srcLargeWidth must be provided together`);
+  }
+}
+
+function grabItemIdFromMediaUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    if (
+      url.protocol !== 'https:' ||
+      url.hostname !== 'food-cms.grab.com' ||
+      url.port ||
+      url.username ||
+      url.password ||
+      url.search ||
+      url.hash ||
+      !/\.(?:webp|jpe?g|png)$/i.test(url.pathname)
+    ) {
+      return null;
+    }
+    return url.pathname.match(/THITE\d{19}/)?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function validateGrabCatalogueMedia(label: string, asset: ApprovedMediaAsset, dishFile: string) {
+  if (!asset.grabItemId || !/^THITE\d{19}$/.test(asset.grabItemId)) {
+    fail(`${label}.grabItemId must be an exact Grab ItemID`);
+    return;
+  }
+  if (grabItemMap.items?.[asset.grabItemId] !== dishFile) {
+    fail(`${label}.grabItemId must map to ${dishFile} in grab-item-map.json`);
+  }
+  if (!Number.isInteger(asset.width) || (asset.width ?? 0) <= 0) {
+    fail(`${label}.width must be a positive integer`);
+  }
+  if (!Number.isInteger(asset.height) || (asset.height ?? 0) <= 0) {
+    fail(`${label}.height must be a positive integer`);
+  }
+
+  const sources = [
+    { field: 'src', url: asset.src, width: asset.width },
+    { field: 'srcSmall', url: asset.srcSmall, width: asset.srcSmallWidth },
+    { field: 'srcLarge', url: asset.srcLarge, width: asset.srcLargeWidth },
+  ] as const;
+  const widths: number[] = [];
+  for (const source of sources) {
+    if (Boolean(source.url) !== Boolean(source.width)) {
+      fail(`${label}.${source.field} and its width must be provided together`);
+      continue;
+    }
+    if (!source.url || !source.width) continue;
+    if (grabItemIdFromMediaUrl(source.url) !== asset.grabItemId) {
+      fail(`${label}.${source.field} must be a public Grab CDN URL for ${asset.grabItemId}`);
+    }
+    if (!Number.isInteger(source.width) || source.width <= 0) {
+      fail(`${label}.${source.field} width must be a positive integer`);
+    }
+    widths.push(source.width);
+  }
+  if (
+    new Set(widths).size !== widths.length ||
+    widths.some((width, index) => index > 0 && width <= widths[index - 1]!)
+  ) {
+    fail(`${label} responsive candidate widths must be unique and strictly increasing`);
+  }
+  if (!asset.capturedAt || !/^\d{4}-\d{2}-\d{2}$/.test(asset.capturedAt)) {
+    fail(`${label}.capturedAt must be a YYYY-MM-DD date`);
+  } else {
+    const capturedAt = new Date(`${asset.capturedAt}T00:00:00.000Z`);
+    if (
+      Number.isNaN(capturedAt.valueOf()) ||
+      capturedAt.toISOString().slice(0, 10) !== asset.capturedAt ||
+      asset.capturedAt > calendarDateInBangkok()
+    ) {
+      fail(`${label}.capturedAt must be a real non-future date`);
+    }
+  }
+  if (asset.credit !== null && asset.credit !== undefined) {
+    fail(`${label}.credit must stay null for Grab catalogue images`);
+  }
 }
 
 for (const [index, asset] of (siteMedia.site?.assets ?? []).entries()) {
@@ -696,11 +790,12 @@ for (const fileName of readdirSync(dishesDir).filter((file) => file.endsWith('.j
     images?: ApprovedMediaAsset[];
   };
   for (const [index, image] of (dish.images ?? []).entries()) {
-    validateApprovedMedia(`dishes/${fileName}.images[${index}]`, image, [
-      'owner-original',
-      'licensed',
-      'ai-generated',
-    ]);
+    const label = `dishes/${fileName}.images[${index}]`;
+    if (image.origin === 'grab-merchant-catalogue') {
+      validateGrabCatalogueMedia(label, image, fileName);
+    } else {
+      validateApprovedMedia(label, image, ['owner-original', 'licensed']);
+    }
   }
 }
 

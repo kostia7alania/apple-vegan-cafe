@@ -43,6 +43,31 @@ const nullableUploadPath = z.preprocess(
   (value) => (value === '' || value === undefined ? null : value),
   uploadPath.nullable(),
 );
+const nullablePositiveInteger = z.preprocess(
+  (value) => (value === '' || value === undefined ? null : value),
+  z.number().int().positive().nullable(),
+);
+const grabItemId = z.string().regex(/^THITE\d{19}$/, 'expected a Grab ItemID');
+const grabCatalogueImageUrl = z
+  .string()
+  .url()
+  .refine((value) => {
+    const url = new URL(value);
+    return (
+      url.protocol === 'https:' &&
+      url.hostname === 'food-cms.grab.com' &&
+      url.port === '' &&
+      url.username === '' &&
+      url.password === '' &&
+      url.search === '' &&
+      url.hash === '' &&
+      /\.(?:webp|jpe?g|png)$/i.test(url.pathname)
+    );
+  }, 'expected a public food-cms.grab.com image URL without credentials or query data');
+const nullableGrabCatalogueImageUrl = z.preprocess(
+  (value) => (value === '' || value === undefined ? null : value),
+  grabCatalogueImageUrl.nullable(),
+);
 const partiallyLocalized = z.object({
   en: z.string().optional(),
   th: z.string().optional(),
@@ -362,9 +387,11 @@ const approvedMediaAsset = z
     src: uploadPath,
     srcSmall: nullableUploadPath,
     srcLarge: nullableUploadPath,
+    srcSmallWidth: nullablePositiveInteger.default(null),
+    srcLargeWidth: nullablePositiveInteger.default(null),
     width: z.number().int().positive(),
     height: z.number().int().positive(),
-    origin: z.enum(['owner-original', 'licensed', 'ai-generated']),
+    origin: z.enum(['owner-original', 'licensed']),
     rightsHolder: z.string().min(1),
     // Anything added here is copied to public/uploads and therefore deployable.
     // Pending/denied assets must stay outside public content records.
@@ -408,20 +435,92 @@ const approvedMediaAsset = z
         message: 'licensed media requires a public credit',
       });
     }
+    if (Boolean(asset.srcSmall) !== Boolean(asset.srcSmallWidth)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['srcSmallWidth'],
+        message: 'srcSmall and srcSmallWidth must be provided together',
+      });
+    }
+    if (Boolean(asset.srcLarge) !== Boolean(asset.srcLargeWidth)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['srcLargeWidth'],
+        message: 'srcLarge and srcLargeWidth must be provided together',
+      });
+    }
   });
 
-const mediaAsset = z
-  .intersection(
-    approvedMediaAsset,
-    z.object({
-      kind: z.enum(['hero', 'exterior', 'family', 'interior']),
-      alt: localized,
-    }),
-  )
-  .refine((asset) => asset.origin !== 'ai-generated', {
-    path: ['origin'],
-    message: 'AI-generated media is allowed for labelled dish illustrations only',
+const grabCatalogueMediaAsset = z
+  .object({
+    src: grabCatalogueImageUrl,
+    srcSmall: nullableGrabCatalogueImageUrl.default(null),
+    srcLarge: nullableGrabCatalogueImageUrl.default(null),
+    srcSmallWidth: nullablePositiveInteger.default(null),
+    srcLargeWidth: nullablePositiveInteger.default(null),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    origin: z.literal('grab-merchant-catalogue'),
+    grabItemId,
+    capturedAt: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'expected YYYY-MM-DD')
+      .refine((value) => {
+        const date = new Date(`${value}T00:00:00Z`);
+        return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value;
+      }, 'expected a real calendar date')
+      .refine(
+        (value) => value <= calendarDateInBangkok(),
+        'capture date must not be in the future',
+      ),
+    credit: z.null().default(null),
+  })
+  .superRefine((asset, ctx) => {
+    const sources = [
+      { field: 'src', url: asset.src, width: asset.width },
+      { field: 'srcSmall', url: asset.srcSmall, width: asset.srcSmallWidth },
+      { field: 'srcLarge', url: asset.srcLarge, width: asset.srcLargeWidth },
+    ] as const;
+    for (const source of sources) {
+      if (Boolean(source.url) !== Boolean(source.width)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [source.field === 'src' ? 'width' : `${source.field}Width`],
+          message: `${source.field} and its width must be provided together`,
+        });
+      }
+      if (!source.url) continue;
+      const pathItemId = new URL(source.url).pathname.match(/THITE\d{19}/)?.[0];
+      if (pathItemId !== asset.grabItemId) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [source.field],
+          message: 'Grab image URL ItemID must match grabItemId',
+        });
+      }
+    }
+    const widths = sources.flatMap((source) => (source.width ? [source.width] : []));
+    if (
+      new Set(widths).size !== widths.length ||
+      widths.some((width, index) => index > 0 && width <= widths[index - 1]!)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['srcLargeWidth'],
+        message: 'responsive candidate widths must be unique and strictly increasing',
+      });
+    }
   });
+
+const dishMediaAsset = z.union([approvedMediaAsset, grabCatalogueMediaAsset]);
+
+const mediaAsset = z.intersection(
+  approvedMediaAsset,
+  z.object({
+    kind: z.enum(['hero', 'exterior', 'family', 'interior']),
+    alt: localized,
+  }),
+);
 
 const siteMedia = defineCollection({
   loader: file('./src/content/site-media.json'),
@@ -524,7 +623,8 @@ const dishes = defineCollection({
     description: partiallyLocalized.optional(),
     slug: localized,
     previousSlugs: z.array(z.string()).default([]),
-    images: z.array(approvedMediaAsset).default([]),
+    images: z.array(dishMediaAsset).default([]),
+    grabDietaryPreference: z.enum(['vegan', 'vegetarian']).nullable().default(null),
     dietaryTags: z
       .array(z.enum(['vegan', 'jay']))
       .length(2)

@@ -1,8 +1,8 @@
 ---
-import type { ApprovedMediaAsset } from '../lib/media';
+import type { ResponsiveMediaAsset } from '../lib/media';
 
 interface Props {
-  asset: ApprovedMediaAsset;
+  asset: ResponsiveMediaAsset;
   alt: string;
   className?: string;
   eager?: boolean;
@@ -11,8 +11,8 @@ interface Props {
 
 const { asset, alt, className = '', eager = false, sizes = '100vw' } = Astro.props;
 const candidates = new Map<number, string>([[asset.width, asset.src]]);
-if (asset.srcSmall) candidates.set(960, asset.srcSmall);
-if (asset.srcLarge) candidates.set(1600, asset.srcLarge);
+if (asset.srcSmall && asset.srcSmallWidth) candidates.set(asset.srcSmallWidth, asset.srcSmall);
+if (asset.srcLarge && asset.srcLargeWidth) candidates.set(asset.srcLargeWidth, asset.srcLarge);
 const responsiveSources = [...candidates.entries()]
   .sort(([left], [right]) => left - right)
   .map(([width, src]) => `${src} ${width}w`)

@@ -114,20 +114,34 @@ collections:
           widget: list,
           required: false,
           summary: '{{fields.src}} — อนุมัติใช้บนเว็บไซต์แล้ว (approved for website)',
-          hint: 'อัปโหลดเฉพาะหลังตรวจรูปตรงกับจาน เจ้าของสิทธิ์ และสิทธิ์เผยแพร่ครบแล้ว หากยังไม่ยืนยันให้เว้นรายการนี้ว่างค่ะ',
+          hint: 'รูปจากแค็ตตาล็อก Grab ซิงก์อัตโนมัติค่ะ เพิ่มไฟล์ในช่องนี้เฉพาะรูปอื่นที่ตรวจจาน เจ้าของสิทธิ์ และสิทธิ์เผยแพร่ครบแล้ว',
           fields:
             [
               { name: src, label: 'ไฟล์รูปหลัก (Fallback image)', widget: image },
               {
                 name: srcSmall,
-                label: 'รูปขนาด 960px ที่ปรับแล้ว (960w variant)',
+                label: 'รูป responsive เพิ่มเติม (Optional variant)',
                 widget: image,
                 required: false,
               },
               {
+                name: srcSmallWidth,
+                label: 'ความกว้างของ variant พิกเซล (Variant width)',
+                widget: number,
+                value_type: int,
+                required: false,
+              },
+              {
                 name: srcLarge,
-                label: 'รูปขนาด 1600px ที่ปรับแล้ว (1600w variant)',
+                label: 'รูปขนาดใหญ่สุด (Largest variant)',
                 widget: image,
+                required: false,
+              },
+              {
+                name: srcLargeWidth,
+                label: 'ความกว้างรูปใหญ่สุด พิกเซล (Largest width)',
+                widget: number,
+                value_type: int,
                 required: false,
               },
               {
@@ -150,7 +164,6 @@ collections:
                   [
                     { label: 'รูปต้นฉบับของเจ้าของร้าน (Owner original)', value: owner-original },
                     { label: 'รูปที่มีใบอนุญาต (Licensed)', value: licensed },
-                    { label: 'ภาพที่สร้างด้วย AI (AI-generated)', value: ai-generated },
                   ],
               },
               { name: rightsHolder, label: 'ผู้ถือสิทธิ์ (Rights holder)', widget: string },
@@ -966,14 +979,28 @@ collections:
                   - { name: src, label: 'ไฟล์รูปหลัก (Fallback image)', widget: image }
                   - {
                       name: srcSmall,
-                      label: 'รูปขนาด 960px ที่ปรับแล้ว (960w variant)',
+                      label: 'รูป responsive เพิ่มเติม (Optional variant)',
                       widget: image,
                       required: false,
                     }
                   - {
+                      name: srcSmallWidth,
+                      label: 'ความกว้างของ variant พิกเซล (Variant width)',
+                      widget: number,
+                      value_type: int,
+                      required: false,
+                    }
+                  - {
                       name: srcLarge,
-                      label: 'รูปขนาด 1600px ที่ปรับแล้ว (1600w variant)',
+                      label: 'รูปขนาดใหญ่สุด (Largest variant)',
                       widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: srcLargeWidth,
+                      label: 'ความกว้างรูปใหญ่สุด พิกเซล (Largest width)',
+                      widget: number,
+                      value_type: int,
                       required: false,
                     }
                   - {
