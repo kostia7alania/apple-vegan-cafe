@@ -2,7 +2,7 @@
   "category": "mains-share",
   "price_thb": 189,
   "name": {
-    "en": "Crispy vegan pork with spicy jaw sauce",
+    "en": "Crispy vegan pork with spicy jaew sauce",
     "th": "หมูกรอบเจน้ำจิ้มแจ่ว",
     "ru": "Хрустящая веган-свинина с острым соусом джеу"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

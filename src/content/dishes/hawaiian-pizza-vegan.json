@@ -2,7 +2,7 @@
   "category": "pizza-fastfood",
   "price_thb": 439,
   "name": {
-    "en": "Hawaiian Pizza vegan",
+    "en": "Hawaiian pizza vegan",
     "th": "พิซซ่าฮาวายเอี้ยนเจ",
     "ru": "Пицца «Гавайская» (веган)"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

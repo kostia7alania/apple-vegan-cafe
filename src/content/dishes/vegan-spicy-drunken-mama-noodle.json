@@ -2,7 +2,7 @@
   "category": "one-plate",
   "price_thb": 199,
   "name": {
-    "en": "Vegan spicy drunken mama noodle",
+    "en": "Vegan spicy drunken Mama noodles",
     "th": "มาม่าผัดขี้เมาเจ",
     "ru": "Острая «пьяная» лапша мама (веган)"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

@@ -2,7 +2,7 @@
   "category": "pizza-fastfood",
   "price_thb": 419,
   "name": {
-    "en": "Margarita Pizza vegan",
+    "en": "Margherita pizza vegan",
     "th": "พิซซ่ามาร์เกริต้าเจ",
     "ru": "Пицца «Маргарита» (веган)"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

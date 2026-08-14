@@ -1,7 +1,13 @@
 [
   {
+    "id": "editorial",
+    "name": "Apple Vegan Cafe & Restaurant",
+    "type": "Organization"
+  },
+  {
     "id": "family",
     "name": "Apple Vegan Cafe family",
+    "type": "Organization",
     "bio": {
       "en": "The family behind Apple Vegan Cafe & Restaurant in Pattaya."
     }

@@ -1,9 +1,20 @@
-# Sveltia CMS configuration — ENGLISH-label twin of /admin for the developer.
-# The owner's Thai-first admin is public/admin/config.yml (served at /admin).
-# Same backend, same collections, same content — presentation strings only.
-# Structural parity between the two files is enforced in CI by
-# scripts/check-admin-config-parity.ts (labels/hints/summaries may differ,
-# everything else must match, including key order).
+# Sveltia CMS configuration (Decap-compatible format — the same file works with
+# Decap CMS as an escape hatch).
+#
+# SETUP (developer, one-time):
+# 1. Replace `repo` with the real GitHub owner/repo once it is pushed.
+# 2. Deploy https://github.com/sveltia/sveltia-cms-auth as a Cloudflare Worker,
+#    set its GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET as Worker secrets (dashboard
+#    only — never in this repo), and put its URL into `base_url`.
+#
+# Storage model note: translations live as {en,th,ru} objects per field; the
+# price exists exactly once per dish. We intentionally do NOT use the CMS i18n
+# feature for JSON data collections — object widgets match our schema exactly.
+# Categories/allergens/FAQs/redirects are developer-edited in git (rarely change).
+#
+# Label language: English for the developer-facing /admin/en twin. The owner-facing
+# /admin configuration uses Thai-first labels. Both files share exactly the same
+# field names, values and order; scripts/check-admin-config-parity.ts enforces this.
 
 backend:
   name: github
@@ -23,199 +34,311 @@ collections:
     extension: json
     create: true
     slug: '{{fields.name.en | slugify}}'
-    summary: '{{fields.name.en}} — ฿{{fields.price_thb}}'
+    summary: '{{fields.name.th}} · {{fields.name.en}} — ฿{{fields.price_thb}}'
     fields:
-      - name: name
-        label: 'Name'
+      - {
+          name: name,
+          label: Name,
+          widget: object,
+          fields:
+            [
+              { name: en, label: English, widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: Русский, widget: string },
+            ],
+        }
+      - { name: price_thb, label: 'Price (THB)', widget: number, value_type: float, min: 1 }
+      - {
+          name: category,
+          label: Category,
+          widget: select,
+          options:
+            [
+              { label: 'One-plate', value: one-plate },
+              { label: 'Mains to share', value: mains-share },
+              { label: Snacks, value: snacks },
+              { label: 'Pizza & fast food', value: pizza-fastfood },
+              { label: Drinks, value: drinks },
+            ],
+        }
+      - {
+          name: available,
+          label: 'Available (uncheck = stop list)',
+          widget: boolean,
+          default: true,
+        }
+      - {
+          name: featured,
+          label: 'Feature on home page + menu quick picks',
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          name: description,
+          label: Description,
+          widget: object,
+          required: false,
+          fields:
+            [
+              { name: en, label: English, widget: text, required: false },
+              { name: th, label: ไทย, widget: text, required: false },
+              { name: ru, label: Русский, widget: text, required: false },
+            ],
+        }
+      - {
+          name: slug,
+          label: 'URL slug (per language)',
+          widget: object,
+          fields:
+            [
+              { name: en, label: English, widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: Русский, widget: string },
+            ],
+        }
+      - {
+          name: images,
+          label: 'Approved photos (rights required)',
+          widget: list,
+          required: false,
+          summary: '{{fields.src}} — approved for website',
+          hint: 'Add an image only after confirming the exact dish, rights holder and website publication permission. Leave this list empty while any point is unknown.',
+          fields:
+            [
+              { name: src, label: 'Fallback image', widget: image },
+              { name: srcSmall, label: '960w optimized variant', widget: image, required: false },
+              { name: srcLarge, label: '1600w optimized variant', widget: image, required: false },
+              { name: width, label: 'Intrinsic width (px)', widget: number, value_type: int },
+              { name: height, label: 'Intrinsic height (px)', widget: number, value_type: int },
+              {
+                name: origin,
+                label: Origin,
+                widget: select,
+                options:
+                  [
+                    { label: 'Owner original', value: owner-original },
+                    { label: Licensed, value: licensed },
+                    { label: 'AI-generated', value: ai-generated },
+                  ],
+              },
+              { name: rightsHolder, label: 'Rights holder', widget: string },
+              {
+                name: permission,
+                label: 'Publication permission (approved only)',
+                widget: select,
+                options: [{ label: Granted, value: granted }],
+              },
+              {
+                name: permissionScope,
+                label: 'Permission covers website crops and variants',
+                widget: select,
+                options: [{ label: 'Website and derivatives', value: website-and-derivatives }],
+              },
+              { name: confirmedBy, label: 'Permission confirmed by', widget: string },
+              { name: confirmedAt, label: 'Permission date (YYYY-MM-DD)', widget: string },
+              {
+                name: peopleVisibility,
+                label: 'People review (required)',
+                widget: select,
+                options:
+                  [
+                    { label: 'None confirmed', value: none-confirmed },
+                    { label: 'Recognisable people present', value: recognisable-present },
+                  ],
+              },
+              {
+                name: peopleConsent,
+                label: 'Consent from visible people',
+                widget: select,
+                options:
+                  [
+                    { label: 'Not applicable', value: not-applicable },
+                    { label: Granted, value: granted },
+                  ],
+              },
+              {
+                name: credit,
+                label: 'Public credit (required for licensed media)',
+                widget: string,
+                required: false,
+              },
+            ],
+        }
+      - name: foodFacts
+        label: 'Family-verified food facts'
         widget: object
+        hint: 'Verify each dish from its real recipe and ingredients. Never infer facts from a name or photo; an empty list is not an allergen-free claim.'
         fields:
-          - { name: en, label: 'English', widget: string }
-          - { name: th, label: 'ไทย', widget: string }
-          - { name: ru, label: 'Русский', widget: string }
-      - name: price_thb
-        label: 'Price (THB)'
-        widget: number
-        value_type: float
-        min: 1
-      - name: category
-        label: 'Category'
-        widget: select
-        options:
-          - { label: 'One-plate dishes', value: one-plate }
-          - { label: 'Mains to share (with rice)', value: mains-share }
-          - { label: 'Snacks & starters', value: snacks }
-          - { label: 'Pizza & fast food', value: pizza-fastfood }
-          - { label: 'Drinks', value: drinks }
-      - name: available
-        label: 'Available'
-        widget: boolean
-        default: true
-        hint: 'Out of stock / paused → switch off and Save; the dish disappears from the site. Switch back on when it returns.'
-      - name: featured
-        label: 'Show on home page'
-        widget: boolean
-        default: false
-        required: false
-      - name: description
-        label: 'Description'
-        widget: object
-        required: false
-        fields:
-          - { name: en, label: 'English', widget: text, required: false }
-          - { name: th, label: 'ไทย', widget: text, required: false }
-          - { name: ru, label: 'Русский', widget: text, required: false }
-      - name: slug
-        label: 'URL slug (per language)'
-        widget: object
-        hint: 'Technical — changing it breaks saved/indexed links; add the old one to previousSlugs.'
-        fields:
-          - { name: en, label: 'English', widget: string }
-          - { name: th, label: 'ไทย', widget: string }
-          - { name: ru, label: 'Русский', widget: string }
-      - name: images
-        label: 'Photos'
-        widget: list
-        required: false
-        field: { name: image, label: 'Image', widget: image }
-      - name: dietaryTags
-        label: 'Dietary tags'
-        widget: select
-        multiple: true
-        default: [vegan]
-        options:
-          - { label: 'vegan', value: vegan }
-          - { label: 'jay', value: jay }
-          - { label: 'jain-friendly', value: jain-friendly }
-          - { label: 'gluten-free', value: gluten-free }
-          - { label: 'raw', value: raw }
-          - { label: 'nut-free', value: nut-free }
-      - name: allergens
-        label: 'Allergens'
-        widget: select
-        multiple: true
-        required: false
-        options:
-          - { label: 'peanut', value: peanut }
-          - { label: 'soy', value: soy }
-          - { label: 'gluten', value: gluten }
-      - name: spicyLevel
-        label: 'Spicy level (0–3)'
-        widget: number
-        value_type: int
-        min: 0
-        max: 3
-        default: 0
-      - name: source
-        label: 'Data source'
-        widget: select
-        default: owner
-        options:
-          - { label: 'Grab export (grab_export)', value: grab_export }
-          - { label: 'From the owner (owner)', value: owner }
-          - { label: 'Retyped from paper menu (retyped)', value: retyped }
-      - name: reviewedAt
-        label: 'Reviewed on'
-        widget: datetime
-        required: false
-        default: ''
-      - name: previousSlugs
-        label: 'Previous slugs (for redirects)'
-        widget: list
-        required: false
-        field: { name: slug, label: slug, widget: string }
+          - {
+              name: spicyLevel,
+              label: 'Base spicy level (empty = unknown, 0–3 = verified)',
+              widget: number,
+              value_type: int,
+              min: 0,
+              max: 3,
+              required: false,
+            }
+          - name: allergens
+            label: 'Supported allergen review'
+            widget: object
+            fields:
+              - {
+                  name: status,
+                  label: Status,
+                  widget: select,
+                  options:
+                    [{ label: Unknown, value: unknown }, { label: Verified, value: verified }],
+                  default: unknown,
+                }
+              - {
+                  name: contains,
+                  label: 'Contains (empty is not an allergen-free claim)',
+                  widget: select,
+                  multiple: true,
+                  required: false,
+                  options:
+                    [
+                      { label: Peanut, value: peanut },
+                      { label: Soy, value: soy },
+                      { label: Gluten, value: gluten },
+                    ],
+                }
+          - {
+              name: noGlutenIngredients,
+              label: 'No gluten ingredients in verified recipe',
+              widget: select,
+              options:
+                [
+                  { label: Unknown, value: unknown },
+                  { label: Yes, value: yes },
+                  { label: No, value: no },
+                ],
+              default: unknown,
+            }
+          - {
+              name: jainFriendly,
+              label: 'Standard recipe is Jain-friendly',
+              widget: select,
+              options:
+                [
+                  { label: Unknown, value: unknown },
+                  { label: Yes, value: yes },
+                  { label: No, value: no },
+                ],
+              default: unknown,
+            }
+          - { name: verifiedBy, label: 'Food facts verified by', widget: string, required: false }
+          - {
+              name: verifiedAt,
+              label: 'Food facts verification date (YYYY-MM-DD)',
+              widget: string,
+              required: false,
+            }
+      - {
+          name: source,
+          label: 'Data source',
+          widget: select,
+          options:
+            [
+              { label: 'Grab export', value: grab_export },
+              { label: Owner, value: owner },
+              { label: Retyped, value: retyped },
+            ],
+          default: owner,
+        }
+      - {
+          name: reviewedAt,
+          label: 'Owner review date (unlocks editorial description; food facts verified separately)',
+          widget: datetime,
+          required: false,
+          default: '',
+        }
+      - {
+          name: previousSlugs,
+          label: 'Previous slugs (for redirects)',
+          widget: list,
+          required: false,
+          field: { name: slug, label: Slug, widget: string },
+        }
 
   - name: articles_en
-    label: 'Blog (English)'
+    label: 'Blog — English'
     folder: src/content/articles/en
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'Translation key (same across languages)'
-        widget: string
-        hint: 'Use the same key for the same article in every language.'
-      - { name: locale, label: 'Language', widget: hidden, default: en }
-      - { name: title, label: 'Title', widget: string }
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: en }
+      - { name: title, label: Title, widget: string }
       - { name: description, label: 'Short description (meta)', widget: text }
       - { name: slug, label: 'URL slug', widget: string }
-      - name: author
-        label: 'Author'
-        widget: select
-        default: family
-        options:
-          - { label: 'family', value: family }
-      - name: publishedAt
-        label: 'Published'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'Draft'
-        widget: boolean
-        default: true
-        hint: 'On = not shown on the site yet.'
-      - { name: body, label: 'Text', widget: markdown }
+      - {
+          name: author,
+          label: Author,
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe (organization)', value: editorial },
+              { label: 'Cafe family (only after approval)', value: family },
+            ],
+          default: editorial,
+        }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
 
   - name: articles_th
-    label: 'Blog (ไทย)'
+    label: 'Blog — Thai'
     folder: src/content/articles/th
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'Translation key (same across languages)'
-        widget: string
-        hint: 'Use the same key for the same article in every language.'
-      - { name: locale, label: 'Language', widget: hidden, default: th }
-      - { name: title, label: 'Title', widget: string }
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: th }
+      - { name: title, label: Title, widget: string }
       - { name: description, label: 'Short description (meta)', widget: text }
       - { name: slug, label: 'URL slug', widget: string }
-      - name: author
-        label: 'Author'
-        widget: select
-        default: family
-        options:
-          - { label: 'family', value: family }
-      - name: publishedAt
-        label: 'Published'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'Draft'
-        widget: boolean
-        default: true
-        hint: 'On = not shown on the site yet.'
-      - { name: body, label: 'Text', widget: markdown }
+      - {
+          name: author,
+          label: Author,
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe (organization)', value: editorial },
+              { label: 'Cafe family (only after approval)', value: family },
+            ],
+          default: editorial,
+        }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
 
   - name: articles_ru
-    label: 'Blog (Русский)'
+    label: 'Blog — Russian'
     folder: src/content/articles/ru
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'Translation key (same across languages)'
-        widget: string
-        hint: 'Use the same key for the same article in every language.'
-      - { name: locale, label: 'Language', widget: hidden, default: ru }
-      - { name: title, label: 'Title', widget: string }
+      - { name: translationKey, label: 'Translation key (same across languages)', widget: string }
+      - { name: locale, label: Language, widget: hidden, default: ru }
+      - { name: title, label: Title, widget: string }
       - { name: description, label: 'Short description (meta)', widget: text }
       - { name: slug, label: 'URL slug', widget: string }
-      - name: author
-        label: 'Author'
-        widget: select
-        default: family
-        options:
-          - { label: 'family', value: family }
-      - name: publishedAt
-        label: 'Published'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'Draft'
-        widget: boolean
-        default: true
-        hint: 'On = not shown on the site yet.'
-      - { name: body, label: 'Text', widget: markdown }
+      - {
+          name: author,
+          label: Author,
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe (organization)', value: editorial },
+              { label: 'Cafe family (only after approval)', value: family },
+            ],
+          default: editorial,
+        }
+      - { name: publishedAt, label: Published, widget: datetime, format: 'YYYY-MM-DD' }
+      - { name: draft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Text, widget: markdown }
 
   - name: pages
     label: 'Static pages'
@@ -227,9 +350,9 @@ collections:
         label: 'Language'
         widget: select
         options:
-          - { label: 'English', value: en }
-          - { label: 'ไทย', value: th }
-          - { label: 'Русский', value: ru }
+          - { label: 'English (EN)', value: en }
+          - { label: 'Thai (TH)', value: th }
+          - { label: 'Russian (RU)', value: ru }
       - { name: title, label: 'Title', widget: string }
       - { name: description, label: 'Short description (meta)', widget: text }
       - { name: body, label: 'Text', widget: markdown }
@@ -238,7 +361,7 @@ collections:
     label: 'Site settings'
     files:
       - name: settings
-        label: 'Cafe info (name, phone, links)'
+        label: 'Cafe information'
         file: src/content/settings.json
         fields:
           - name: site
@@ -246,45 +369,116 @@ collections:
             widget: object
             fields:
               - { name: name, label: 'Official name', widget: string }
-              - name: nameLocalized
-                label: 'Displayed name'
-                widget: object
-                fields:
-                  - { name: en, label: 'English', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'Русский', widget: string }
-              - name: tagline
-                label: 'Tagline'
-                widget: object
-                fields:
-                  - { name: en, label: 'English', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'Русский', widget: string }
-              - { name: phone, label: 'Phone', widget: string }
-              - { name: whatsapp, label: 'WhatsApp link', widget: string, required: false }
-              - { name: lineId, label: 'LINE ID', widget: string, required: false }
-              - { name: email, label: 'Email', widget: string, required: false }
-              - name: social
-                label: 'Social links'
-                widget: list
-                required: false
-                fields:
-                  - { name: platform, label: 'Platform', widget: string }
-                  - { name: url, label: 'URL', widget: string }
-              - name: orderingLinks
-                label: 'Ordering links (Grab…)'
-                widget: list
-                required: false
-                fields:
-                  - { name: provider, label: 'Provider', widget: string }
-                  - { name: url, label: 'URL', widget: string }
-              - name: reviewLinks
-                label: 'Review links'
-                widget: object
-                fields:
-                  - { name: google, label: Google, widget: string, required: false }
-                  - { name: happycow, label: HappyCow, widget: string, required: false }
-                  - { name: tripadvisor, label: TripAdvisor, widget: string, required: false }
+              - {
+                  name: nameLocalized,
+                  label: 'Displayed name',
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: tagline,
+                  label: Tagline,
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - { name: phone, label: Phone, widget: string }
+              - {
+                  name: whatsappUrl,
+                  label: 'WhatsApp link (https://wa.me/…)',
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  name: lineUrl,
+                  label: 'LINE link (https://line.me/… or https://lin.ee/…)',
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  name: primaryContact,
+                  label: 'Primary quick-contact action',
+                  widget: select,
+                  options:
+                    [
+                      { label: Phone, value: phone },
+                      { label: LINE, value: line },
+                      { label: WhatsApp, value: whatsapp },
+                    ],
+                  default: phone,
+                }
+              - {
+                  name: responseHours,
+                  label: 'Messaging response hours',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - { name: email, label: Email, widget: string, required: false }
+              - {
+                  name: social,
+                  label: 'Social links',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: platform, label: Platform, widget: string },
+                      { name: url, label: URL, widget: string },
+                    ],
+                }
+              - {
+                  name: orderingLinks,
+                  label: 'Confirmed delivery links',
+                  widget: list,
+                  required: false,
+                  summary: '{{fields.provider}}',
+                  fields:
+                    [
+                      {
+                        name: provider,
+                        label: Provider,
+                        widget: select,
+                        options: [GrabFood, 'LINE MAN'],
+                      },
+                      { name: url, label: 'Official share/order URL', widget: string },
+                    ],
+                }
+              - {
+                  name: reviewLinks,
+                  label: 'Review links',
+                  widget: object,
+                  fields:
+                    [
+                      {
+                        name: googleProfile,
+                        label: 'Google Business profile',
+                        widget: string,
+                        required: false,
+                      },
+                      {
+                        name: googleReview,
+                        label: 'Google direct review link',
+                        widget: string,
+                        required: false,
+                      },
+                      { name: happycow, label: HappyCow, widget: string, required: false },
+                      { name: tripadvisor, label: TripAdvisor, widget: string, required: false },
+                    ],
+                }
       - name: location
         label: 'Address & opening hours'
         file: src/content/locations.json
@@ -293,49 +487,431 @@ collections:
             label: 'Pattaya'
             widget: object
             fields:
-              - name: address
-                label: 'Address'
-                widget: object
-                fields:
-                  - { name: en, label: 'English', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'Русский', widget: string }
-              - name: geo
-                label: 'Coordinates (from the exact Google Maps pin)'
+              - {
+                  name: address,
+                  label: Address,
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: geo,
+                  label: 'Coordinates (from the exact Google Maps pin)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: lat, label: Latitude, widget: number, value_type: float },
+                      { name: lng, label: Longitude, widget: number, value_type: float },
+                    ],
+                }
+              - { name: mapsUrl, label: 'Google Maps link', widget: string, required: false }
+              - {
+                  name: landmark,
+                  label: 'Nearby landmark',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: parking,
+                  label: 'Parking guidance',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: arrivalNote,
+                  label: 'Arrival note',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - {
+                  name: hours,
+                  label: 'Opening hours',
+                  widget: list,
+                  fields:
+                    [
+                      {
+                        name: days,
+                        label: Days,
+                        widget: select,
+                        multiple: true,
+                        options:
+                          [
+                            { label: Monday, value: mon },
+                            { label: Tuesday, value: tue },
+                            { label: Wednesday, value: wed },
+                            { label: Thursday, value: thu },
+                            { label: Friday, value: fri },
+                            { label: Saturday, value: sat },
+                            { label: Sunday, value: sun },
+                          ],
+                      },
+                      { name: open, label: 'Opens (HH:MM)', widget: string },
+                      { name: close, label: 'Closes (HH:MM)', widget: string },
+                    ],
+                }
+              - {
+                  name: specialHours,
+                  label: 'Special days (holidays)',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: date, label: 'Date (YYYY-MM-DD)', widget: string },
+                      {
+                        name: open,
+                        label: 'Opens (empty = closed)',
+                        widget: string,
+                        required: false,
+                      },
+                      { name: close, label: Closes, widget: string, required: false },
+                      { name: note, label: Note, widget: string, required: false },
+                    ],
+                }
+      - name: operations
+        label: 'Payment, pickup & reservations'
+        file: src/content/operations.json
+        fields:
+          - name: pattaya
+            label: Pattaya
+            widget: object
+            fields:
+              - {
+                  name: paymentMethods,
+                  label: 'Confirmed payment methods',
+                  widget: select,
+                  multiple: true,
+                  required: false,
+                  options:
+                    [
+                      { label: Cash, value: cash },
+                      { label: 'Thai QR', value: thai-qr },
+                      { label: 'Bank transfer', value: bank-transfer },
+                      { label: Card, value: card },
+                    ],
+                }
+              - {
+                  name: paymentNote,
+                  label: 'Payment note',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: English, widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: Русский, widget: string },
+                    ],
+                }
+              - name: pricePolicy
+                label: 'Confirmed price policy (leave empty while unknown)'
+                widget: select
+                required: false
+                options:
+                  - { label: 'Same item prices everywhere', value: same_everywhere }
+                  - { label: 'Website matches dine-in counter', value: website_matches_counter }
+                  - { label: 'Website matches GrabFood', value: website_matches_grab }
+                  - { label: 'Prices differ by channel', value: channels_differ }
+              - name: dietaryQuestionsContact
+                label: 'Confirmed channel for ingredient questions (leave empty while unknown)'
+                widget: select
+                required: false
+                options:
+                  [
+                    { label: Phone, value: phone },
+                    { label: LINE, value: line },
+                    { label: WhatsApp, value: whatsapp },
+                  ]
+              - name: spiceRequests
+                label: 'Spice requests (leave empty while unknown)'
                 widget: object
                 required: false
+                hint: 'Do not create this object while unknown. Record only a policy confirmed by the kitchen.'
                 fields:
-                  - { name: lat, label: 'Latitude', widget: number, value_type: float }
-                  - { name: lng, label: 'Longitude', widget: number, value_type: float }
-              - { name: mapsUrl, label: 'Google Maps link', widget: string, required: false }
-              - name: hours
-                label: 'Opening hours'
-                widget: list
-                fields:
-                  - name: days
-                    label: 'Days'
+                  - name: status
+                    label: 'Can guests request a spice level?'
+                    widget: select
+                    options:
+                      - { label: 'No — standard recipe only', value: not-offered }
+                      - { label: 'Yes — only for the scope below', value: offered }
+                  - name: levels
+                    label: 'Confirmed request levels (offered only)'
                     widget: select
                     multiple: true
+                    required: false
                     options:
-                      - { label: 'Mon', value: mon }
-                      - { label: 'Tue', value: tue }
-                      - { label: 'Wed', value: wed }
-                      - { label: 'Thu', value: thu }
-                      - { label: 'Fri', value: fri }
-                      - { label: 'Sat', value: sat }
-                      - { label: 'Sun', value: sun }
-                  - { name: open, label: 'Opens (HH:MM)', widget: string }
-                  - { name: close, label: 'Closes (HH:MM)', widget: string }
-              - name: specialHours
-                label: 'Special days (holidays)'
+                      - { label: 'Not spicy', value: not-spicy }
+                      - { label: Mild, value: mild }
+                      - { label: Medium, value: medium }
+                      - { label: Hot, value: hot }
+                  - name: scopeNote
+                    label: 'Exact dish scope / limitations (required when offered)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: English, widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: Русский, widget: string }
+                  - { name: verifiedBy, label: 'Policy verified by', widget: string }
+                  - {
+                      name: verifiedAt,
+                      label: 'Policy verification date (YYYY-MM-DD)',
+                      widget: string,
+                    }
+              - name: halalGuidance
+                label: 'Halal guidance (leave empty while unknown)'
+                widget: object
+                required: false
+                hint: 'Do not create this object while unknown. Certification, cooking alcohol and the approved note must be verified together.'
+                fields:
+                  - name: certificationStatus
+                    label: 'Halal certification status'
+                    widget: select
+                    options:
+                      - { label: 'Not certified', value: not-certified }
+                      - { label: 'Certified — details required below', value: certified }
+                  - name: certificationDetail
+                    label: 'Certificate issuer / scope / reference (required if certified)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: English, widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: Русский, widget: string }
+                  - name: cookingAlcohol
+                    label: 'Cooking alcohol'
+                    widget: select
+                    options:
+                      - { label: 'Used in cooking', value: used }
+                      - { label: 'Not used in cooking', value: not-used }
+                  - name: note
+                    label: 'Exact owner-approved context (required)'
+                    widget: object
+                    fields:
+                      - { name: en, label: English, widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: Русский, widget: string }
+                  - { name: verifiedBy, label: 'Guidance verified by', widget: string }
+                  - {
+                      name: verifiedAt,
+                      label: 'Guidance verification date (YYYY-MM-DD)',
+                      widget: string,
+                    }
+              - {
+                  name: pickup,
+                  label: 'Pickup (leave empty while unknown)',
+                  widget: object,
+                  required: false,
+                  hint: 'Do not create this object while unknown. Enabled pickup requires a working ordering channel.',
+                  fields:
+                    [
+                      { name: enabled, label: 'Pickup available', widget: boolean },
+                      {
+                        name: contact,
+                        label: 'Order through (required only when available)',
+                        widget: select,
+                        required: false,
+                        options:
+                          [
+                            { label: Phone, value: phone },
+                            { label: LINE, value: line },
+                            { label: WhatsApp, value: whatsapp },
+                          ],
+                      },
+                      {
+                        name: leadTime,
+                        label: 'Lead time',
+                        widget: object,
+                        required: false,
+                        fields:
+                          [
+                            { name: en, label: English, widget: string },
+                            { name: th, label: ไทย, widget: string },
+                            { name: ru, label: Русский, widget: string },
+                          ],
+                      },
+                      {
+                        name: priceNote,
+                        label: 'Pickup price note',
+                        widget: object,
+                        required: false,
+                        fields:
+                          [
+                            { name: en, label: English, widget: string },
+                            { name: th, label: ไทย, widget: string },
+                            { name: ru, label: Русский, widget: string },
+                          ],
+                      },
+                    ],
+                }
+              - name: reservations
+                label: 'Reservations (leave empty while unknown)'
+                widget: object
+                required: false
+                hint: 'Do not create this object while unknown. Accepted reservations require a working contact and lead time.'
+                fields:
+                  - name: status
+                    label: Policy
+                    widget: select
+                    options:
+                      - { label: 'Not accepted', value: not-accepted }
+                      - { label: Accepted, value: accepted }
+                      - { label: 'Large groups only', value: large-groups-only }
+                  - name: contact
+                    label: 'Request through (required when accepted)'
+                    widget: select
+                    required: false
+                    options:
+                      [
+                        { label: Phone, value: phone },
+                        { label: LINE, value: line },
+                        { label: WhatsApp, value: whatsapp },
+                      ]
+                  - name: minimumPartySize
+                    label: 'Minimum party size (large groups only)'
+                    widget: number
+                    value_type: int
+                    min: 2
+                    required: false
+                  - name: leadTime
+                    label: 'Lead time (required when accepted)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: English, widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: Русский, widget: string }
+                  - name: note
+                    label: 'Optional reservation note'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: English, widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: Русский, widget: string }
+      - name: siteMedia
+        label: 'Approved business photos'
+        file: src/content/site-media.json
+        fields:
+          - name: site
+            label: 'Website photos'
+            widget: object
+            fields:
+              - name: assets
+                label: 'Photo slots (one per kind)'
                 widget: list
                 required: false
+                summary: '{{fields.kind}} — approved for website'
+                hint: 'Add only media with confirmed rights, people review and intended placement.'
                 fields:
-                  - { name: date, label: 'Date (YYYY-MM-DD)', widget: string }
-                  - name: open
-                    label: 'Opens'
-                    widget: string
-                    required: false
-                    hint: 'Leave empty = closed all day.'
-                  - { name: close, label: 'Closes', widget: string, required: false }
-                  - { name: note, label: 'Note', widget: string, required: false }
+                  - {
+                      name: kind,
+                      label: Placement,
+                      widget: select,
+                      options:
+                        [
+                          { label: Hero, value: hero },
+                          { label: Exterior, value: exterior },
+                          { label: Family, value: family },
+                          { label: Interior, value: interior },
+                        ],
+                    }
+                  - { name: src, label: 'Fallback image', widget: image }
+                  - {
+                      name: srcSmall,
+                      label: '960w optimized variant',
+                      widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: srcLarge,
+                      label: '1600w optimized variant',
+                      widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: alt,
+                      label: 'Alternative text',
+                      widget: object,
+                      fields:
+                        [
+                          { name: en, label: English, widget: string },
+                          { name: th, label: ไทย, widget: string },
+                          { name: ru, label: Русский, widget: string },
+                        ],
+                    }
+                  - { name: width, label: 'Intrinsic width (px)', widget: number, value_type: int }
+                  - {
+                      name: height,
+                      label: 'Intrinsic height (px)',
+                      widget: number,
+                      value_type: int,
+                    }
+                  - {
+                      name: origin,
+                      label: Origin,
+                      widget: select,
+                      options:
+                        [
+                          { label: 'Owner original', value: owner-original },
+                          { label: Licensed, value: licensed },
+                        ],
+                    }
+                  - { name: rightsHolder, label: 'Rights holder', widget: string }
+                  - {
+                      name: permission,
+                      label: 'Publication permission (approved assets only)',
+                      widget: select,
+                      options: [{ label: Granted, value: granted }],
+                    }
+                  - {
+                      name: permissionScope,
+                      label: 'Permission covers website crops and variants',
+                      widget: select,
+                      options:
+                        [{ label: 'Website and derivatives', value: website-and-derivatives }],
+                    }
+                  - { name: confirmedBy, label: 'Permission confirmed by', widget: string }
+                  - { name: confirmedAt, label: 'Permission date (YYYY-MM-DD)', widget: string }
+                  - {
+                      name: peopleVisibility,
+                      label: 'People review (required)',
+                      widget: select,
+                      options:
+                        [
+                          { label: 'None confirmed', value: none-confirmed },
+                          { label: 'Recognisable people present', value: recognisable-present },
+                        ],
+                    }
+                  - {
+                      name: peopleConsent,
+                      label: 'Consent from visible people',
+                      widget: select,
+                      options:
+                        [
+                          { label: 'Not applicable', value: not-applicable },
+                          { label: Granted, value: granted },
+                        ],
+                    }
+                  - { name: credit, label: 'Public credit', widget: string, required: false }

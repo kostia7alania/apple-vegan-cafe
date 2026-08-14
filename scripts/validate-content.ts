@@ -4,7 +4,7 @@
  * category/dish anchor safety, article translation-set reciprocity, redirect safety.
  * Runs in CI before the build.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 
@@ -13,6 +13,7 @@ type Locale = (typeof LOCALES)[number];
 
 const root = resolve(import.meta.dirname, '..');
 const contentDir = resolve(root, 'src/content');
+const publicDir = resolve(root, 'public');
 const errors: string[] = [];
 const servicePathPattern = /^\/(?:admin|uploads)(?:\/|$)/;
 
@@ -40,6 +41,20 @@ function isSafeRouteSegment(slug: string): boolean {
 
 function hasText(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
+}
+
+function calendarDateInBangkok(date = new Date()): string {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Bangkok',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(date)
+      .map(({ type, value }) => [type, value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day}`;
 }
 
 function isLocale(value: string): value is Locale {
@@ -74,11 +89,15 @@ function validateExternalUrl(
 
 const allowedExternalHosts = {
   grab: ['r.grab.com', 'grab.com', 'food.grab.com', 'www.grab.com'],
+  lineMan: ['lineman.line.me', 'lineman.onelink.me', 'wongnai.com', 'www.wongnai.com'],
   googleMaps: ['maps.app.goo.gl', 'google.com', 'www.google.com'],
+  googleProfile: ['maps.app.goo.gl', 'g.page', 'google.com', 'www.google.com'],
   googleReview: ['g.page', 'search.google.com', 'google.com', 'www.google.com'],
   happycow: ['happycow.net', 'www.happycow.net'],
   instagram: ['instagram.com', 'www.instagram.com'],
   tripadvisor: ['tripadvisor.com', 'www.tripadvisor.com'],
+  whatsapp: ['wa.me', 'api.whatsapp.com'],
+  line: ['line.me', 'lin.ee'],
 } as const;
 
 function allowedSocialHosts(platform: string): readonly string[] | undefined {
@@ -91,12 +110,41 @@ function allowedSocialHosts(platform: string): readonly string[] | undefined {
 }
 
 function allowedOrderingHosts(provider: string): readonly string[] | undefined {
-  switch (provider.toLowerCase()) {
-    case 'grabfood':
-    case 'grab':
+  switch (provider) {
+    case 'GrabFood':
       return allowedExternalHosts.grab;
+    case 'LINE MAN':
+      return allowedExternalHosts.lineMan;
     default:
       return undefined;
+  }
+}
+
+function validateOrderingUrl(label: string, provider: string, value: string | undefined) {
+  const hosts = allowedOrderingHosts(provider);
+  if (!hosts) {
+    fail(`${label}: unsupported provider "${provider}"`);
+    return;
+  }
+  if (!hasText(value)) {
+    fail(`${label}.url: missing URL`);
+    return;
+  }
+
+  validateExternalUrl(`${label}.url`, value, hosts);
+
+  if (provider !== 'LINE MAN') return;
+  try {
+    const url = new URL(value);
+    const hostname = url.hostname.toLowerCase();
+    if (
+      (hostname === 'wongnai.com' || hostname === 'www.wongnai.com') &&
+      !/\/delivery\/.+\/order\/?$/.test(url.pathname)
+    ) {
+      fail(`${label}.url: Wongnai LINE MAN links must use a /delivery/.../order path`);
+    }
+  } catch {
+    // The shared URL validator reports malformed absolute URLs.
   }
 }
 
@@ -142,7 +190,15 @@ interface Dish {
   name: Partial<Record<Locale, string>>;
   slug: Partial<Record<Locale, string>>;
   previousSlugs?: string[];
-  allergens?: string[];
+  dietaryTags?: string[];
+  foodFacts?: {
+    spicyLevel?: number | null;
+    allergens?: { status?: string; contains?: string[] };
+    noGlutenIngredients?: string;
+    jainFriendly?: string;
+    verifiedBy?: string | null;
+    verifiedAt?: string | null;
+  };
 }
 const dishesDir = join(contentDir, 'dishes');
 const slugSeen: Record<Locale, Map<string, string>> = {
@@ -161,8 +217,71 @@ for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))
   if (!categoryIds.has(dish.category)) {
     fail(`${label}: unknown category "${dish.category}"`);
   }
-  for (const allergen of dish.allergens ?? []) {
-    if (!allergenIds.has(allergen)) fail(`${label}: unknown allergen "${allergen}"`);
+  if (
+    dish.dietaryTags?.length !== 2 ||
+    !dish.dietaryTags.includes('vegan') ||
+    !dish.dietaryTags.includes('jay')
+  ) {
+    fail(`${label}: dietaryTags must contain only the restaurant-wide vegan and jay claims`);
+  }
+
+  const facts = dish.foodFacts;
+  if (!facts) {
+    fail(`${label}: missing fail-closed foodFacts`);
+  } else {
+    const spicyLevel = facts.spicyLevel;
+    if (
+      spicyLevel !== null &&
+      !(
+        typeof spicyLevel === 'number' &&
+        Number.isInteger(spicyLevel) &&
+        spicyLevel >= 0 &&
+        spicyLevel <= 3
+      )
+    ) {
+      fail(`${label}: foodFacts.spicyLevel must be null or an integer from 0 to 3`);
+    }
+    const allergenStatus = facts.allergens?.status;
+    const contains = facts.allergens?.contains ?? [];
+    if (!['unknown', 'verified'].includes(allergenStatus ?? '')) {
+      fail(`${label}: foodFacts.allergens.status must be unknown or verified`);
+    }
+    if (allergenStatus === 'unknown' && contains.length > 0) {
+      fail(`${label}: unknown allergen status cannot list contains values`);
+    }
+    for (const allergen of contains) {
+      if (!allergenIds.has(allergen)) fail(`${label}: unknown allergen "${allergen}"`);
+    }
+    if (!['unknown', 'yes', 'no'].includes(facts.noGlutenIngredients ?? '')) {
+      fail(`${label}: foodFacts.noGlutenIngredients must be unknown, yes or no`);
+    }
+    if (!['unknown', 'yes', 'no'].includes(facts.jainFriendly ?? '')) {
+      fail(`${label}: foodFacts.jainFriendly must be unknown, yes or no`);
+    }
+
+    const hasVerifiedFact =
+      spicyLevel !== null ||
+      allergenStatus === 'verified' ||
+      facts.noGlutenIngredients !== 'unknown' ||
+      facts.jainFriendly !== 'unknown';
+    if (hasVerifiedFact && (!hasText(facts.verifiedBy) || !hasText(facts.verifiedAt))) {
+      fail(`${label}: verified food facts require verifiedBy and verifiedAt`);
+    }
+    if (!hasVerifiedFact && (hasText(facts.verifiedBy) || hasText(facts.verifiedAt))) {
+      fail(`${label}: verification metadata requires at least one verified food fact`);
+    }
+    if (hasText(facts.verifiedAt)) {
+      const verifiedAt = new Date(`${facts.verifiedAt}T00:00:00.000Z`);
+      if (
+        !/^\d{4}-\d{2}-\d{2}$/.test(facts.verifiedAt) ||
+        Number.isNaN(verifiedAt.valueOf()) ||
+        verifiedAt.toISOString().slice(0, 10) !== facts.verifiedAt
+      ) {
+        fail(`${label}: foodFacts.verifiedAt must be a real YYYY-MM-DD date`);
+      } else if (facts.verifiedAt > calendarDateInBangkok()) {
+        fail(`${label}: foodFacts.verifiedAt must not be in the future`);
+      }
+    }
   }
   for (const locale of LOCALES) {
     if (!dish.name[locale]) fail(`${label}: missing name.${locale}`);
@@ -210,16 +329,37 @@ for (const fileName of readdirSync(dishesDir).filter((f) => f.endsWith('.json'))
 // --- settings + locations --------------------------------------------------
 interface Settings {
   site?: {
+    whatsappUrl?: string | null;
+    lineUrl?: string | null;
+    primaryContact?: 'phone' | 'line' | 'whatsapp';
     social?: { platform?: string; url?: string }[];
-    orderingLinks?: { provider?: string; url?: string }[];
+    orderingLinks?: { provider?: 'GrabFood' | 'LINE MAN'; url?: string }[];
     reviewLinks?: {
-      google?: string | null;
+      googleProfile?: string | null;
+      googleReview?: string | null;
       happycow?: string | null;
       tripadvisor?: string | null;
     };
   };
 }
 const settings = JSON.parse(readFileSync(join(contentDir, 'settings.json'), 'utf8')) as Settings;
+
+validateExternalUrl(
+  'settings.json site.whatsappUrl',
+  settings.site?.whatsappUrl,
+  allowedExternalHosts.whatsapp,
+);
+validateExternalUrl(
+  'settings.json site.lineUrl',
+  settings.site?.lineUrl,
+  allowedExternalHosts.line,
+);
+if (settings.site?.primaryContact === 'line' && !settings.site.lineUrl) {
+  fail('settings.json site.primaryContact is line but site.lineUrl is empty');
+}
+if (settings.site?.primaryContact === 'whatsapp' && !settings.site.whatsappUrl) {
+  fail('settings.json site.primaryContact is whatsapp but site.whatsappUrl is empty');
+}
 
 for (const [index, link] of (settings.site?.social ?? []).entries()) {
   const label = `settings.json site.social[${index}]`;
@@ -235,23 +375,28 @@ for (const [index, link] of (settings.site?.social ?? []).entries()) {
   validateExternalUrl(`${label}.url`, link.url, hosts);
 }
 
+const orderingProvidersSeen = new Set<string>();
 for (const [index, link] of (settings.site?.orderingLinks ?? []).entries()) {
   const label = `settings.json site.orderingLinks[${index}]`;
   if (!link.provider) {
     fail(`${label}: missing provider`);
     continue;
   }
-  const hosts = allowedOrderingHosts(link.provider);
-  if (!hosts) {
-    fail(`${label}: unsupported provider "${link.provider}"`);
-    continue;
+  if (orderingProvidersSeen.has(link.provider)) {
+    fail(`${label}: duplicate provider "${link.provider}"`);
   }
-  validateExternalUrl(`${label}.url`, link.url, hosts);
+  orderingProvidersSeen.add(link.provider);
+  validateOrderingUrl(label, link.provider, link.url);
 }
 
 validateExternalUrl(
-  'settings.json site.reviewLinks.google',
-  settings.site?.reviewLinks?.google,
+  'settings.json site.reviewLinks.googleProfile',
+  settings.site?.reviewLinks?.googleProfile,
+  allowedExternalHosts.googleProfile,
+);
+validateExternalUrl(
+  'settings.json site.reviewLinks.googleReview',
+  settings.site?.reviewLinks?.googleReview,
   allowedExternalHosts.googleReview,
 );
 validateExternalUrl(
@@ -295,6 +440,289 @@ for (const [id, location] of Object.entries(locations)) {
   validateExternalUrl(`${label}.mapsUrl`, location.mapsUrl, allowedExternalHosts.googleMaps);
 }
 
+interface Operations {
+  [id: string]: {
+    pricePolicy?:
+      | 'same_everywhere'
+      | 'website_matches_counter'
+      | 'website_matches_grab'
+      | 'channels_differ'
+      | null;
+    dietaryQuestionsContact?: 'phone' | 'line' | 'whatsapp' | null;
+    halalGuidance?: {
+      certificationStatus?: 'not-certified' | 'certified';
+      certificationDetail?: Partial<Record<Locale, string>> | null;
+      cookingAlcohol?: 'used' | 'not-used';
+      note?: Partial<Record<Locale, string>>;
+      verifiedBy?: string;
+      verifiedAt?: string;
+    } | null;
+    pickup?: {
+      enabled?: boolean;
+      contact?: 'phone' | 'line' | 'whatsapp' | null;
+      leadTime?: Partial<Record<Locale, string>> | null;
+      priceNote?: Partial<Record<Locale, string>> | null;
+    } | null;
+    reservations?: {
+      status?: 'not-accepted' | 'accepted' | 'large-groups-only';
+      contact?: 'phone' | 'line' | 'whatsapp' | null;
+    } | null;
+  };
+}
+const operations = JSON.parse(
+  readFileSync(join(contentDir, 'operations.json'), 'utf8'),
+) as Operations;
+for (const [id, operation] of Object.entries(operations)) {
+  const hasGrab =
+    settings.site?.orderingLinks?.some((link) => link.provider === 'GrabFood') ?? false;
+  if (operation.pricePolicy === 'website_matches_grab' && !hasGrab) {
+    fail(`operations.json ${id}.pricePolicy website_matches_grab requires a Grab ordering link`);
+  }
+  if (operation.dietaryQuestionsContact === 'line' && !settings.site?.lineUrl) {
+    fail(`operations.json ${id}.dietaryQuestionsContact requires site.lineUrl`);
+  }
+  if (operation.dietaryQuestionsContact === 'whatsapp' && !settings.site?.whatsappUrl) {
+    fail(`operations.json ${id}.dietaryQuestionsContact requires site.whatsappUrl`);
+  }
+  const halalGuidance = operation.halalGuidance;
+  if (halalGuidance) {
+    const label = `operations.json ${id}.halalGuidance`;
+    if (!['not-certified', 'certified'].includes(halalGuidance.certificationStatus ?? '')) {
+      fail(`${label}.certificationStatus must be not-certified or certified`);
+    }
+    if (!['used', 'not-used'].includes(halalGuidance.cookingAlcohol ?? '')) {
+      fail(`${label}.cookingAlcohol must be used or not-used`);
+    }
+    for (const locale of LOCALES) {
+      if (!hasText(halalGuidance.note?.[locale])) {
+        fail(`${label}.note.${locale} is required`);
+      }
+    }
+    if (halalGuidance.certificationStatus === 'certified') {
+      for (const locale of LOCALES) {
+        if (!hasText(halalGuidance.certificationDetail?.[locale])) {
+          fail(`${label}.certificationDetail.${locale} is required when certified`);
+        }
+      }
+    } else if (halalGuidance.certificationDetail != null) {
+      fail(`${label}.certificationDetail belongs only to certified status`);
+    }
+    if (!hasText(halalGuidance.verifiedBy)) {
+      fail(`${label}.verifiedBy is required`);
+    }
+    if (!halalGuidance.verifiedAt || !/^\d{4}-\d{2}-\d{2}$/.test(halalGuidance.verifiedAt)) {
+      fail(`${label}.verifiedAt must be a YYYY-MM-DD date`);
+    } else {
+      const verifiedAt = new Date(`${halalGuidance.verifiedAt}T00:00:00.000Z`);
+      if (
+        Number.isNaN(verifiedAt.valueOf()) ||
+        verifiedAt.toISOString().slice(0, 10) !== halalGuidance.verifiedAt
+      ) {
+        fail(`${label}.verifiedAt must be a real calendar date`);
+      } else if (halalGuidance.verifiedAt > calendarDateInBangkok()) {
+        fail(`${label}.verifiedAt must not be in the future in Bangkok`);
+      }
+    }
+  }
+  const pickupValue = operation.pickup as unknown;
+  if (pickupValue !== null && pickupValue !== undefined) {
+    const label = `operations.json ${id}.pickup`;
+    if (typeof pickupValue !== 'object' || Array.isArray(pickupValue)) {
+      fail(`${label} must be an object or null`);
+    } else {
+      const pickup = pickupValue as Record<string, unknown>;
+      const enabled = pickup.enabled;
+      const contact = pickup.contact === '' || pickup.contact === undefined ? null : pickup.contact;
+      if (typeof enabled !== 'boolean') {
+        fail(`${label}.enabled must be a boolean`);
+      }
+      if (contact !== null && !['phone', 'line', 'whatsapp'].includes(String(contact))) {
+        fail(`${label}.contact must be phone, line, whatsapp or null`);
+      }
+      for (const field of ['leadTime', 'priceNote'] as const) {
+        const value = pickup[field];
+        if (value === null || value === undefined) continue;
+        if (typeof value !== 'object' || Array.isArray(value)) {
+          fail(`${label}.${field} must be a complete EN/TH/RU object or null`);
+          continue;
+        }
+        const localizedValue = value as Record<string, unknown>;
+        for (const locale of LOCALES) {
+          if (!hasText(localizedValue[locale])) {
+            fail(`${label}.${field}.${locale} is required when ${field} is provided`);
+          }
+        }
+      }
+      if (enabled === true) {
+        if (contact === null) {
+          fail(`${label} enabled pickup requires a contact`);
+        } else if (contact === 'line' && !settings.site?.lineUrl) {
+          fail(`${label} requires site.lineUrl`);
+        } else if (contact === 'whatsapp' && !settings.site?.whatsappUrl) {
+          fail(`${label} requires site.whatsappUrl`);
+        }
+      } else if (enabled === false) {
+        if (contact !== null) {
+          fail(`${label} disabled pickup must not have a contact`);
+        }
+        if (pickup.leadTime !== null && pickup.leadTime !== undefined) {
+          fail(`${label} disabled pickup must not have leadTime`);
+        }
+        if (pickup.priceNote !== null && pickup.priceNote !== undefined) {
+          fail(`${label} disabled pickup must not have priceNote`);
+        }
+      }
+    }
+  }
+  if (operation.reservations && operation.reservations.status !== 'not-accepted') {
+    if (operation.reservations.contact === 'line' && !settings.site?.lineUrl) {
+      fail(`operations.json ${id}.reservations requires site.lineUrl`);
+    }
+    if (operation.reservations.contact === 'whatsapp' && !settings.site?.whatsappUrl) {
+      fail(`operations.json ${id}.reservations requires site.whatsappUrl`);
+    }
+  }
+}
+
+// --- approved public media -------------------------------------------------
+interface ApprovedMediaAsset {
+  src?: string;
+  srcSmall?: string | null;
+  srcLarge?: string | null;
+  origin?: string;
+  rightsHolder?: string;
+  permission?: string;
+  permissionScope?: string;
+  confirmedBy?: string;
+  confirmedAt?: string;
+  peopleVisibility?: string;
+  peopleConsent?: string;
+  credit?: string | null;
+}
+interface SiteMediaAsset extends ApprovedMediaAsset {
+  kind?: string;
+  alt?: Partial<Record<Locale, string>>;
+}
+interface SiteMedia {
+  site?: { assets?: SiteMediaAsset[] };
+}
+const siteMedia = JSON.parse(
+  readFileSync(join(contentDir, 'site-media.json'), 'utf8'),
+) as SiteMedia;
+const mediaKinds = new Set<string>();
+const approvedMediaKinds = new Set(['hero', 'exterior', 'family', 'interior']);
+const mediaPathPattern = /^\/uploads\/[A-Za-z0-9][A-Za-z0-9._/-]*\.(?:avif|webp|jpe?g|png)$/i;
+const referencedMediaPaths = new Set<string>();
+
+function validateApprovedMedia(
+  label: string,
+  asset: ApprovedMediaAsset,
+  allowedOrigins: readonly string[],
+) {
+  for (const [field, path] of [
+    ['src', asset.src],
+    ['srcSmall', asset.srcSmall],
+    ['srcLarge', asset.srcLarge],
+  ] as const) {
+    if (path === null || path === undefined || path === '') continue;
+    if (!mediaPathPattern.test(path) || path.split('/').includes('..') || /[?#\\]/.test(path)) {
+      fail(`${label}.${field} must be a safe supported image path inside /uploads/`);
+      continue;
+    }
+    if (!existsSync(join(publicDir, path))) {
+      fail(`${label}.${field} points to a missing public file: ${path}`);
+    }
+    referencedMediaPaths.add(path);
+  }
+
+  if (!asset.src) fail(`${label}.src is required`);
+  if (!allowedOrigins.includes(asset.origin ?? '')) {
+    fail(`${label}.origin must be ${allowedOrigins.join(' or ')}`);
+  }
+  if (!hasText(asset.rightsHolder)) fail(`${label}.rightsHolder is required`);
+  if (asset.permission !== 'granted') {
+    fail(`${label}.permission must be granted before a file enters public/uploads`);
+  }
+  if (asset.permissionScope !== 'website-and-derivatives') {
+    fail(`${label}.permissionScope must cover website-and-derivatives`);
+  }
+  if (!hasText(asset.confirmedBy)) fail(`${label}.confirmedBy is required`);
+
+  if (!asset.confirmedAt || !/^\d{4}-\d{2}-\d{2}$/.test(asset.confirmedAt)) {
+    fail(`${label}.confirmedAt must be a YYYY-MM-DD date`);
+  } else {
+    const confirmedAt = new Date(`${asset.confirmedAt}T00:00:00.000Z`);
+    if (
+      Number.isNaN(confirmedAt.valueOf()) ||
+      confirmedAt.toISOString().slice(0, 10) !== asset.confirmedAt
+    ) {
+      fail(`${label}.confirmedAt must be a real calendar date`);
+    } else if (asset.confirmedAt > calendarDateInBangkok()) {
+      fail(`${label}.confirmedAt must not be in the future`);
+    }
+  }
+
+  if (!['none-confirmed', 'recognisable-present'].includes(asset.peopleVisibility ?? '')) {
+    fail(`${label}.peopleVisibility must be explicitly reviewed`);
+  }
+  const expectedPeopleConsent =
+    asset.peopleVisibility === 'recognisable-present' ? 'granted' : 'not-applicable';
+  if (asset.peopleConsent !== expectedPeopleConsent) {
+    fail(`${label}.peopleConsent must be ${expectedPeopleConsent}`);
+  }
+  if (asset.origin === 'licensed' && !hasText(asset.credit)) {
+    fail(`${label}.credit is required for licensed media`);
+  }
+}
+
+for (const [index, asset] of (siteMedia.site?.assets ?? []).entries()) {
+  const label = `site-media.json site.assets[${index}]`;
+  if (!asset.kind || !approvedMediaKinds.has(asset.kind)) {
+    fail(`${label}.kind must be hero, exterior, family or interior`);
+  } else if (mediaKinds.has(asset.kind)) {
+    fail(`${label}.kind duplicates the ${asset.kind} slot`);
+  } else {
+    mediaKinds.add(asset.kind);
+  }
+
+  for (const locale of LOCALES) {
+    if (!hasText(asset.alt?.[locale])) fail(`${label}.alt.${locale} is required`);
+  }
+  validateApprovedMedia(label, asset, ['owner-original', 'licensed']);
+}
+
+for (const fileName of readdirSync(dishesDir).filter((file) => file.endsWith('.json'))) {
+  const dish = JSON.parse(readFileSync(join(dishesDir, fileName), 'utf8')) as {
+    images?: ApprovedMediaAsset[];
+  };
+  for (const [index, image] of (dish.images ?? []).entries()) {
+    validateApprovedMedia(`dishes/${fileName}.images[${index}]`, image, [
+      'owner-original',
+      'licensed',
+      'ai-generated',
+    ]);
+  }
+}
+
+function listUploadFiles(directory: string, relative = ''): string[] {
+  if (!existsSync(directory)) return [];
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const childRelative = relative ? `${relative}/${entry.name}` : entry.name;
+    const childPath = join(directory, entry.name);
+    return entry.isDirectory() ? listUploadFiles(childPath, childRelative) : [childRelative];
+  });
+}
+
+for (const relativePath of listUploadFiles(join(publicDir, 'uploads'))) {
+  if (relativePath === '.gitkeep') continue;
+  const publicPath = `/uploads/${relativePath}`;
+  if (!referencedMediaPaths.has(publicPath)) {
+    fail(
+      `public/uploads/${relativePath}: orphan upload is not referenced by approved site or dish media`,
+    );
+  }
+}
+
 // --- articles: frontmatter + translation sets ------------------------------
 interface ArticleFrontmatter {
   translationKey?: string;
@@ -332,10 +760,7 @@ function parseArticleDate(label: string, field: 'publishedAt' | 'updatedAt', val
   return parsed;
 }
 
-const today = new Date();
-const todayUtc = new Date(
-  Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()),
-);
+const todayBangkok = new Date(`${calendarDateInBangkok()}T00:00:00.000Z`);
 
 const articlesDir = join(contentDir, 'articles');
 const byKey = new Map<string, Map<string, string>>(); // translationKey -> locale -> file
@@ -351,7 +776,7 @@ for (const locale of LOCALES) {
     const publishedAt = parseArticleDate(label, 'publishedAt', fm.publishedAt);
     const updatedAt =
       fm.updatedAt === undefined ? null : parseArticleDate(label, 'updatedAt', fm.updatedAt);
-    if (publishedAt && publishedAt > todayUtc) {
+    if (publishedAt && publishedAt > todayBangkok) {
       fail(`${label}: publishedAt must not be in the future`);
     }
     if (publishedAt && updatedAt && updatedAt < publishedAt) {

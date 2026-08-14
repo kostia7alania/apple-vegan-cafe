@@ -2,7 +2,7 @@
   "category": "mains-share",
   "price_thb": 229,
   "name": {
-    "en": "Vegan Peking Duck",
+    "en": "Vegan Peking duck",
     "th": "เป็ดฮ่องเต้เจ",
     "ru": "Утка по-пекински (веган)"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

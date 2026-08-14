@@ -24,6 +24,11 @@ export function absoluteUrl(site: URL | string, path: string): string {
   return new URL(normalizePath(path), site).href;
 }
 
+/** Absolute URL for a static asset. Unlike route URLs, filenames keep their extension ending. */
+export function absoluteAssetUrl(site: URL | string, path: string): string {
+  return new URL(path, site).href;
+}
+
 /**
  * Alternate URLs for a structural page that exists in all locales
  * (same English slug everywhere): `/menu/` → { en: '/menu/', th: '/th/menu/', ru: '/ru/menu/' }

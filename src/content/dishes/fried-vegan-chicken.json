@@ -2,7 +2,7 @@
   "category": "snacks",
   "price_thb": 149,
   "name": {
-    "en": "Fried  vegan chicken",
+    "en": "Fried vegan chicken",
     "th": "เนื้อไก่เจทอด",
     "ru": "Жареная веган-курица"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

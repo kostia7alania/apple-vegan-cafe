@@ -1,0 +1,12 @@
+{
+  "pattaya": {
+    "paymentMethods": [],
+    "paymentNote": null,
+    "pricePolicy": null,
+    "dietaryQuestionsContact": null,
+    "spiceRequests": null,
+    "halalGuidance": null,
+    "pickup": null,
+    "reservations": null
+  }
+}

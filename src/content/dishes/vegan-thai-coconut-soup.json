@@ -2,7 +2,7 @@
   "category": "mains-share",
   "price_thb": 189,
   "name": {
-    "en": "Vegan thai coconut soup",
+    "en": "Vegan Thai coconut soup",
     "th": "ต้มข่าเจ",
     "ru": "Том кха — тайский кокосовый суп (веган)"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",

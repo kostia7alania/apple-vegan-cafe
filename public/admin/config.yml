@@ -41,104 +41,288 @@ collections:
     slug: '{{fields.name.en | slugify}}'
     summary: '{{fields.name.th}} · {{fields.name.en}} — ฿{{fields.price_thb}}'
     fields:
-      - name: name
-        label: 'ชื่ออาหาร (Name)'
+      - {
+          name: name,
+          label: 'ชื่ออาหาร (Name)',
+          widget: object,
+          fields:
+            [
+              { name: en, label: 'อังกฤษ (English)', widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+            ],
+        }
+      - {
+          name: price_thb,
+          label: 'ราคา บาท (Price, THB)',
+          widget: number,
+          value_type: float,
+          min: 1,
+        }
+      - {
+          name: category,
+          label: 'หมวดหมู่ (Category)',
+          widget: select,
+          options:
+            [
+              { label: 'อาหารจานเดียว (One-plate)', value: one-plate },
+              { label: 'กับข้าว (Mains to share)', value: mains-share },
+              { label: 'ของทานเล่น (Snacks)', value: snacks },
+              { label: 'ฟาสต์ฟู้ด (Pizza & fast food)', value: pizza-fastfood },
+              { label: 'เครื่องดื่ม (Drinks)', value: drinks },
+            ],
+        }
+      - {
+          name: available,
+          label: 'ยังขายอยู่ — ปิด = ซ่อนจากเว็บ (Available)',
+          widget: boolean,
+          default: true,
+        }
+      - {
+          name: featured,
+          label: 'แสดงหน้าแรกและเมนูแนะนำ (Home + quick picks)',
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          name: description,
+          label: 'คำอธิบาย (Description)',
+          widget: object,
+          required: false,
+          fields:
+            [
+              { name: en, label: 'อังกฤษ (English)', widget: text, required: false },
+              { name: th, label: ไทย, widget: text, required: false },
+              { name: ru, label: 'รัสเซีย (Русский)', widget: text, required: false },
+            ],
+        }
+      - {
+          name: slug,
+          label: 'ลิงก์ URL แยกตามภาษา (Slug)',
+          widget: object,
+          fields:
+            [
+              { name: en, label: 'อังกฤษ (English)', widget: string },
+              { name: th, label: ไทย, widget: string },
+              { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+            ],
+        }
+      - {
+          name: images,
+          label: 'รูปอาหารที่อนุมัติสิทธิ์แล้ว (Approved photos — rights required)',
+          widget: list,
+          required: false,
+          summary: '{{fields.src}} — อนุมัติใช้บนเว็บไซต์แล้ว (approved for website)',
+          hint: 'อัปโหลดเฉพาะหลังตรวจรูปตรงกับจาน เจ้าของสิทธิ์ และสิทธิ์เผยแพร่ครบแล้ว หากยังไม่ยืนยันให้เว้นรายการนี้ว่างค่ะ',
+          fields:
+            [
+              { name: src, label: 'ไฟล์รูปหลัก (Fallback image)', widget: image },
+              {
+                name: srcSmall,
+                label: 'รูปขนาด 960px ที่ปรับแล้ว (960w variant)',
+                widget: image,
+                required: false,
+              },
+              {
+                name: srcLarge,
+                label: 'รูปขนาด 1600px ที่ปรับแล้ว (1600w variant)',
+                widget: image,
+                required: false,
+              },
+              {
+                name: width,
+                label: 'ความกว้างจริง พิกเซล (Intrinsic width)',
+                widget: number,
+                value_type: int,
+              },
+              {
+                name: height,
+                label: 'ความสูงจริง พิกเซล (Intrinsic height)',
+                widget: number,
+                value_type: int,
+              },
+              {
+                name: origin,
+                label: 'ที่มาของรูป (Origin)',
+                widget: select,
+                options:
+                  [
+                    { label: 'รูปต้นฉบับของเจ้าของร้าน (Owner original)', value: owner-original },
+                    { label: 'รูปที่มีใบอนุญาต (Licensed)', value: licensed },
+                    { label: 'ภาพที่สร้างด้วย AI (AI-generated)', value: ai-generated },
+                  ],
+              },
+              { name: rightsHolder, label: 'ผู้ถือสิทธิ์ (Rights holder)', widget: string },
+              {
+                name: permission,
+                label: 'สิทธิ์เผยแพร่ — อนุมัติแล้วเท่านั้น (Publication permission)',
+                widget: select,
+                options: [{ label: 'อนุญาตแล้ว (Granted)', value: granted }],
+              },
+              {
+                name: permissionScope,
+                label: 'สิทธิ์ใช้บนเว็บ ครอป และทำหลายขนาด (Website and derivatives)',
+                widget: select,
+                options:
+                  [
+                    {
+                      label: 'ใช้บนเว็บ ครอป และทำหลายขนาดได้ (Website and derivatives)',
+                      value: website-and-derivatives,
+                    },
+                  ],
+              },
+              {
+                name: confirmedBy,
+                label: 'ผู้ยืนยันสิทธิ์ (Permission confirmed by)',
+                widget: string,
+              },
+              {
+                name: confirmedAt,
+                label: 'วันที่ยืนยันสิทธิ์ YYYY-MM-DD (Permission date)',
+                widget: string,
+              },
+              {
+                name: peopleVisibility,
+                label: 'ผลตรวจบุคคลในภาพ — ต้องตรวจทุกภาพ (People review)',
+                widget: select,
+                options:
+                  [
+                    {
+                      label: 'ตรวจแล้ว ไม่มีบุคคลที่ระบุตัวตนได้ (None confirmed)',
+                      value: none-confirmed,
+                    },
+                    {
+                      label: 'มีบุคคลที่ระบุตัวตนได้ (Recognisable people)',
+                      value: recognisable-present,
+                    },
+                  ],
+              },
+              {
+                name: peopleConsent,
+                label: 'ความยินยอมของบุคคลในภาพ (People consent)',
+                widget: select,
+                options:
+                  [
+                    {
+                      label: 'ไม่เกี่ยวข้อง — ตรวจแล้วไม่มีคน (Not applicable)',
+                      value: not-applicable,
+                    },
+                    { label: 'ทุกคนอนุญาตแล้ว (Granted)', value: granted },
+                  ],
+              },
+              {
+                name: credit,
+                label: 'เครดิตบนเว็บ — บังคับสำหรับ licensed (Public credit)',
+                widget: string,
+                required: false,
+              },
+            ],
+        }
+      - name: foodFacts
+        label: 'ข้อมูลอาหารที่ครอบครัวตรวจยืนยันแล้ว (Verified food facts)'
         widget: object
+        hint: 'ตรวจทีละจานจากสูตรและวัตถุดิบจริง ห้ามเดาจากชื่อหรือรูป ช่องว่างไม่แปลว่า allergen-free'
         fields:
-          - { name: en, label: 'อังกฤษ (English)', widget: string }
-          - { name: th, label: 'ไทย', widget: string }
-          - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
-      - name: price_thb
-        label: 'ราคา บาท (Price, THB)'
-        widget: number
-        value_type: float
-        min: 1
-      - name: category
-        label: 'หมวดหมู่ (Category)'
-        widget: select
-        options:
-          - { label: 'อาหารจานเดียว (One-plate)', value: one-plate }
-          - { label: 'กับข้าว (Mains to share)', value: mains-share }
-          - { label: 'ของทานเล่น (Snacks)', value: snacks }
-          - { label: 'ฟาสต์ฟู้ด (Pizza & fast food)', value: pizza-fastfood }
-          - { label: 'เครื่องดื่ม (Drinks)', value: drinks }
-      - name: available
-        label: 'ยังขายอยู่ (Available)'
-        widget: boolean
-        default: true
-        hint: 'ของหมด/พักขาย → ปิดสวิตช์นี้แล้วกด Save จานจะหายจากเว็บ พอมีของค่อยเปิดกลับค่ะ'
-      - name: featured
-        label: 'โชว์หน้าแรก (Show on home page)'
-        widget: boolean
-        default: false
-        required: false
-      - name: description
-        label: 'คำอธิบาย (Description)'
-        widget: object
-        required: false
-        fields:
-          - { name: en, label: 'อังกฤษ (English)', widget: text, required: false }
-          - { name: th, label: 'ไทย', widget: text, required: false }
-          - { name: ru, label: 'รัสเซีย (Русский)', widget: text, required: false }
-      - name: slug
-        label: 'ลิงก์ URL (slug)'
-        widget: object
-        hint: 'เรื่องเทคนิค — ถ้าไม่แน่ใจอย่าแก้ ให้ทักผู้พัฒนาค่ะ'
-        fields:
-          - { name: en, label: 'อังกฤษ (English)', widget: string }
-          - { name: th, label: 'ไทย', widget: string }
-          - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
-      - name: images
-        label: 'รูปภาพ (Photos)'
-        widget: list
-        required: false
-        field: { name: image, label: 'รูป (Image)', widget: image }
-      - name: dietaryTags
-        label: 'แท็กอาหาร (Dietary tags)'
-        widget: select
-        multiple: true
-        default: [vegan]
-        options:
-          - { label: 'วีแกน (vegan)', value: vegan }
-          - { label: 'อาหารเจ (jay)', value: jay }
-          - { label: 'เหมาะกับแขกเชน (jain-friendly)', value: jain-friendly }
-          - { label: 'ไร้กลูเตน (gluten-free)', value: gluten-free }
-          - { label: 'โรว์ฟู้ด (raw)', value: raw }
-          - { label: 'ไม่มีถั่ว (nut-free)', value: nut-free }
-      - name: allergens
-        label: 'สารก่อภูมิแพ้ (Allergens)'
-        widget: select
-        multiple: true
-        required: false
-        options:
-          - { label: 'ถั่วลิสง (peanut)', value: peanut }
-          - { label: 'ถั่วเหลือง (soy)', value: soy }
-          - { label: 'กลูเตน (gluten)', value: gluten }
-      - name: spicyLevel
-        label: 'ระดับความเผ็ด 0–3 (Spicy level)'
-        widget: number
-        value_type: int
-        min: 0
-        max: 3
-        default: 0
-      - name: source
-        label: 'ที่มาของข้อมูล (Data source)'
-        widget: select
-        default: owner
-        options:
-          - { label: 'นำเข้าจากไฟล์ Grab (grab_export)', value: grab_export }
-          - { label: 'เจ้าของร้านบอกเอง (owner)', value: owner }
-          - { label: 'พิมพ์ใหม่จากเมนูกระดาษ (retyped)', value: retyped }
-      - name: reviewedAt
-        label: 'ครอบครัวตรวจแล้วเมื่อ (Reviewed on)'
-        widget: datetime
-        required: false
-        default: ''
-      - name: previousSlugs
-        label: 'slug เก่า — สำหรับ redirect (Previous slugs)'
-        widget: list
-        required: false
-        field: { name: slug, label: slug, widget: string }
+          - {
+              name: spicyLevel,
+              label: 'ระดับความเผ็ดสูตรปกติ — ว่าง = ยังไม่ทราบ, 0–3 = ตรวจแล้ว (Base spicy level)',
+              widget: number,
+              value_type: int,
+              min: 0,
+              max: 3,
+              required: false,
+            }
+          - name: allergens
+            label: 'การตรวจสารก่อภูมิแพ้ที่ระบบรองรับ (Allergen review)'
+            widget: object
+            fields:
+              - {
+                  name: status,
+                  label: 'สถานะ (Status)',
+                  widget: select,
+                  options:
+                    [
+                      { label: 'ยังไม่ตรวจ (Unknown)', value: unknown },
+                      { label: 'ตรวจแล้ว (Verified)', value: verified },
+                    ],
+                  default: unknown,
+                }
+              - {
+                  name: contains,
+                  label: 'สารก่อภูมิแพ้ที่พบ — ว่างไม่ใช่คำรับรอง allergen-free (Contains)',
+                  widget: select,
+                  multiple: true,
+                  required: false,
+                  options:
+                    [
+                      { label: 'ถั่วลิสง (Peanut)', value: peanut },
+                      { label: 'ถั่วเหลือง (Soy)', value: soy },
+                      { label: 'กลูเตน (Gluten)', value: gluten },
+                    ],
+                }
+          - {
+              name: noGlutenIngredients,
+              label: 'สูตรที่ตรวจแล้วไม่มีส่วนผสมที่มีกลูเตน (No gluten ingredients)',
+              widget: select,
+              options:
+                [
+                  { label: 'ยังไม่ทราบ (Unknown)', value: unknown },
+                  { label: 'ใช่ (Yes)', value: yes },
+                  { label: 'ไม่ใช่ (No)', value: no },
+                ],
+              default: unknown,
+            }
+          - {
+              name: jainFriendly,
+              label: 'สูตรปกติเหมาะกับผู้ทาน Jain (Jain-friendly recipe)',
+              widget: select,
+              options:
+                [
+                  { label: 'ยังไม่ทราบ (Unknown)', value: unknown },
+                  { label: 'ใช่ (Yes)', value: yes },
+                  { label: 'ไม่ใช่ (No)', value: no },
+                ],
+              default: unknown,
+            }
+          - {
+              name: verifiedBy,
+              label: 'ผู้ตรวจข้อมูลอาหาร (Verified by)',
+              widget: string,
+              required: false,
+            }
+          - {
+              name: verifiedAt,
+              label: 'วันที่ตรวจข้อมูลอาหาร YYYY-MM-DD (Verified at)',
+              widget: string,
+              required: false,
+            }
+      - {
+          name: source,
+          label: 'ที่มาของข้อมูล (Data source)',
+          widget: select,
+          options:
+            [
+              { label: 'นำเข้าจาก Grab (Grab export)', value: grab_export },
+              { label: 'เจ้าของร้านยืนยัน (Owner)', value: owner },
+              { label: 'พิมพ์จากเมนู (Retyped)', value: retyped },
+            ],
+          default: owner,
+        }
+      - {
+          name: reviewedAt,
+          label: 'วันที่เจ้าของตรวจคำอธิบาย — ไม่ยืนยัน food facts (Owner review date)',
+          widget: datetime,
+          required: false,
+          default: '',
+        }
+      - {
+          name: previousSlugs,
+          label: 'slug เก่า — สำหรับ redirect (Previous slugs)',
+          widget: list,
+          required: false,
+          field: { name: slug, label: 'slug', widget: string },
+        }
 
   - name: articles_en
     label: 'บล็อก — อังกฤษ (Blog EN)'
@@ -146,29 +330,33 @@ collections:
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'รหัสเชื่อมคำแปล (Translation key)'
-        widget: string
-        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - {
+          name: translationKey,
+          label: 'รหัสเชื่อมคำแปล — ใช้รหัสเดียวกันทุกภาษา (Translation key)',
+          widget: string,
+        }
       - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: en }
       - { name: title, label: 'หัวข้อ (Title)', widget: string }
-      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
-      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
-      - name: author
-        label: 'ผู้เขียน (Author)'
-        widget: select
-        default: family
-        options:
-          - { label: 'ครอบครัว (family)', value: family }
-      - name: publishedAt
-        label: 'วันที่เผยแพร่ (Published)'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'ฉบับร่าง (Draft)'
-        widget: boolean
-        default: true
-        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (Meta description)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (Slug)', widget: string }
+      - {
+          name: author,
+          label: 'ผู้เขียน (Author)',
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe — องค์กร (Organization)', value: editorial },
+              { label: 'ครอบครัวร้าน — ใช้หลังอนุมัติเท่านั้น (Family)', value: family },
+            ],
+          default: editorial,
+        }
+      - {
+          name: publishedAt,
+          label: 'วันที่เผยแพร่ (Published)',
+          widget: datetime,
+          format: 'YYYY-MM-DD',
+        }
+      - { name: draft, label: 'ฉบับร่าง (Draft)', widget: boolean, default: true }
       - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: articles_th
@@ -177,29 +365,33 @@ collections:
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'รหัสเชื่อมคำแปล (Translation key)'
-        widget: string
-        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - {
+          name: translationKey,
+          label: 'รหัสเชื่อมคำแปล — ใช้รหัสเดียวกันทุกภาษา (Translation key)',
+          widget: string,
+        }
       - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: th }
       - { name: title, label: 'หัวข้อ (Title)', widget: string }
-      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
-      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
-      - name: author
-        label: 'ผู้เขียน (Author)'
-        widget: select
-        default: family
-        options:
-          - { label: 'ครอบครัว (family)', value: family }
-      - name: publishedAt
-        label: 'วันที่เผยแพร่ (Published)'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'ฉบับร่าง (Draft)'
-        widget: boolean
-        default: true
-        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (Meta description)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (Slug)', widget: string }
+      - {
+          name: author,
+          label: 'ผู้เขียน (Author)',
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe — องค์กร (Organization)', value: editorial },
+              { label: 'ครอบครัวร้าน — ใช้หลังอนุมัติเท่านั้น (Family)', value: family },
+            ],
+          default: editorial,
+        }
+      - {
+          name: publishedAt,
+          label: 'วันที่เผยแพร่ (Published)',
+          widget: datetime,
+          format: 'YYYY-MM-DD',
+        }
+      - { name: draft, label: 'ฉบับร่าง (Draft)', widget: boolean, default: true }
       - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: articles_ru
@@ -208,29 +400,33 @@ collections:
     create: true
     slug: '{{fields.slug}}'
     fields:
-      - name: translationKey
-        label: 'รหัสเชื่อมคำแปล (Translation key)'
-        widget: string
-        hint: 'บทความเรื่องเดียวกันต้องใช้รหัสเดียวกันทุกภาษาค่ะ'
+      - {
+          name: translationKey,
+          label: 'รหัสเชื่อมคำแปล — ใช้รหัสเดียวกันทุกภาษา (Translation key)',
+          widget: string,
+        }
       - { name: locale, label: 'ภาษา (Language)', widget: hidden, default: ru }
       - { name: title, label: 'หัวข้อ (Title)', widget: string }
-      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (meta)', widget: text }
-      - { name: slug, label: 'ลิงก์ URL (slug)', widget: string }
-      - name: author
-        label: 'ผู้เขียน (Author)'
-        widget: select
-        default: family
-        options:
-          - { label: 'ครอบครัว (family)', value: family }
-      - name: publishedAt
-        label: 'วันที่เผยแพร่ (Published)'
-        widget: datetime
-        format: 'YYYY-MM-DD'
-      - name: draft
-        label: 'ฉบับร่าง (Draft)'
-        widget: boolean
-        default: true
-        hint: 'เปิดอยู่ = ยังไม่แสดงบนเว็บ พร้อมเผยแพร่ค่อยปิดค่ะ'
+      - { name: description, label: 'คำโปรยสั้น สำหรับ Google (Meta description)', widget: text }
+      - { name: slug, label: 'ลิงก์ URL (Slug)', widget: string }
+      - {
+          name: author,
+          label: 'ผู้เขียน (Author)',
+          widget: select,
+          options:
+            [
+              { label: 'Apple Vegan Cafe — องค์กร (Organization)', value: editorial },
+              { label: 'ครอบครัวร้าน — ใช้หลังอนุมัติเท่านั้น (Family)', value: family },
+            ],
+          default: editorial,
+        }
+      - {
+          name: publishedAt,
+          label: 'วันที่เผยแพร่ (Published)',
+          widget: datetime,
+          format: 'YYYY-MM-DD',
+        }
+      - { name: draft, label: 'ฉบับร่าง (Draft)', widget: boolean, default: true }
       - { name: body, label: 'เนื้อหา (Text)', widget: markdown }
 
   - name: pages
@@ -261,46 +457,121 @@ collections:
             label: 'ตั้งค่า (Settings)'
             widget: object
             fields:
-              - { name: name, label: 'ชื่อทางการ (Official name)', widget: string }
-              - name: nameLocalized
-                label: 'ชื่อที่แสดงบนเว็บ (Displayed name)'
-                widget: object
-                fields:
-                  - { name: en, label: 'อังกฤษ (English)', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
-              - name: tagline
-                label: 'สโลแกน (Tagline)'
-                widget: object
-                fields:
-                  - { name: en, label: 'อังกฤษ (English)', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
-              - { name: phone, label: 'เบอร์โทร (Phone)', widget: string }
-              - { name: whatsapp, label: 'ลิงก์ WhatsApp', widget: string, required: false }
-              - { name: lineId, label: 'LINE ID', widget: string, required: false }
+              - { name: name, label: 'Official name', widget: string }
+              - {
+                  name: nameLocalized,
+                  label: 'ชื่อที่แสดง (Displayed name)',
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - {
+                  name: tagline,
+                  label: 'คำโปรยร้าน (Tagline)',
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - { name: phone, label: 'โทรศัพท์ (Phone)', widget: string }
+              - {
+                  name: whatsappUrl,
+                  label: 'ลิงก์ WhatsApp แบบเต็ม (Full WhatsApp URL)',
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  name: lineUrl,
+                  label: 'ลิงก์ LINE แบบเต็ม (Full LINE URL)',
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  name: primaryContact,
+                  label: 'ช่องทางติดต่อด่วนหลัก (Primary contact)',
+                  widget: select,
+                  options:
+                    [
+                      { label: 'โทรศัพท์ (Phone)', value: phone },
+                      { label: LINE, value: line },
+                      { label: WhatsApp, value: whatsapp },
+                    ],
+                  default: phone,
+                }
+              - {
+                  name: responseHours,
+                  label: 'เวลาที่ทีมตอบข้อความ (Response hours)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
               - { name: email, label: 'อีเมล (Email)', widget: string, required: false }
-              - name: social
-                label: 'โซเชียลมีเดีย (Social links)'
-                widget: list
-                required: false
-                fields:
-                  - { name: platform, label: 'แพลตฟอร์ม (Platform)', widget: string }
-                  - { name: url, label: 'ลิงก์ (URL)', widget: string }
-              - name: orderingLinks
-                label: 'ลิงก์สั่งอาหาร — Grab ฯลฯ (Ordering links)'
-                widget: list
-                required: false
-                fields:
-                  - { name: provider, label: 'ผู้ให้บริการ (Provider)', widget: string }
-                  - { name: url, label: 'ลิงก์ (URL)', widget: string }
-              - name: reviewLinks
-                label: 'ลิงก์รีวิว (Review links)'
-                widget: object
-                fields:
-                  - { name: google, label: Google, widget: string, required: false }
-                  - { name: happycow, label: HappyCow, widget: string, required: false }
-                  - { name: tripadvisor, label: TripAdvisor, widget: string, required: false }
+              - {
+                  name: social,
+                  label: 'ลิงก์โซเชียล (Social links)',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: platform, label: 'แพลตฟอร์ม (Platform)', widget: string },
+                      { name: url, label: 'ลิงก์ (URL)', widget: string },
+                    ],
+                }
+              - {
+                  name: orderingLinks,
+                  label: 'ลิงก์เดลิเวอรีที่ยืนยันแล้ว (Confirmed delivery links)',
+                  widget: list,
+                  required: false,
+                  summary: '{{fields.provider}}',
+                  fields:
+                    [
+                      {
+                        name: provider,
+                        label: 'ผู้ให้บริการ (Provider)',
+                        widget: select,
+                        options: [GrabFood, 'LINE MAN'],
+                      },
+                      {
+                        name: url,
+                        label: 'ลิงก์ share/สั่งอาหารทางการ (Official order URL)',
+                        widget: string,
+                      },
+                    ],
+                }
+              - {
+                  name: reviewLinks,
+                  label: 'ลิงก์รีวิว (Review links)',
+                  widget: object,
+                  fields:
+                    [
+                      {
+                        name: googleProfile,
+                        label: 'โปรไฟล์ธุรกิจบน Google (Google Business Profile)',
+                        widget: string,
+                        required: false,
+                      },
+                      {
+                        name: googleReview,
+                        label: 'ลิงก์เขียนรีวิว Google โดยตรง (Direct review link)',
+                        widget: string,
+                        required: false,
+                      },
+                      { name: happycow, label: HappyCow, widget: string, required: false },
+                      { name: tripadvisor, label: TripAdvisor, widget: string, required: false },
+                    ],
+                }
       - name: location
         label: 'ที่อยู่และเวลาเปิด-ปิด (Address & opening hours)'
         file: src/content/locations.json
@@ -309,49 +580,499 @@ collections:
             label: 'พัทยา (Pattaya)'
             widget: object
             fields:
-              - name: address
-                label: 'ที่อยู่ (Address)'
-                widget: object
-                fields:
-                  - { name: en, label: 'อังกฤษ (English)', widget: string }
-                  - { name: th, label: 'ไทย', widget: string }
-                  - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
-              - name: geo
-                label: 'พิกัดจากหมุด Google Maps (Coordinates)'
+              - {
+                  name: address,
+                  label: 'ที่อยู่ (Address)',
+                  widget: object,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - {
+                  name: geo,
+                  label: 'พิกัดจากหมุด Google Maps ที่ตรวจแล้ว (Verified coordinates)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: lat, label: 'ละติจูด (Latitude)', widget: number, value_type: float },
+                      {
+                        name: lng,
+                        label: 'ลองจิจูด (Longitude)',
+                        widget: number,
+                        value_type: float,
+                      },
+                    ],
+                }
+              - {
+                  name: mapsUrl,
+                  label: 'ลิงก์ Share จากหมุด Google Maps จริง (Maps link)',
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  name: landmark,
+                  label: 'จุดสังเกตใกล้ร้าน (Nearby landmark)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - {
+                  name: parking,
+                  label: 'คำแนะนำเรื่องที่จอดรถ (Parking)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - {
+                  name: arrivalNote,
+                  label: 'วิธีมาร้าน (Arrival note)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - {
+                  name: hours,
+                  label: 'เวลาเปิด-ปิดหน้าร้านปกติ (Opening hours)',
+                  widget: list,
+                  fields:
+                    [
+                      {
+                        name: days,
+                        label: 'วัน (Days)',
+                        widget: select,
+                        multiple: true,
+                        options:
+                          [
+                            { label: 'จันทร์ (Mon)', value: mon },
+                            { label: 'อังคาร (Tue)', value: tue },
+                            { label: 'พุธ (Wed)', value: wed },
+                            { label: 'พฤหัสบดี (Thu)', value: thu },
+                            { label: 'ศุกร์ (Fri)', value: fri },
+                            { label: 'เสาร์ (Sat)', value: sat },
+                            { label: 'อาทิตย์ (Sun)', value: sun },
+                          ],
+                      },
+                      { name: open, label: 'เปิด HH:MM (Opens)', widget: string },
+                      { name: close, label: 'ปิด HH:MM (Closes)', widget: string },
+                    ],
+                }
+              - {
+                  name: specialHours,
+                  label: 'เวลาพิเศษ/วันหยุด (Special hours)',
+                  widget: list,
+                  required: false,
+                  fields:
+                    [
+                      { name: date, label: 'วันที่ YYYY-MM-DD (Date)', widget: string },
+                      {
+                        name: open,
+                        label: 'เวลาเปิด — ว่าง = ปิดทั้งวัน (Opens)',
+                        widget: string,
+                        required: false,
+                      },
+                      { name: close, label: 'เวลาปิด (Closes)', widget: string, required: false },
+                      { name: note, label: 'หมายเหตุ (Note)', widget: string, required: false },
+                    ],
+                }
+      - name: operations
+        label: 'ข้อมูลบริการของร้าน (Operations)'
+        file: src/content/operations.json
+        fields:
+          - name: pattaya
+            label: 'พัทยา (Pattaya)'
+            widget: object
+            fields:
+              - {
+                  name: paymentMethods,
+                  label: 'วิธีชำระเงินที่ยืนยันแล้ว (Payment methods)',
+                  widget: select,
+                  multiple: true,
+                  required: false,
+                  options:
+                    [
+                      { label: 'เงินสด (Cash)', value: cash },
+                      { label: 'คิวอาร์ไทย (Thai QR)', value: thai-qr },
+                      { label: 'โอนธนาคาร (Bank transfer)', value: bank-transfer },
+                      { label: 'บัตร (Card)', value: card },
+                    ],
+                }
+              - {
+                  name: paymentNote,
+                  label: 'หมายเหตุการชำระเงิน (Payment note)',
+                  widget: object,
+                  required: false,
+                  fields:
+                    [
+                      { name: en, label: 'อังกฤษ (English)', widget: string },
+                      { name: th, label: ไทย, widget: string },
+                      { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                    ],
+                }
+              - name: pricePolicy
+                label: 'นโยบายราคาที่ยืนยัน — เว้นว่างถ้ายังไม่ทราบ (Price policy)'
+                widget: select
+                required: false
+                options:
+                  - {
+                      label: 'ราคาเมนูเดียวกันทุกช่องทาง (Same prices everywhere)',
+                      value: same_everywhere,
+                    }
+                  - {
+                      label: 'ราคาบนเว็บตรงกับหน้าร้าน (Website matches cafe)',
+                      value: website_matches_counter,
+                    }
+                  - {
+                      label: 'ราคาบนเว็บตรงกับ GrabFood (Website matches GrabFood)',
+                      value: website_matches_grab,
+                    }
+                  - {
+                      label: 'ราคาแตกต่างตามช่องทาง (Prices differ by channel)',
+                      value: channels_differ,
+                    }
+              - name: dietaryQuestionsContact
+                label: 'ช่องทางที่ยืนยันสำหรับถามส่วนผสม — เว้นว่างถ้ายังไม่ทราบ (Ingredient questions)'
+                widget: select
+                required: false
+                options:
+                  [
+                    { label: 'โทรศัพท์ (Phone)', value: phone },
+                    { label: LINE, value: line },
+                    { label: WhatsApp, value: whatsapp },
+                  ]
+              - name: spiceRequests
+                label: 'การขอปรับความเผ็ด — เว้นว่างถ้ายังไม่ทราบ (Spice requests)'
                 widget: object
                 required: false
+                hint: 'ถ้ายังไม่ทราบ อย่าสร้างส่วนนี้ ต้องกรอกเฉพาะนโยบายที่ครัวยืนยันแล้ว'
                 fields:
-                  - { name: lat, label: 'ละติจูด (Latitude)', widget: number, value_type: float }
-                  - { name: lng, label: 'ลองจิจูด (Longitude)', widget: number, value_type: float }
-              - { name: mapsUrl, label: 'ลิงก์ Google Maps', widget: string, required: false }
-              - name: hours
-                label: 'เวลาเปิด-ปิด (Opening hours)'
-                widget: list
-                fields:
-                  - name: days
-                    label: 'วัน (Days)'
+                  - name: status
+                    label: 'ลูกค้าขอระดับความเผ็ดได้ไหม? (Spice policy)'
+                    widget: select
+                    options:
+                      - { label: 'ไม่ได้ — ใช้สูตรปกติ (No — standard recipe)', value: not-offered }
+                      - { label: 'ได้ — เฉพาะขอบเขตด้านล่าง (Yes — scoped)', value: offered }
+                  - name: levels
+                    label: 'ระดับที่ครัวยืนยันว่าขอได้ — offered เท่านั้น (Request levels)'
                     widget: select
                     multiple: true
+                    required: false
                     options:
-                      - { label: 'จันทร์ (Mon)', value: mon }
-                      - { label: 'อังคาร (Tue)', value: tue }
-                      - { label: 'พุธ (Wed)', value: wed }
-                      - { label: 'พฤหัสบดี (Thu)', value: thu }
-                      - { label: 'ศุกร์ (Fri)', value: fri }
-                      - { label: 'เสาร์ (Sat)', value: sat }
-                      - { label: 'อาทิตย์ (Sun)', value: sun }
-                  - { name: open, label: 'เปิด (HH:MM)', widget: string }
-                  - { name: close, label: 'ปิด (HH:MM)', widget: string }
-              - name: specialHours
-                label: 'วันพิเศษ/วันหยุด (Special days)'
+                      - { label: 'ไม่เผ็ด (Not spicy)', value: not-spicy }
+                      - { label: 'เผ็ดน้อย (Mild)', value: mild }
+                      - { label: 'เผ็ดกลาง (Medium)', value: medium }
+                      - { label: 'เผ็ดมาก (Hot)', value: hot }
+                  - name: scopeNote
+                    label: 'เมนูและข้อจำกัดจริง — บังคับเมื่อ offered (Scope)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: 'อังกฤษ (English)', widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+                  - { name: verifiedBy, label: 'ผู้ยืนยันนโยบาย (Verified by)', widget: string }
+                  - {
+                      name: verifiedAt,
+                      label: 'วันที่ยืนยันนโยบาย YYYY-MM-DD (Verified at)',
+                      widget: string,
+                    }
+              - name: halalGuidance
+                label: 'ข้อมูลฮาลาล — เว้นว่างถ้ายังไม่ทราบ (Halal guidance)'
+                widget: object
+                required: false
+                hint: 'ถ้ายังไม่ทราบ อย่าสร้างส่วนนี้ ต้องยืนยันใบรับรอง แอลกอฮอล์ และข้อความทั้งหมดพร้อมกัน'
+                fields:
+                  - name: certificationStatus
+                    label: 'สถานะใบรับรองฮาลาล (Certification status)'
+                    widget: select
+                    options:
+                      - {
+                          label: 'ไม่มีใบรับรอง — เจ้าของยืนยันแล้ว (Not certified)',
+                          value: not-certified,
+                        }
+                      - { label: 'มีใบรับรอง — ต้องกรอกรายละเอียด (Certified)', value: certified }
+                  - name: certificationDetail
+                    label: 'ผู้ออก ขอบเขต และเลขอ้างอิง — บังคับเมื่อ certified (Certificate details)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: 'อังกฤษ (English)', widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+                  - name: cookingAlcohol
+                    label: 'การใช้แอลกอฮอล์ในการปรุงอาหาร (Cooking alcohol)'
+                    widget: select
+                    options:
+                      - { label: 'ใช้ในการปรุง (Used)', value: used }
+                      - { label: 'ไม่ใช้ในการปรุง (Not used)', value: not-used }
+                  - name: note
+                    label: 'คำอธิบายที่เจ้าของอนุมัติ — บังคับ (Owner-approved context)'
+                    widget: object
+                    fields:
+                      - { name: en, label: 'อังกฤษ (English)', widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+                  - {
+                      name: verifiedBy,
+                      label: 'ผู้ยืนยันข้อมูลฮาลาล (Verified by)',
+                      widget: string,
+                    }
+                  - {
+                      name: verifiedAt,
+                      label: 'วันที่ยืนยันข้อมูลฮาลาล YYYY-MM-DD (Verified at)',
+                      widget: string,
+                    }
+              - {
+                  name: pickup,
+                  label: 'รับอาหารที่ร้าน — เว้นว่างถ้ายังไม่ทราบ (Pickup)',
+                  widget: object,
+                  required: false,
+                  hint: 'ถ้ายังไม่ทราบ อย่าสร้างส่วนนี้ เปิดรับ pickup ได้เมื่อมีช่องทางสั่งจริงเท่านั้น',
+                  fields:
+                    [
+                      {
+                        name: enabled,
+                        label: 'รับอาหารที่ร้านได้ (Pickup available)',
+                        widget: boolean,
+                      },
+                      {
+                        name: contact,
+                        label: 'ช่องทางสั่ง — บังคับเมื่อเปิดรับ pickup (Order through)',
+                        widget: select,
+                        required: false,
+                        options:
+                          [
+                            { label: 'โทรศัพท์ (Phone)', value: phone },
+                            { label: LINE, value: line },
+                            { label: WhatsApp, value: whatsapp },
+                          ],
+                      },
+                      {
+                        name: leadTime,
+                        label: 'เวลาที่ต้องสั่งล่วงหน้า (Lead time)',
+                        widget: object,
+                        required: false,
+                        fields:
+                          [
+                            { name: en, label: 'อังกฤษ (English)', widget: string },
+                            { name: th, label: ไทย, widget: string },
+                            { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                          ],
+                      },
+                      {
+                        name: priceNote,
+                        label: 'หมายเหตุราคา pickup (Pickup price note)',
+                        widget: object,
+                        required: false,
+                        fields:
+                          [
+                            { name: en, label: 'อังกฤษ (English)', widget: string },
+                            { name: th, label: ไทย, widget: string },
+                            { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                          ],
+                      },
+                    ],
+                }
+              - name: reservations
+                label: 'การจองโต๊ะ — เว้นว่างถ้ายังไม่ทราบ (Reservations)'
+                widget: object
+                required: false
+                hint: 'ถ้ายังไม่ทราบ อย่าสร้างส่วนนี้ สถานะรับจองต้องมีช่องทางติดต่อและเวลาล่วงหน้าครบ'
+                fields:
+                  - name: status
+                    label: 'นโยบายการจอง (Policy)'
+                    widget: select
+                    options:
+                      - { label: 'ไม่รับจอง (Not accepted)', value: not-accepted }
+                      - { label: 'รับจอง (Accepted)', value: accepted }
+                      - { label: 'รับเฉพาะกลุ่มใหญ่ (Large groups only)', value: large-groups-only }
+                  - name: contact
+                    label: 'ช่องทางส่งคำขอจอง — บังคับเมื่อรับจอง (Request through)'
+                    widget: select
+                    required: false
+                    options:
+                      [
+                        { label: 'โทรศัพท์ (Phone)', value: phone },
+                        { label: LINE, value: line },
+                        { label: WhatsApp, value: whatsapp },
+                      ]
+                  - name: minimumPartySize
+                    label: 'จำนวนคนขั้นต่ำ — เฉพาะกลุ่มใหญ่ (Minimum party size)'
+                    widget: number
+                    value_type: int
+                    min: 2
+                    required: false
+                  - name: leadTime
+                    label: 'เวลาที่ต้องแจ้งล่วงหน้า — บังคับเมื่อรับจอง (Lead time)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: 'อังกฤษ (English)', widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+                  - name: note
+                    label: 'หมายเหตุการจอง — ไม่บังคับ (Reservation note)'
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: en, label: 'อังกฤษ (English)', widget: string }
+                      - { name: th, label: ไทย, widget: string }
+                      - { name: ru, label: 'รัสเซีย (Русский)', widget: string }
+      - name: siteMedia
+        label: 'รูปภาพร้านที่อนุมัติสิทธิ์แล้ว (Approved business photos)'
+        file: src/content/site-media.json
+        fields:
+          - name: site
+            label: 'รูปภาพบนเว็บไซต์ (Website photos)'
+            widget: object
+            fields:
+              - name: assets
+                label: 'ช่องรูปภาพ — ประเภทละหนึ่งรูป (Photo slots)'
                 widget: list
                 required: false
+                summary: '{{fields.kind}} — อนุมัติใช้บนเว็บไซต์แล้ว (approved for website)'
+                hint: 'อัปโหลดเฉพาะรูปที่ตรวจสิทธิ์ บุคคลในภาพ และตำแหน่งใช้งานครบแล้วค่ะ'
                 fields:
-                  - { name: date, label: 'วันที่ (YYYY-MM-DD)', widget: string }
-                  - name: open
-                    label: 'เปิด (Opens)'
-                    widget: string
-                    required: false
-                    hint: 'เว้นว่าง = ปิดทั้งวันค่ะ'
-                  - { name: close, label: 'ปิด (Closes)', widget: string, required: false }
-                  - { name: note, label: 'หมายเหตุ (Note)', widget: string, required: false }
+                  - {
+                      name: kind,
+                      label: 'ตำแหน่งใช้งาน (Placement)',
+                      widget: select,
+                      options:
+                        [
+                          { label: 'รูปหลักหน้าแรก (Hero)', value: hero },
+                          { label: 'หน้าร้าน (Exterior)', value: exterior },
+                          { label: 'ครอบครัว (Family)', value: family },
+                          { label: 'ภายในร้าน (Interior)', value: interior },
+                        ],
+                    }
+                  - { name: src, label: 'ไฟล์รูปหลัก (Fallback image)', widget: image }
+                  - {
+                      name: srcSmall,
+                      label: 'รูปขนาด 960px ที่ปรับแล้ว (960w variant)',
+                      widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: srcLarge,
+                      label: 'รูปขนาด 1600px ที่ปรับแล้ว (1600w variant)',
+                      widget: image,
+                      required: false,
+                    }
+                  - {
+                      name: alt,
+                      label: 'ข้อความอธิบายรูป (Alternative text)',
+                      widget: object,
+                      fields:
+                        [
+                          { name: en, label: 'อังกฤษ (English)', widget: string },
+                          { name: th, label: ไทย, widget: string },
+                          { name: ru, label: 'รัสเซีย (Русский)', widget: string },
+                        ],
+                    }
+                  - {
+                      name: width,
+                      label: 'ความกว้างจริง พิกเซล (Intrinsic width)',
+                      widget: number,
+                      value_type: int,
+                    }
+                  - {
+                      name: height,
+                      label: 'ความสูงจริง พิกเซล (Intrinsic height)',
+                      widget: number,
+                      value_type: int,
+                    }
+                  - {
+                      name: origin,
+                      label: 'ที่มาของรูป (Origin)',
+                      widget: select,
+                      options:
+                        [
+                          {
+                            label: 'รูปต้นฉบับของเจ้าของร้าน (Owner original)',
+                            value: owner-original,
+                          },
+                          { label: 'รูปที่มีใบอนุญาต (Licensed)', value: licensed },
+                        ],
+                    }
+                  - { name: rightsHolder, label: 'ผู้ถือสิทธิ์ (Rights holder)', widget: string }
+                  - {
+                      name: permission,
+                      label: 'สิทธิ์เผยแพร่ — อนุมัติแล้วเท่านั้น (Publication permission)',
+                      widget: select,
+                      options: [{ label: 'อนุญาตแล้ว (Granted)', value: granted }],
+                    }
+                  - {
+                      name: permissionScope,
+                      label: 'สิทธิ์ใช้บนเว็บ ครอป และทำหลายขนาด (Website and derivatives)',
+                      widget: select,
+                      options:
+                        [
+                          {
+                            label: 'ใช้บนเว็บ ครอป และทำหลายขนาดได้ (Website and derivatives)',
+                            value: website-and-derivatives,
+                          },
+                        ],
+                    }
+                  - {
+                      name: confirmedBy,
+                      label: 'ผู้ยืนยันสิทธิ์ (Permission confirmed by)',
+                      widget: string,
+                    }
+                  - {
+                      name: confirmedAt,
+                      label: 'วันที่ยืนยันสิทธิ์ YYYY-MM-DD (Permission date)',
+                      widget: string,
+                    }
+                  - {
+                      name: peopleVisibility,
+                      label: 'ผลตรวจบุคคลในภาพ — ต้องตรวจทุกภาพ (People review)',
+                      widget: select,
+                      options:
+                        [
+                          {
+                            label: 'ตรวจแล้ว ไม่มีบุคคลที่ระบุตัวตนได้ (None confirmed)',
+                            value: none-confirmed,
+                          },
+                          {
+                            label: 'มีบุคคลที่ระบุตัวตนได้ (Recognisable people)',
+                            value: recognisable-present,
+                          },
+                        ],
+                    }
+                  - {
+                      name: peopleConsent,
+                      label: 'ความยินยอมของบุคคลในภาพ (People consent)',
+                      widget: select,
+                      options:
+                        [
+                          {
+                            label: 'ไม่เกี่ยวข้อง — ตรวจแล้วไม่มีคน (Not applicable)',
+                            value: not-applicable,
+                          },
+                          { label: 'ทุกคนอนุญาตแล้ว (Granted)', value: granted },
+                        ],
+                    }
+                  - {
+                      name: credit,
+                      label: 'เครดิตบนเว็บ (Public credit)',
+                      widget: string,
+                      required: false,
+                    }

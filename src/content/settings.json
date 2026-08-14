@@ -7,13 +7,15 @@
       "ru": "Apple Vegan Cafe — веган-кафе в Паттайе"
     },
     "tagline": {
-      "en": "Family-run 100% vegan Thai cafe in Pattaya — open from 7:00",
-      "th": "ร้านอาหารเจ 100% ทำโดยครอบครัว เปิด 7:00 น.",
-      "ru": "Семейное 100% веганское тайское кафе в Паттайе — открыто с 7:00"
+      "en": "Family-run 100% vegan Thai cafe in Pattaya",
+      "th": "ร้านอาหารเจ 100% ทำโดยครอบครัวในพัทยา",
+      "ru": "Семейное 100% веганское тайское кафе в Паттайе"
     },
     "phone": "+66 82 679 7797",
-    "whatsapp": null,
-    "lineId": null,
+    "whatsappUrl": null,
+    "lineUrl": null,
+    "primaryContact": "phone",
+    "responseHours": null,
     "email": null,
     "social": [
       {
@@ -28,7 +30,8 @@
       }
     ],
     "reviewLinks": {
-      "google": null,
+      "googleProfile": null,
+      "googleReview": null,
       "happycow": "https://www.happycow.net/reviews/apple-vegan-cafe-and-restaurant-pattaya-386893",
       "tripadvisor": null
     }

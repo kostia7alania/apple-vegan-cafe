@@ -2,7 +2,7 @@
   "category": "mains-share",
   "price_thb": 189,
   "name": {
-    "en": "Vegan chicken Stir-fry with bell peppers",
+    "en": "Vegan chicken stir-fry with bell peppers",
     "th": "ไก่เจผัดพริกหวาน",
     "ru": "Веган-курица, жаренная с болгарским перцем"
   },
@@ -14,8 +14,17 @@
   "previousSlugs": [],
   "images": [],
   "dietaryTags": ["vegan", "jay"],
-  "allergens": [],
-  "spicyLevel": 0,
+  "foodFacts": {
+    "spicyLevel": null,
+    "allergens": {
+      "status": "unknown",
+      "contains": []
+    },
+    "noGlutenIngredients": "unknown",
+    "jainFriendly": "unknown",
+    "verifiedBy": null,
+    "verifiedAt": null
+  },
   "available": true,
   "featured": false,
   "source": "grab_export",
