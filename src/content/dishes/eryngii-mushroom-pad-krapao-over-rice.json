@@ -12,7 +12,21 @@
     "ru": "eryngii-mushroom-pad-krapao-over-rice"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2025030509292308007/photos/menueditor_item_27b42a1704354893ae0e514acf8b16c6_1741166914183125892.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2025030509292308007/detail/menueditor_item_27b42a1704354893ae0e514acf8b16c6_1741166914183125892.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 529,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2025030509292308007",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -33,5 +47,6 @@
     "en": "Holy-basil stir-fry of meaty eryngii mushrooms, served over rice.",
     "th": "ผัดกะเพราเห็ดออรินจิเนื้อแน่น เสิร์ฟพร้อมข้าวสวย",
     "ru": "Мясистые грибы эринги, обжаренные со священным базиликом, подаются с рисом."
-  }
+  },
+  "grabDietaryPreference": "vegan"
 }

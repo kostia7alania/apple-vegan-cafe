@@ -12,7 +12,21 @@
     "ru": "vegan-pad-thai"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026052802415248134/photos/menueditor_item_a58aa32279234a20bf8945d82ea9ea3b_1779935982066332397.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026052802415248134/detail/menueditor_item_a58aa32279234a20bf8945d82ea9ea3b_1779935982066332397.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026052802415248134",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -33,5 +47,6 @@
     "en": "Thailand's classic noodle stir-fry, fully plant-based — tamarind tang, no fish sauce.",
     "th": "ผัดไทยเจสูตรครอบครัว รสมะขามกลมกล่อม ไม่ใส่น้ำปลา",
     "ru": "Классическая тайская жареная лапша, полностью растительная: тамариндовая кислинка, без рыбного соуса."
-  }
+  },
+  "grabDietaryPreference": "vegan"
 }

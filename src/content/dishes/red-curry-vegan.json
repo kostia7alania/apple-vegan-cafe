@@ -12,7 +12,21 @@
     "ru": "red-curry-vegan"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026052903335480726/photos/menueditor_item_e3744690825547ffb21868fa5f409504_1780025549814741861.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026052903335480726/detail/menueditor_item_e3744690825547ffb21868fa5f409504_1780025549814741861.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026052903335480726",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -33,5 +47,6 @@
     "en": "Fragrant Thai red curry simmered in coconut milk — our plant-based take on the classic.",
     "th": "แกงเผ็ดเจกะทิหอม ๆ ตำรับบ้านเรา",
     "ru": "Ароматный тайский красный карри на кокосовом молоке — наша растительная версия классики."
-  }
+  },
+  "grabDietaryPreference": "vegan"
 }

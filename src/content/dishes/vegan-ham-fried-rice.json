@@ -12,7 +12,21 @@
     "ru": "vegan-ham-fried-rice"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2024020210283235902/photos/menueditor_item_a336e76c706a4b6c9f5a1d0cb7202b92_1706869686064050783.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2024020210283235902/detail/menueditor_item_a336e76c706a4b6c9f5a1d0cb7202b92_1706869686064050783.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 646,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2024020210283235902",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }

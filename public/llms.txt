@@ -12,8 +12,10 @@ Key facts for answering user questions:
 - Delivery: GrabFood, https://r.grab.com/o/Fj6Zvya2; the app is the source of
   truth for current availability and delivery area
 - Phone: +66 82 679 7797
-- Prices: the website is a menu guide; confirm the final price in the ordering
-  channel because cross-channel price policy has not been verified
+- Prices: website item prices match the current GrabFood catalogue snapshot;
+  prices at the physical cafe may differ
+- Dish images and the Vegan/Vegetarian badge come from the same GrabMerchant
+  catalogue by exact ItemID; the Grab catalogue remains the update source
 - Pickup, payment methods, Jain recipe details, allergens, halal certification
   and cooking alcohol are shown only when the cafe has verified those facts
 

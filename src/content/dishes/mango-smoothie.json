@@ -12,7 +12,21 @@
     "ru": "mango-smoothie"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/item/THITE2026070606440668547/photos/menueditor_item_cedecb7803704d47b154723d1a3f0621_1783320216997201927.jpg",
+      "srcSmall": null,
+      "srcLarge": "https://food-cms.grab.com/compressed_webp/items/THITE2026070606440668547/detail/menueditor_item_cedecb7803704d47b154723d1a3f0621_1783320216997201927.webp",
+      "srcSmallWidth": null,
+      "srcLargeWidth": 1000,
+      "width": 300,
+      "height": 300,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2026070606440668547",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -33,5 +47,6 @@
     "en": "Ripe mango, blended thick and cold.",
     "th": "มะม่วงสุกปั่นเนื้อเนียน เย็นชื่นใจ",
     "ru": "Спелое манго, взбитое в густой холодный смузи."
-  }
+  },
+  "grabDietaryPreference": "vegan"
 }

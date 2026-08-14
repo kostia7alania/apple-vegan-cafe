@@ -12,7 +12,21 @@
     "ru": "fried-banana-fritters"
   },
   "previousSlugs": [],
-  "images": [],
+  "images": [
+    {
+      "src": "https://food-cms.grab.com/compressed_webp/items/THITE2023111408071345816/detail/menueditor_item_48fc7228e24b493aa1a4009f64d4f626_1699949191785570127.webp",
+      "srcSmall": null,
+      "srcLarge": null,
+      "srcSmallWidth": null,
+      "srcLargeWidth": null,
+      "width": 185,
+      "height": 185,
+      "origin": "grab-merchant-catalogue",
+      "grabItemId": "THITE2023111408071345816",
+      "capturedAt": "2026-08-14",
+      "credit": null
+    }
+  ],
   "dietaryTags": ["vegan", "jay"],
   "foodFacts": {
     "spicyLevel": null,
@@ -28,5 +42,6 @@
   "available": true,
   "featured": false,
   "source": "grab_export",
-  "reviewedAt": null
+  "reviewedAt": null,
+  "grabDietaryPreference": "vegan"
 }
