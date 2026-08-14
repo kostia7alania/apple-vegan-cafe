@@ -1,68 +1,93 @@
-# Ре-синк меню из Grab (квартальный)
+# Периодический ре-синк меню из Grab
 
-Источник истины по составу меню и ценам доставки — каталог хозяйки в GrabMerchant.
-Скрейпить food.grab.com **нельзя** (ToS Cl. 3.1.11/3.1.12); единственный законный
-источник — экспорт, который хозяйка делает сама.
+Источник истины для каталога сайта — owner-maintained GrabMerchant: ItemID, название,
+категория, цена Grab, permanent availability, изображения и структурированные атрибуты Grab.
+Сайт не угадывает эти поля и не сопоставляет блюда по названию.
 
-## Как хозяйка делает экспорт
+## 1. CSV: состав каталога, цены и статусы
 
-GrabMerchant (портал merchant.grab.com, не приложение) → Menu → **Bulk Update** →
-Download. Получается zip с CSV (`*ItemID,*ItemName,*Price,*CategoryName,…`).
-Пошаговая инструкция на тайском — в `HANDOVER-th.md`, §8.
-
-## Как восстановить изображения, которых больше нет у семьи
-
-Excel/CSV не содержит фотографий. Для разового recovery используется отдельный fail-closed
-коннектор, который принимает только скопированный JSON response каталога из авторизованного
-GrabMerchant, официальный Partner API menu payload или Chrome `Export HAR (sanitized)`:
+GrabMerchant → Menu → **Bulk Update** → Download. Получается zip с CSV
+(`*ItemID,*ItemName,*Price,*CategoryName,…`). Сырой owner export не коммитится.
 
 ```bash
-pnpm grab:photos -- --input /private/tmp/grab-menu-response.json --provenance ai-generated
+pnpm import:menu -- --input /path/to/grab-bulk-update.csv
+pnpm import:menu -- --input /path/to/grab-bulk-update.csv --write
 ```
 
-Dry-run сопоставляет `categories[].items[].id` с `scripts/data/grab-item-map.json`, показывает
-точные image hosts и не пишет файлы. Скачивание требует `--write`, новый staging-путь вне repo и
-отдельный `--allow-host` для каждого обнаруженного host. Пароли, OTP, cookies и Authorization в
-коннектор не передаются; HAR с такими полями отклоняется.
+Импортёр сначала валидирует весь файл и только потом пишет. Identity — исключительно
+`scripts/data/grab-item-map.json`. Для известных ItemID он обновляет цену, category и permanent
+availability; `UNAVAILABLE_TODAY` остаётся временным статусом канала и не удаляет блюдо с сайта.
+Новый ItemID останавливает импорт до создания dish JSON и точного ItemID→file mapping.
 
-Восстановленные изображения остаются в private staging с SHA-256, MIME, размерами и ItemID.
-Поскольку текущие изображения были сгенерированы в ChatGPT, они маркируются `ai-generated` и не
-выдаются за реальные фотографии поданных блюд. Публикация — отдельный gate: хозяйка визуально
-подтверждает соответствие каждого ItemID и явно разрешает website/crops. До этого ни исходник,
-ни crop, ни `permission: granted` не попадают в dish JSON, `public/` или Git.
+## 2. API JSON: изображения и Grab-бейджи
 
-## Как обновить сайт по свежему CSV
+CSV не содержит фотографий. Owner-authenticated GrabMerchant menu response содержит для каждой
+позиции `imageURL` (обычно 300px), `webPURL` detail (до 1000px) и enabled attributes.
 
-1. Dry-run прямо на owner export (сырой файл не коммитить):
+Dry-run по сохранённому приватному payload и recovery manifests:
 
-   ```bash
-   pnpm import:menu -- --input /path/to/grab-bulk-update.csv
-   ```
+```bash
+node --import tsx scripts/sync-grab-menu-media.ts \
+  --input /private/tmp/grab-full-menu.json \
+  --captured-at YYYY-MM-DD \
+  --manifest /private/path/card-images/manifest.json \
+  --manifest /private/path/detail-images/manifest.json
+```
 
-2. Скрипт валидирует весь файл до записи и сопоставляет строки **только** через
-   `scripts/data/grab-item-map.json`. Для известных ItemID он меняет только `price_thb`, category
-   и permanent availability, сохраняя RU/EN/TH names, slugs, descriptions, media, featured и
-   verified food facts. `UNAVAILABLE_TODAY` — no-op; отсутствующий в export mapped ItemID только
-   попадает в отчёт и никогда не удаляется автоматически.
-3. Новый/unmapped ItemID останавливает импорт без записи. Сначала вручную создать dish JSON,
-   проверить EN/TH/RU names/slugs/category и добавить exact ItemID→file mapping; затем повторить
-   dry-run. Display name никогда не используется как identity.
-4. После review плана применить его:
+Если manifest с измеренными размерами отсутствует, скрипт может безопасно измерить публичные
+`food-cms.grab.com` assets без сохранения байтов:
 
-   ```bash
-   pnpm import:menu -- --input /path/to/grab-bulk-update.csv --write
-   pnpm validate:content && pnpm build
-   ```
+```bash
+node --import tsx scripts/sync-grab-menu-media.ts \
+  --input /private/tmp/grab-full-menu.json \
+  --captured-at YYYY-MM-DD \
+  --fetch-metadata \
+  --write
+```
 
-## Текущее состояние каталога (2026-08-14)
+Скрипт:
 
-- В Grab два одинаковых «Спагетти с грибным соусом» ฿199 (`THITE…09904`, `THITE…95416`) —
-  вопрос хозяйке в BACKLOG B8; на сайте пока оба.
-- В свежем owner export 144 доступные позиции. Три current-active позиции, которых не было на
-  предыдущем сайте, добавлены по точным ItemID: Vegan spring rolls, Mushroom naem и Vegan Luuk
-  Chuey.
-- Для этих трёх ItemID GrabMerchant отдал detail WebP 1000×1000. Recovery и crops сохранены в
-  private staging как `ai-generated`; сайт пока оставляет `images: []` до визуального owner-check
-  и отдельного разрешения на публикацию.
-- Политика соответствия цен сайта, Grab и кафе ещё не подтверждена владельцем (см. B8 и
-  `operations.pricePolicy`).
+- принимает только HTTPS URL exact host `food-cms.grab.com`, без credentials/query/port;
+- связывает фото только по ItemID и отклоняет missing/unmapped/duplicate identity;
+- измеряет реальный MIME/dimensions, не апскейлит и не кладёт image bytes в Git;
+- сохраняет все полезные responsive candidates в `srcset`: карточку и detail;
+- строит и валидирует полный план до записи, затем заменяет прошлый Grab snapshot, сохраняя
+  отдельные local/licensed images после него;
+- переносит enabled `Dietary preferences` из Grab. Другие слова, уже встроенные в макет картинки,
+  остаются видимыми в самой картинке; сайт не придумывает отсутствующие API-бейджи.
+
+После применения:
+
+```bash
+pnpm validate:content
+pnpm check
+pnpm build
+```
+
+## 3. Текущее состояние (snapshot 2026-08-14)
+
+- 144 Grab ItemID ↔ 144 dish JSON; у каждой позиции есть один Grab catalogue image.
+- 134 detail WebP имеют 1000×1000; остальные сохраняют реальные меньшие размеры, минимум 185×185.
+- 143 позиции имеют Grab attribute `Vegan`; Crispy breaded vegan chicken
+  (`THITE2026052809382226355`) в Grab размечен как `Vegetarian`, и сайт показывает именно этот
+  Grab-бейдж до исправления в GrabMerchant.
+- Все 144 позиции в snapshot имеют одинаковую item price для Grab service types `Delivery`,
+  `DineIn` и `SelfPickUp`. Поэтому сайт теперь подтверждает только совпадение своих item prices с
+  GrabFood; фактическая цена у стойки вне Grab всё ещё может отличаться.
+- В payload нет отдельных полей `Just try`, `Popular`, `Bestseller` или `Signature`. Розовый/жёлтый
+  персонаж и подписи `100% vegan`, `plant based`, `no MSG`, `good for health` являются частью
+  самих catalogue images и публикуются один в один вместе с ними.
+- В Grab остаются два одинаковых Spaghetti with mushroom sauce по ฿199
+  (`THITE2026052809421809904` и `THITE2026052906235195416`); сайт сохраняет оба, пока один ItemID
+  не будет отключён/удалён в самом Grab.
+
+## 4. Где лежат картинки
+
+Сейчас публичные dish JSON содержат прямые responsive URL официального Grab CDN. Поэтому репозиторий
+не растёт на десятки мегабайт, а браузер выбирает 300px или detail-кандидат по реальному размеру
+карточки и DPR.
+
+Cloudflare R2 остаётся запасным зеркалом, если Grab CDN URLs начнут дрейфовать: bucket на custom
+domain даст Cloudflare Cache и не потребует хранить bytes в Git. Для включения нужен отдельный
+авторизованный Cloudflare session/token; текущий локальный Wrangler не авторизован. До этого
+owner-maintained Grab CDN лучше соответствует принятому source-of-truth контракту.

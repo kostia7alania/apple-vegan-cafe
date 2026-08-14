@@ -82,10 +82,15 @@ changes, `.github/FUNDING.yml` is where they will appear.
 - **Current catalogue**: 144 dishes as of the owner's 2026-08-14 GrabMerchant
   export. Three current-active items absent from the previous site were
   reconciled by exact Grab `ItemID`, not by display name.
+- **Dish media**: all 144 catalogue cards use the current GrabMerchant image
+  URLs with measured responsive candidates (card + detail, up to 1000px).
+  Image bytes stay out of Git; the browser chooses the candidate via
+  `srcset`/`sizes`.
 - **Menu import**: `pnpm import:menu -- --input menu.csv [--write]` — the only
   permitted source is the **owner's own GrabMerchant Bulk Update export**.
-  Scraping food.grab.com violates Grab's ToS and is deliberately not
-  implemented. Quarterly re-syncs: [docs/grab-resync.md](docs/grab-resync.md).
+  Images and Grab attributes are reconciled from the owner-authenticated
+  GrabMerchant menu payload. Periodic re-syncs:
+  [docs/grab-resync.md](docs/grab-resync.md).
 - **Grab identity map**: `scripts/data/grab-item-map.json` maps each Grab
   `ItemID` to its dish file so renames and slug changes do not break identity.
 - **SEO rules**: reciprocal hreflang in `<head>` only, self-canonicals, one
