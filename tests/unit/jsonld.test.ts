@@ -59,7 +59,13 @@ describe('buildMenu', () => {
       {
         name: 'อาหารจานเดียว',
         items: [
-          { name: 'ผัดไทยเจ', price: 149, description: 'ไม่ใส่น้ำปลา' },
+          {
+            name: 'ผัดไทยเจ',
+            price: 149,
+            description: 'ไม่ใส่น้ำปลา',
+            url: 'https://apple-vegan-cafe.com/th/menu/#pad-thai-jay',
+            suitableForDiet: 'https://schema.org/VeganDiet',
+          },
           { name: 'ข้าวสวย', price: 40 },
         ],
       },
@@ -86,6 +92,14 @@ describe('buildMenu', () => {
   it('omits description when a dish has none', () => {
     expect(sections[0]!.hasMenuItem[0]).toHaveProperty('description');
     expect(sections[0]!.hasMenuItem[1]).not.toHaveProperty('description');
+  });
+
+  it('emits the exact dish URL and restaurant-owned vegan classification when supplied', () => {
+    expect(sections[0]!.hasMenuItem[0]).toMatchObject({
+      url: 'https://apple-vegan-cafe.com/th/menu/#pad-thai-jay',
+      suitableForDiet: 'https://schema.org/VeganDiet',
+    });
+    expect(sections[0]!.hasMenuItem[1]).not.toHaveProperty('suitableForDiet');
   });
 
   it('never smuggles rating markup into the menu', () => {

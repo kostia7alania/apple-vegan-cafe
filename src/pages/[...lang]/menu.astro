@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
 import LeafDivider from '../../components/LeafDivider.astro';
 import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
-import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { localeStaticPaths, LOCALES, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
 import { buildBreadcrumb, buildMenu } from '../../lib/jsonld';
 import { t, type UiKey } from '../../lib/ui';
@@ -19,12 +19,6 @@ interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-
-// small visual anchors for cross-cultural guests (เจ has its own JayBadge)
-const TAG_ICONS: Partial<Record<string, string>> = {
-  vegan: '🌱',
-  vegetarian: '🌿',
-};
 
 const [settings] = (await getCollection('settings')).map((e) => e.data);
 const [operations] = (await getCollection('operations')).map((e) => e.data);
@@ -72,13 +66,34 @@ const spiceRequestText =
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
 // The owner's "stop list": unavailable dishes disappear from the menu entirely.
 const dishes = await getCollection('dishes', ({ data }) => data.available);
-const featuredDishes = dishes.filter(({ data }) => data.featured);
+// A balanced, demand-informed menu starter set. Keep it local to this discovery surface so the
+// homepage's editorial features remain an independent decision.
+const MENU_QUICK_PICK_IDS = [
+  'vegan-hamburger',
+  'crispy-breaded-vegan-chicken',
+  'stir-fried-mixed-vegetables',
+  'hawaiian-pizza-vegan',
+];
+const featuredDishes = MENU_QUICK_PICK_IDS.flatMap((id) => {
+  const dish = dishes.find((entry) => entry.id === id);
+  return dish ? [dish] : [];
+});
 const allergens = await getCollection('allergens');
 const allergenName = (id: string) => allergens.find((a) => a.id === id)?.data.name[locale] ?? id;
-const displayDietaryTags = (dish: (typeof dishes)[number]['data']) => [
-  dish.grabDietaryPreference ?? 'vegan',
-  ...dish.dietaryTags.filter((tag) => tag === 'jay'),
-];
+// Grab's catalogue attribute is retained for reconciliation, but it must not override the
+// cafe-owned dietary contract. One Grab item is currently mislabelled Vegetarian; every public
+// dish record is explicitly vegan + jay, so cards show the less repetitive jay mark only.
+const displayDietaryTags = (dish: (typeof dishes)[number]['data']) =>
+  dish.dietaryTags.filter((tag) => tag === 'jay');
+const largestImageCandidate = (asset: (typeof dishes)[number]['data']['images'][number]) => {
+  const width = asset.srcLargeWidth ?? asset.srcSmallWidth ?? asset.width;
+  const src = asset.srcLarge ?? asset.srcSmall ?? asset.src;
+  return {
+    src,
+    width,
+    height: Math.max(1, Math.round((asset.height / asset.width) * width)),
+  };
+};
 const searchIndex = (dish: (typeof dishes)[number]['data'], categoryName: string) => {
   const description = getPublicDishDescription(dish);
   return [
@@ -89,7 +104,9 @@ const searchIndex = (dish: (typeof dishes)[number]['data'], categoryName: string
     description?.th,
     description?.ru,
     categoryName,
-    ...displayDietaryTags(dish).map((tag) => t(locale, `tag.${tag}` as UiKey)),
+    ...dish.dietaryTags.flatMap((tag) =>
+      LOCALES.map((tagLocale) => t(tagLocale, `tag.${tag}` as UiKey)),
+    ),
     ...(dish.foodFacts.allergens.status === 'verified'
       ? dish.foodFacts.allergens.contains.map((allergen) => allergenName(allergen.id))
       : []),
@@ -115,16 +132,17 @@ if (dishes.some(({ data }) => data.foodFacts.jainFriendly === 'yes')) {
 
 const alternates = structuralAlternates('/menu/');
 const site = Astro.site!;
+const menuPageUrl = absoluteUrl(site, localePath(locale, '/menu/'));
 
 const title = {
-  en: 'Menu & prices — Apple Vegan Cafe Pattaya',
-  th: 'เมนูและราคา — ร้านอาหารเจ คาเฟ่เจ พัทยา',
-  ru: 'Меню и цены — Apple Vegan Cafe, Паттайя',
+  en: 'Vegan menu & prices in Pattaya — Apple Vegan Cafe',
+  th: 'เมนูอาหารเจ วีแกน และราคา พัทยา — Apple Vegan Cafe',
+  ru: 'Веганское меню и цены в Паттайе — Apple Vegan Cafe',
 }[locale];
 const description = {
-  en: 'Full menu of Apple Vegan Cafe & Restaurant in Pattaya with prices in Thai Baht. 100% vegan Thai and Western dishes, updated by the family.',
-  th: 'เมนูทั้งหมดของร้านอาหารเจ คาเฟ่เจ พัทยา พร้อมราคา อัปเดตโดยครอบครัว',
-  ru: 'Полное меню Apple Vegan Cafe в Паттайе с ценами в батах. 100% веганские тайские и европейские блюда.',
+  en: `Browse ${dishes.length} vegan and jay dishes with photos and prices in Thai Baht: Thai food, Western favourites, snacks and drinks in Pattaya.`,
+  th: `ดูเมนูวีแกนและอาหารเจ ${dishes.length} รายการ พร้อมรูปและราคา มีทั้งอาหารไทย อาหารตะวันตก ของทานเล่น และเครื่องดื่มในพัทยา`,
+  ru: `В меню ${dishes.length} блюда: все веганские и джей, с фото и ценами в батах. Тайская и европейская кухня, закуски и напитки в Паттайе.`,
 }[locale];
 
 const jsonld = [
@@ -133,7 +151,7 @@ const jsonld = [
     { name: t(locale, 'nav.menu'), url: absoluteUrl(site, localePath(locale, '/menu/')) },
   ]),
   buildMenu({
-    url: absoluteUrl(site, localePath(locale, '/menu/')),
+    url: menuPageUrl,
     locale,
     sections: nonEmptyCategories.map((category) => ({
       name: category.data.name[locale],
@@ -143,6 +161,8 @@ const jsonld = [
           name: dish.name[locale],
           price: dish.price_thb,
           description: getPublicDishDescription(dish, locale),
+          url: new URL(`#${dish.slug[locale]}`, menuPageUrl).href,
+          suitableForDiet: 'https://schema.org/VeganDiet',
         })),
     })),
   }),
@@ -197,44 +217,53 @@ const jsonld = [
     </p>
   </aside>
 
-  <aside class="wrap pb-6" aria-label={t(locale, 'menu.plantNamesNote')}>
-    <p
-      class="mx-auto flex max-w-2xl items-start gap-3 rounded-lg border border-leaf-700/20 bg-leaf-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
-    >
-      <span aria-hidden="true">🌱</span>
-      <span>{t(locale, 'menu.plantNamesNote')}</span>
-    </p>
-  </aside>
-
   <aside class="wrap pb-6" aria-label={t(locale, 'menu.dietGuidance')}>
-    <p
-      id={`diet-facts-note-${locale}`}
-      class="mx-auto max-w-2xl rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
+    <div
+      class="mx-auto grid max-w-2xl gap-2 rounded-lg border border-leaf-700/20 bg-leaf-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
     >
-      {t(locale, 'menu.dietFactsNote')}{' '}
-      <a
-        href={`${localePath(locale, '/faq/')}#cross-contact`}
-        class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
-      >
-        {t(locale, 'menu.dietGuidance')} →
-      </a>
-      {
-        dietaryContactHref && (
-          <span class="mt-2 block">
-            {t(locale, 'operations.dietaryPrompt')}{' '}
-            <a
-              href={dietaryContactHref}
-              rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
-              data-analytics-event="dietary_contact_click"
-              data-analytics-provider={dietaryContact}
-              class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+      <p class="flex items-start gap-3">
+        <span aria-hidden="true">🌱</span>
+        <span>
+          <strong class="font-bold text-leaf-900">{t(locale, 'menu.allVeganJay')}</strong>{' '}
+          {t(locale, 'menu.plantNamesNote')}
+          <details class="mt-1.5">
+            <summary
+              class="cursor-pointer font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 marker:text-mango-600 hover:text-leaf-900"
             >
-              {dietaryContactLabel} →
-            </a>
-          </span>
-        )
-      }
-    </p>
+              {t(locale, 'menu.jayMeaningAction')}
+            </summary>
+            <p class="mt-1.5 border-l-2 border-mango-500/70 pl-3 text-ink-600">
+              {t(locale, 'menu.jayMeaning')}
+            </p>
+          </details>
+        </span>
+      </p>
+      <p id={`diet-facts-note-${locale}`} class="border-t border-leaf-700/15 pt-2">
+        {t(locale, 'menu.dietFactsNote')}{' '}
+        <a
+          href={`${localePath(locale, '/faq/')}#cross-contact`}
+          class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+        >
+          {t(locale, 'menu.dietGuidance')} →
+        </a>
+        {
+          dietaryContactHref && (
+            <span class="mt-2 block">
+              {t(locale, 'operations.dietaryPrompt')}{' '}
+              <a
+                href={dietaryContactHref}
+                rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
+                data-analytics-event="dietary_contact_click"
+                data-analytics-provider={dietaryContact}
+                class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+              >
+                {dietaryContactLabel} →
+              </a>
+            </span>
+          )
+        }
+      </p>
+    </div>
   </aside>
 
   {
@@ -249,48 +278,15 @@ const jsonld = [
     )
   }
 
-  {
-    featuredDishes.length > 0 && (
-      <section data-menu-quick-picks class="wrap pb-7" aria-labelledby={`quick-picks-${locale}`}>
-        <div class="flex flex-wrap items-end justify-between gap-x-5 gap-y-1">
-          <h2 id={`quick-picks-${locale}`} class="text-xl font-black text-leaf-900 sm:text-2xl">
-            {t(locale, 'menu.quickPicks')}
-          </h2>
-          <p class="text-sm text-ink-500">{t(locale, 'menu.quickPicksHint')}</p>
-        </div>
-        <ul class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {featuredDishes.map(({ data: dish }) => (
-            <li data-menu-quick-pick data-menu-quick-pick-target={dish.slug[locale]}>
-              <a
-                href={`#${dish.slug[locale]}`}
-                class="group flex h-full min-h-24 flex-col rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/40 hover:bg-leaf-50"
-              >
-                <span class="text-[11px] font-bold tracking-wide text-terracotta-700 uppercase">
-                  {categories.find(({ id }) => id === dish.category.id)?.data.name[locale]}
-                </span>
-                <span class="mt-1 leading-snug font-extrabold text-ink-900 group-hover:text-leaf-800">
-                  {dish.name[locale]}
-                </span>
-                <span class="mt-auto pt-2 text-sm font-bold text-leaf-700 tabular-nums">
-                  ฿{dish.price_thb} ↓
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
-
-  <div
+  <search
+    id="menu-search"
     data-menu-search
     data-results-template={t(locale, 'menu.resultsCount')}
     hidden
-    class="wrap pb-6"
+    class="wrap scroll-mt-44 pb-7"
   >
     <form
       data-menu-search-form
-      role="search"
       action={localePath(locale, '/menu/')}
       method="get"
       class="mx-auto max-w-2xl rounded-lg border border-cream-300 bg-cream-50 p-4 shadow-[0_12px_30px_-24px_rgba(38,34,27,0.35)] sm:p-5"
@@ -298,7 +294,7 @@ const jsonld = [
       <label for={`menu-search-${locale}`} class="block font-bold text-leaf-900">
         {t(locale, 'menu.searchLabel')}
       </label>
-      <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+      <div class="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
         <input
           id={`menu-search-${locale}`}
           data-menu-search-input
@@ -312,7 +308,7 @@ const jsonld = [
         />
         <button
           type="submit"
-          class="min-h-12 rounded-lg bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+          class="min-h-12 rounded-lg bg-leaf-700 px-4 font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-6"
         >
           {t(locale, 'menu.searchAction')}
         </button>
@@ -386,31 +382,122 @@ const jsonld = [
       >
       </p>
     </form>
-  </div>
+  </search>
+
+  {
+    featuredDishes.length > 0 && (
+      <section data-menu-quick-picks class="wrap pb-7" aria-labelledby={`quick-picks-${locale}`}>
+        <div class="flex flex-wrap items-end justify-between gap-x-5 gap-y-1">
+          <h2 id={`quick-picks-${locale}`} class="text-xl font-black text-leaf-900 sm:text-2xl">
+            {t(locale, 'menu.quickPicks')}
+          </h2>
+          <p class="text-sm text-ink-500">{t(locale, 'menu.quickPicksHint')}</p>
+        </div>
+        <ul class="scrollbar-none -mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
+          {featuredDishes.map(({ data: dish }) => (
+            <li
+              data-menu-quick-pick
+              data-menu-quick-pick-target={dish.slug[locale]}
+              class="w-[17rem] shrink-0 snap-start sm:w-auto"
+            >
+              <a
+                href={`#${dish.slug[locale]}`}
+                class:list={[
+                  'group grid h-full min-h-28 items-center gap-3 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/40 hover:bg-leaf-50',
+                  dish.images[0] ? 'grid-cols-[minmax(0,1fr)_4.5rem]' : 'grid-cols-1',
+                ]}
+              >
+                <span class="flex min-w-0 flex-col self-stretch">
+                  <span class="text-[11px] font-bold tracking-wide text-terracotta-700 uppercase">
+                    {categories.find(({ id }) => id === dish.category.id)?.data.name[locale]}
+                  </span>
+                  <span class="mt-1 leading-snug font-extrabold text-ink-900 group-hover:text-leaf-800">
+                    {dish.name[locale]}
+                  </span>
+                  <span class="mt-auto pt-2 text-sm font-bold text-leaf-700 tabular-nums">
+                    ฿{dish.price_thb} ↓
+                  </span>
+                </span>
+                {dish.images[0] && (
+                  <ResponsiveMedia
+                    asset={dish.images[0]}
+                    alt=""
+                    sizes="72px"
+                    className="aspect-square w-18 rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm"
+                  />
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 
   <nav
     data-menu-category-nav
     aria-label={t(locale, 'menu.categoriesNav')}
     class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem] print:hidden"
   >
-    <div class="wrap">
-      <ul class="scrollbar-none -mx-1 flex gap-2 overflow-x-auto px-1 py-3">
-        {
-          nonEmptyCategories.map((category) => (
-            <li data-menu-category-link={category.id}>
-              <a
-                href={`#${category.data.slug[locale]}`}
-                class="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-leaf-700/20 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
-              >
-                {category.data.name[locale]}
-                <span class="text-xs font-normal text-ink-500 tabular-nums" aria-hidden="true">
-                  {dishes.filter((d) => d.data.category.id === category.id).length}
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+    <div class="wrap flex items-center gap-2">
+      <a
+        href="#menu-search"
+        aria-label={t(locale, 'menu.searchLabel')}
+        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-leaf-700 px-3 text-sm font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-4"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <span class="hidden sm:inline">{t(locale, 'menu.searchAction')}</span>
+      </a>
+      <a
+        href="#top"
+        aria-label={t(locale, 'menu.backToTop')}
+        class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-leaf-700/20 bg-cream-50 text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.25"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 19V5"></path>
+          <path d="m5 12 7-7 7 7"></path>
+        </svg>
+      </a>
+      <div class="min-w-0 flex-1 overflow-hidden">
+        <ul class="scrollbar-none -mx-1 flex snap-x gap-2 overflow-x-auto px-1 py-3">
+          {
+            nonEmptyCategories.map((category) => (
+              <li data-menu-category-link={category.id} class="snap-start">
+                <a
+                  data-menu-category-anchor={category.id}
+                  href={`#${category.data.slug[locale]}`}
+                  class="menu-category-anchor inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-leaf-700/20 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+                >
+                  {category.data.name[locale]}
+                  <span class="text-xs font-normal text-ink-500 tabular-nums" aria-hidden="true">
+                    {dishes.filter((d) => d.data.category.id === category.id).length}
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -422,6 +509,7 @@ const jsonld = [
           <section
             data-menu-section={category.id}
             id={category.data.slug[locale]}
+            style={`--menu-estimate-mobile: ${Math.max(items.length * 9.75, 42)}rem; --menu-estimate-wide: ${Math.max(Math.ceil(items.length / 2) * 10.75, 42)}rem;`}
             class:list={['scroll-mt-24 pt-12', categoryIndex > 0 && 'menu-section-deferred']}
           >
             <div class="flex items-center gap-4">
@@ -430,7 +518,7 @@ const jsonld = [
               </h2>
               <span class="h-px flex-1 bg-cream-300" aria-hidden="true" />
             </div>
-            <ul class="mt-4 grid gap-2">
+            <ul class="mt-4 grid gap-2 xl:grid-cols-2">
               {items.map(({ data: dish }) => (
                 <li
                   data-menu-item
@@ -441,7 +529,7 @@ const jsonld = [
                   }
                   data-menu-diet-jain={dish.foodFacts.jainFriendly === 'yes' ? 'true' : 'false'}
                   id={dish.slug[locale]}
-                  class="scroll-mt-24 rounded-lg border border-cream-200 bg-cream-50/70 p-4 transition-colors hover:border-leaf-700/25 hover:bg-cream-50"
+                  class="h-full scroll-mt-24 rounded-lg border border-cream-200 bg-cream-50/70 p-4 transition-colors hover:border-leaf-700/25 hover:bg-cream-50"
                 >
                   <div
                     class:list={[
@@ -472,16 +560,9 @@ const jsonld = [
                         dish.foodFacts.noGlutenIngredients === 'yes' ||
                         dish.foodFacts.jainFriendly === 'yes') && (
                         <p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                          {displayDietaryTags(dish).map((tag) =>
-                            tag === 'jay' ? (
-                              <JayBadge size="sm" label={t(locale, 'tag.jay')} />
-                            ) : (
-                              <span class="rounded-full border border-leaf-700/25 bg-leaf-50 px-2 py-0.5 text-[11px] font-semibold tracking-wide text-leaf-800 uppercase">
-                                {TAG_ICONS[tag] && `${TAG_ICONS[tag]} `}
-                                {t(locale, `tag.${tag}` as UiKey)}
-                              </span>
-                            ),
-                          )}
+                          {displayDietaryTags(dish).map(() => (
+                            <JayBadge size="sm" label={t(locale, 'tag.jay')} />
+                          ))}
                           {dish.foodFacts.spicyLevel !== null &&
                             (dish.foodFacts.spicyLevel === 0 ? (
                               <span class="text-xs font-semibold text-ink-500">
@@ -519,13 +600,46 @@ const jsonld = [
                       )}
                     </div>
                     {dish.images[0] && (
-                      <figure class="w-28 sm:w-36">
-                        <ResponsiveMedia
-                          asset={dish.images[0]}
-                          alt={dish.name[locale]}
-                          sizes="(min-width: 640px) 144px, 112px"
-                          className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm"
-                        />
+                      <figure class="w-28 sm:w-36 xl:w-28">
+                        <a
+                          href={largestImageCandidate(dish.images[0]).src}
+                          target="_blank"
+                          rel="noopener"
+                          data-menu-photo-open
+                          data-photo-src={largestImageCandidate(dish.images[0]).src}
+                          data-photo-width={largestImageCandidate(dish.images[0]).width}
+                          data-photo-height={largestImageCandidate(dish.images[0]).height}
+                          data-photo-name={dish.name[locale]}
+                          aria-label={t(locale, 'menu.photoOpen').replace(
+                            '{dish}',
+                            dish.name[locale],
+                          )}
+                          class="group/photo relative block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mango-500"
+                        >
+                          <ResponsiveMedia
+                            asset={dish.images[0]}
+                            alt={dish.name[locale]}
+                            sizes="(min-width: 1280px) 112px, (min-width: 640px) 144px, 112px"
+                            className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm transition group-hover/photo:brightness-95"
+                          />
+                          <span
+                            aria-hidden="true"
+                            class="absolute right-1.5 bottom-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-cream-50/90 text-leaf-800 shadow-sm backdrop-blur-sm"
+                          >
+                            <svg
+                              viewBox="0 0 24 24"
+                              class="h-4 w-4"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            >
+                              <circle cx="11" cy="11" r="6" />
+                              <path d="m16 16 4 4" />
+                              <path d="M11 8v6M8 11h6" />
+                            </svg>
+                          </span>
+                        </a>
                         {dish.images[0].credit && (
                           <figcaption class="mt-1 text-[10px] leading-tight break-words text-ink-500">
                             {t(locale, 'media.credit')}: {dish.images[0].credit}
@@ -598,25 +712,36 @@ const jsonld = [
     }
   </div>
 
-  <a
-    href="#top"
-    aria-label={t(locale, 'menu.backToTop')}
-    class="to-top inline-flex h-12 w-12 items-center justify-center rounded-full bg-leaf-700 text-cream-50 shadow-lg transition-colors hover:bg-leaf-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mango-300 print:hidden"
+  <dialog
+    data-menu-photo-dialog
+    aria-labelledby={`menu-photo-caption-${locale}`}
+    class="menu-photo-dialog m-auto max-h-[92dvh] w-[min(92vw,64rem)] overflow-hidden rounded-xl border border-cream-300 bg-cream-50 p-0 text-ink-900 shadow-2xl"
   >
-    <svg
-      viewBox="0 0 24 24"
-      class="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 19V5"></path>
-      <path d="m5 12 7-7 7 7"></path>
-    </svg>
-  </a>
+    <figure class="relative grid max-h-[92dvh] grid-rows-[minmax(0,1fr)_auto]">
+      <form method="dialog" class="absolute top-3 right-3 z-10">
+        <button
+          value="close"
+          aria-label={t(locale, 'menu.photoClose')}
+          class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-cream-300 bg-cream-50/95 text-2xl leading-none text-leaf-900 shadow-md backdrop-blur-sm hover:bg-cream-100"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </form>
+      <img
+        data-menu-photo-dialog-image
+        alt=""
+        width="1"
+        height="1"
+        class="max-h-[80dvh] w-full bg-cream-100 object-contain"
+      />
+      <figcaption
+        id={`menu-photo-caption-${locale}`}
+        data-menu-photo-dialog-caption
+        class="border-t border-cream-300 px-5 py-3 font-bold text-leaf-900"
+      >
+      </figcaption>
+    </figure>
+  </dialog>
 
   <script>
     const searchRoot = document.querySelector<HTMLElement>('[data-menu-search]');
@@ -641,6 +766,10 @@ const jsonld = [
       const categoryLinks = Array.from(
         document.querySelectorAll<HTMLElement>('[data-menu-category-link]'),
       );
+      const categoryAnchors = Array.from(
+        document.querySelectorAll<HTMLAnchorElement>('[data-menu-category-anchor]'),
+      );
+      const categoryNav = document.querySelector<HTMLElement>('[data-menu-category-nav]');
       const quickPicksRoot = document.querySelector<HTMLElement>('[data-menu-quick-picks]');
       const quickPicks = Array.from(
         document.querySelectorAll<HTMLElement>('[data-menu-quick-pick]'),
@@ -649,6 +778,19 @@ const jsonld = [
       const recognizedDietFilters = new Set(['no-gluten', 'jain']);
       let unavailableInitialDietFilters = new Set<string>();
       let updateTimer = 0;
+
+      const setActiveCategory = (categoryId: string | undefined) => {
+        categoryAnchors.forEach((anchor) => {
+          if (anchor.dataset.menuCategoryAnchor === categoryId) {
+            anchor.setAttribute('aria-current', 'location');
+            if (categoryNav && categoryNav.getBoundingClientRect().top <= 112) {
+              anchor.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            }
+          } else {
+            anchor.removeAttribute('aria-current');
+          }
+        });
+      };
 
       const normalize = (value: string) =>
         value.normalize('NFKD').replace(/\p{M}/gu, '').toLocaleLowerCase().trim();
@@ -699,6 +841,14 @@ const jsonld = [
         });
         if (quickPicksRoot) {
           quickPicksRoot.hidden = quickPicks.every((quickPick) => quickPick.hidden);
+        }
+
+        const activeAnchor = categoryAnchors.find((anchor) => anchor.hasAttribute('aria-current'));
+        const activeSection = sections.find(
+          (section) => section.dataset.menuSection === activeAnchor?.dataset.menuCategoryAnchor,
+        );
+        if (!activeSection || activeSection.hidden) {
+          setActiveCategory(sections.find((section) => !section.hidden)?.dataset.menuSection);
         }
 
         clearButton.hidden = query.length === 0;
@@ -780,6 +930,63 @@ const jsonld = [
       );
       searchRoot.hidden = false;
       applySearch();
+
+      categoryAnchors.forEach((anchor) =>
+        anchor.addEventListener('click', () =>
+          setActiveCategory(anchor.dataset.menuCategoryAnchor),
+        ),
+      );
+      if ('IntersectionObserver' in window) {
+        const visibleSections = new Set<Element>();
+        const sectionObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) visibleSections.add(entry.target);
+              else visibleSections.delete(entry.target);
+            });
+            const activeSection = sections
+              .filter((section) => visibleSections.has(section) && !section.hidden)
+              .sort(
+                (left, right) =>
+                  left.getBoundingClientRect().top - right.getBoundingClientRect().top,
+              )[0];
+            if (activeSection) setActiveCategory(activeSection.dataset.menuSection);
+          },
+          { rootMargin: '-178px 0px -60% 0px' },
+        );
+        sections.forEach((section) => sectionObserver.observe(section));
+      }
+    }
+
+    const photoDialog = document.querySelector<HTMLDialogElement>('[data-menu-photo-dialog]');
+    const photoDialogImage = photoDialog?.querySelector<HTMLImageElement>(
+      '[data-menu-photo-dialog-image]',
+    );
+    const photoDialogCaption = photoDialog?.querySelector<HTMLElement>(
+      '[data-menu-photo-dialog-caption]',
+    );
+    if (photoDialog && photoDialogImage && photoDialogCaption && photoDialog.showModal) {
+      document.querySelectorAll<HTMLAnchorElement>('[data-menu-photo-open]').forEach((opener) => {
+        opener.addEventListener('click', (event) => {
+          event.preventDefault();
+          const { photoSrc, photoWidth, photoHeight, photoName } = opener.dataset;
+          if (!photoSrc || !photoWidth || !photoHeight || !photoName) return;
+          photoDialogImage.src = photoSrc;
+          photoDialogImage.width = Number(photoWidth);
+          photoDialogImage.height = Number(photoHeight);
+          photoDialogImage.alt = photoName;
+          photoDialogCaption.textContent = photoName;
+          photoDialog.showModal();
+        });
+      });
+      photoDialog.addEventListener('click', (event) => {
+        if (event.target === photoDialog) photoDialog.close();
+      });
+      photoDialog.addEventListener('close', () => {
+        photoDialogImage.removeAttribute('src');
+        photoDialogImage.alt = '';
+        photoDialogCaption.textContent = '';
+      });
     }
   </script>
 </Base>

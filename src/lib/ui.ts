@@ -73,7 +73,11 @@ const strings = {
     th: 'ไม่ใส่น้ำปลา ไข่ นม',
     ru: 'Без рыбного соуса, яиц и молока',
   },
-  'menu.title': { en: 'Our menu', th: 'เมนูของเรา', ru: 'Наше меню' },
+  'menu.title': {
+    en: 'Vegan & jay menu',
+    th: 'เมนูวีแกนและอาหารเจ',
+    ru: 'Веганское и джей-меню',
+  },
   'menu.spicy': { en: 'spicy', th: 'เผ็ด', ru: 'острое' },
   'menu.categoriesNav': { en: 'Menu categories', th: 'หมวดเมนู', ru: 'Разделы меню' },
   'menu.contains': { en: 'Contains', th: 'มีส่วนผสม', ru: 'Содержит' },
@@ -102,6 +106,31 @@ const strings = {
     en: 'Chicken, pork, fish and egg in dish names always mean plant-based alternatives.',
     th: 'คำว่าไก่ หมู ปลา และไข่ในชื่อเมนู หมายถึงผลิตภัณฑ์จากพืชทั้งหมด',
     ru: '«Курица», «свинина», «рыба» и «яйцо» в названиях — всегда растительные аналоги.',
+  },
+  'menu.allVeganJay': {
+    en: 'Every dish below is 100% vegan and jay.',
+    th: 'ทุกเมนูด้านล่างเป็นวีแกนและอาหารเจ 100%',
+    ru: 'Все блюда ниже — 100% веганские и джей.',
+  },
+  'menu.jayMeaningAction': {
+    en: 'What does jay mean?',
+    th: 'อาหารเจหมายถึงอะไร?',
+    ru: 'Что означает «джей»?',
+  },
+  'menu.jayMeaning': {
+    en: 'Jay (เจ) is a Thai food tradition stricter than vegetarian: it excludes animal ingredients and traditionally five pungent vegetables. It is not an allergen-safety guarantee.',
+    th: 'อาหารเจเข้มงวดกว่ามังสวิรัติ: งดส่วนผสมจากสัตว์และตามธรรมเนียมงดผักฉุน 5 ชนิด แต่ไม่ได้รับรองว่าปลอดสารก่อภูมิแพ้',
+    ru: 'Джей (เจ) — тайская традиция питания, более строгая, чем vegetarian: без животных ингредиентов и, по традиции, без пяти пахучих овощей. Это не гарантия безопасности при аллергии.',
+  },
+  'menu.photoOpen': {
+    en: 'View a larger photo of {dish}',
+    th: 'ดูรูป {dish} ขนาดใหญ่',
+    ru: 'Открыть крупное фото блюда «{dish}»',
+  },
+  'menu.photoClose': {
+    en: 'Close photo',
+    th: 'ปิดรูป',
+    ru: 'Закрыть фото',
   },
   'menu.searchLabel': {
     en: 'Find a dish',
