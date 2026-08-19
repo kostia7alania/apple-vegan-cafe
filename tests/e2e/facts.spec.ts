@@ -79,6 +79,41 @@ for (const [prefix, locale] of [
   });
 }
 
+test('mobile menu category navigation lands on the requested section', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  const finalCategory = CATEGORIES.at(-1)!;
+  const finalSlug = finalCategory.slug.en!;
+  const expectFinalCategoryInView = async () => {
+    const finalChip = page.locator(`[data-menu-category-anchor="${finalCategory.id}"]`);
+    const finalSection = page.locator(`section[id="${finalSlug}"]`);
+
+    await expect
+      .poll(() => page.evaluate(() => decodeURIComponent(window.location.hash)))
+      .toBe(`#${finalSlug}`);
+    await expect
+      .poll(() =>
+        finalSection.evaluate((section) => {
+          const nav = document.querySelector<HTMLElement>('[data-menu-category-nav]');
+          if (!nav) return false;
+
+          const sectionTop = section.getBoundingClientRect().top;
+          const navBottom = nav.getBoundingClientRect().bottom;
+          return sectionTop >= navBottom - 1 && sectionTop <= window.innerHeight / 2;
+        }),
+      )
+      .toBe(true);
+    await expect(finalChip).toHaveAttribute('aria-current', 'location');
+  };
+
+  await page.goto(`/menu/#${finalSlug}`);
+  await expectFinalCategoryInView();
+
+  await page.goto('/menu/');
+  await page.locator(`[data-menu-category-anchor="${finalCategory.id}"]`).click();
+  await expectFinalCategoryInView();
+});
+
 test('home and contact expose OrderAction pointing at Grab', async ({ page }) => {
   for (const path of ['/', '/contact/']) {
     await page.goto(path);

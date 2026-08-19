@@ -391,14 +391,10 @@
     background: transparent;
   }
 
-  .menu-section-deferred {
-    content-visibility: auto;
-    contain-intrinsic-size: auto none auto var(--menu-estimate-mobile, 42rem);
-  }
-
-  @media (min-width: 64rem) {
+  @media (max-width: 63.999rem) {
     .menu-section-deferred {
-      contain-intrinsic-size: auto none auto var(--menu-estimate-wide, 42rem);
+      content-visibility: auto;
+      contain-intrinsic-size: auto none auto var(--menu-estimate-mobile, 42rem);
     }
   }
 

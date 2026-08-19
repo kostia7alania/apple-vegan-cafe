@@ -51,7 +51,11 @@ jobs:
         run: pnpm exec linkinator ./dist --recurse --silent --skip "^(https://apple-vegan-cafe.com|https://www.instagram.com/apple\\.vegan\\.restaurant/)"
 
       - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
+        # GitHub's Ubuntu image already includes the browser runtime libraries.
+        # Avoid `--with-deps` here: that starts apt against an external mirror,
+        # which can hang for hours even though the application checks are green.
+        timeout-minutes: 5
+        run: pnpm exec playwright install chromium
 
       - name: E2E smoke tests
         run: pnpm test:e2e

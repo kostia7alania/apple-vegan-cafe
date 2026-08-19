@@ -4,22 +4,50 @@ import type { ResponsiveMediaAsset } from '../lib/media';
 interface Props {
   asset: ResponsiveMediaAsset;
   alt: string;
+  candidateLimit?: {
+    media: string;
+    maxWidth: number;
+  };
   className?: string;
   eager?: boolean;
+  fetchPriority?: 'low';
   sizes?: string;
 }
 
-const { asset, alt, className = '', eager = false, sizes = '100vw' } = Astro.props;
+const {
+  asset,
+  alt,
+  candidateLimit,
+  className = '',
+  eager = false,
+  fetchPriority,
+  sizes = '100vw',
+} = Astro.props;
 const candidates = new Map<number, string>([[asset.width, asset.src]]);
 if (asset.srcSmall && asset.srcSmallWidth) candidates.set(asset.srcSmallWidth, asset.srcSmall);
 if (asset.srcLarge && asset.srcLargeWidth) candidates.set(asset.srcLargeWidth, asset.srcLarge);
-const responsiveSources = [...candidates.entries()]
-  .sort(([left], [right]) => left - right)
-  .map(([width, src]) => `${src} ${width}w`)
-  .join(', ');
+const serializeCandidates = (entries: [number, string][]) =>
+  entries
+    .sort(([left], [right]) => left - right)
+    .map(([width, src]) => `${src} ${width}w`)
+    .join(', ');
+const candidateEntries = [...candidates.entries()];
+const responsiveSources = serializeCandidates(candidateEntries);
+const limitedResponsiveSources = candidateLimit
+  ? serializeCandidates(
+      candidateEntries.filter(
+        ([width]) => width === asset.width || width <= candidateLimit.maxWidth,
+      ),
+    )
+  : null;
 ---
 
 <picture>
+  {
+    candidateLimit && limitedResponsiveSources && (
+      <source media={candidateLimit.media} srcset={limitedResponsiveSources} {sizes} />
+    )
+  }
   <source srcset={responsiveSources} {sizes} />
   <img
     src={asset.src}
@@ -27,7 +55,7 @@ const responsiveSources = [...candidates.entries()]
     width={asset.width}
     height={asset.height}
     loading={eager ? 'eager' : 'lazy'}
-    fetchpriority={eager ? 'high' : undefined}
+    fetchpriority={eager ? 'high' : fetchPriority}
     decoding="async"
     class={className}
   />
