@@ -2,8 +2,9 @@
 # - On any change to a sanitized imports/menu.csv: dry-run diff into the job summary.
 # - Manual "Run workflow": applies the import and opens a PR — the family
 #   reviews dish-by-dish and merges to confirm.
-# NOTE: PRs opened with the default GITHUB_TOKEN do not trigger the CI
-# workflow automatically; CI runs on the merge push instead.
+# GitHub holds CI for PRs opened by the default GITHUB_TOKEN until a maintainer
+# approves the workflow. This is intentional: imported public menu changes still
+# need a human confirmation before CI and merge.
 name: Menu import
 
 on:
@@ -14,13 +15,11 @@ on:
   pull_request:
     paths: ['imports/menu.csv']
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   diff:
     if: github.event_name != 'workflow_dispatch'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -44,6 +43,9 @@ jobs:
 
   apply:
     if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -72,7 +74,11 @@ jobs:
           git add src/content/dishes
           git commit -m "menu: sync from owner's Grab export (needs family review)"
           git push origin "$branch"
-          gh pr create \
+          pr_url=$(gh pr create \
             --title "Menu sync — review source-field changes" \
             --body "Reconciled from the owner's sanitized Grab export by exact ItemID. Review price, category and permanent availability changes. Editorial names, slugs, descriptions, media, featured flags, review dates and food facts are preserved." \
-            --base main --head "$branch"
+            --base main --head "$branch")
+          {
+            echo "Confirmation PR: $pr_url"
+            echo "Open the PR, select **Approve workflows to run**, then merge only after \`verify\` passes."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -85,6 +85,12 @@ pnpm check
 pnpm build
 ```
 
+При ручном запуске GitHub workflow **Menu import** тот же импорт применяется в
+отдельной ветке и открывает confirmation PR. GitHub намеренно удерживает CI для
+PR, созданного стандартным `GITHUB_TOKEN`: откройте PR и нажмите
+**Approve workflows to run**. После этого `CI` проверит test-merge commit, а
+защита `main` не даст смержить изменения, пока check `verify` не станет зелёным.
+
 ## 3. Текущее состояние (snapshot 2026-08-14)
 
 - 144 Grab ItemID ↔ 144 dish JSON; у каждой позиции есть один Grab catalogue image.
