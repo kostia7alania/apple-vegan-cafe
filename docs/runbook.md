@@ -37,10 +37,11 @@
    current `main` and its one-day artifact is available.
 
 The pre-2026-08-20 standalone `Deploy` workflow (legacy workflow ID
-`314276139`) must remain disabled. Its still-rerunnable run history was removed
-during the gated-release migration because those historical runs contain the old
-unguarded deployment definition. Do not re-enable or recreate that workflow;
-production releases belong only to `CI → Deploy verified main`.
+`314276139`) is retired: removing its path put GitHub's workflow state at
+`deleted`. Its still-rerunnable run history was removed during the gated-release
+migration because those historical runs contain the old unguarded deployment
+definition. Do not recreate that workflow; production releases belong only to
+`CI → Deploy verified main`.
 
 ## Roll back a bad release
 
