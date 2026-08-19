@@ -6,7 +6,8 @@
 
 ## 1. CSV: состав каталога, цены и статусы
 
-GrabMerchant → Menu → **Bulk Update** → Download. Получается zip с CSV
+GrabMerchant → Menu → **Bulk Update** → Download. Нужен полный экспорт всего каталога; обрезанный
+CSV или вручную выбранные строки применять нельзя. Получается zip с CSV
 (`*ItemID,*ItemName,*Price,*CategoryName,…`). Сырой owner export не коммитится.
 
 ```bash
@@ -17,7 +18,10 @@ pnpm import:menu -- --input /path/to/grab-bulk-update.csv --write
 Импортёр сначала валидирует весь файл и только потом пишет. Identity — исключительно
 `scripts/data/grab-item-map.json`. Для известных ItemID он обновляет цену, category и permanent
 availability; `UNAVAILABLE_TODAY` остаётся временным статусом канала и не удаляет блюдо с сайта.
-Новый ItemID останавливает импорт до создания dish JSON и точного ItemID→file mapping.
+Новый ItemID останавливает импорт до создания dish JSON и точного ItemID→file mapping. Пропажа
+любого уже известного ItemID также блокирует dry-run и `--write`: сначала нужно проверить, полный ли
+это экспорт и было ли блюдо действительно удалено или отключено в GrabMerchant. Импортёр никогда
+не удаляет пропущенное блюдо автоматически.
 
 ## 2. API JSON: изображения и Grab-бейджи
 
