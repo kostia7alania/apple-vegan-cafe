@@ -46,10 +46,12 @@ Authenticated Search Console evidence observed on 2026-08-19:
   and 20 not-indexed URLs. This is an operating baseline, not a promise that
   every sitemap URL is indexed.
 
-`PUBLIC_GOOGLE_SITE_VERIFICATION` remains an optional recovery hook if the
-property ever needs HTML-tag verification again. Do not add the variable merely
-because the hook exists, and do not start **Validate fix** unless an identified
-indexing cause was actually fixed.
+The configured domain property is verified through DNS. The optional
+`PUBLIC_GOOGLE_SITE_VERIFICATION` hook applies only if a separate URL-prefix
+property is ever created with HTML-tag verification; it cannot recover or
+re-verify the current domain property. Do not add the variable merely because
+the hook exists, and do not start **Validate fix** unless an identified indexing
+cause was actually fixed.
 
 ## External uptime monitor (not configured)
 
