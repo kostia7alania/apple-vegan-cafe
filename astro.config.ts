@@ -1,9 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-import { TH_JAY_LANDING_PATH, TH_JAY_LANDING_REVIEWED } from './src/lib/site';
-
-const sitemapDraftPaths = new Set(TH_JAY_LANDING_REVIEWED ? [] : [TH_JAY_LANDING_PATH]);
 
 // Pure SSG. No adapter: deployed as static assets to Cloudflare Workers Static Assets.
 // hreflang lives in <head> only (see src/components/Seo.astro), so the sitemap
@@ -23,11 +20,7 @@ export default defineConfig({
     // No `fallback` map on purpose: untranslated pages simply do not exist in
     // that locale — no auto-generated duplicates, no soft-redirect pages.
   },
-  integrations: [
-    sitemap({
-      filter: (page) => !sitemapDraftPaths.has(decodeURI(new URL(page).pathname)),
-    }),
-  ],
+  integrations: [sitemap()],
   vite: {
     plugins: [tailwindcss()],
   },
