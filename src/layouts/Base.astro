@@ -65,6 +65,7 @@ const isCurrent = (href: string) =>
 
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
 const [mainHours] = location.hours;
+const hasSpecialHours = location.specialHours.length > 0;
 const dayRange = mainHours
   ? mainHours.days.length === 7
     ? t(locale, 'days.daily')
@@ -166,19 +167,19 @@ const specialHoursScript = `
       if (isToday) hasTodayException = true;
     });
 
+    root.querySelector('[data-special-hours-fallback]').hidden = visibleEntries > 0;
     root.hidden = visibleEntries === 0;
   });
 
-  if (hasTodayException) {
-    document.querySelectorAll('[data-special-hours-replaced]').forEach((regularHours) => {
-      regularHours.hidden = true;
-    });
-  }
+  document.documentElement.classList.toggle('has-special-hours', hasTodayException);
 `;
 ---
 
 <!doctype html>
-<html lang={locale} class:list={[staticHeader && 'static-header']}>
+<html
+  lang={locale}
+  class:list={[staticHeader && 'static-header', hasSpecialHours && 'has-special-hours']}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -294,7 +295,7 @@ const specialHoursScript = `
     </header>
 
     {
-      location.specialHours.length > 0 && (
+      hasSpecialHours && (
         <div class="wrap">
           <SpecialHoursNotice {locale} specialHours={location.specialHours} className="mt-4" />
         </div>
@@ -558,6 +559,6 @@ const specialHoursScript = `
       </ul>
     </nav>
 
-    {location.specialHours.length > 0 && <script is:inline set:html={specialHoursScript} />}
+    {hasSpecialHours && <script is:inline set:html={specialHoursScript} />}
   </body>
 </html>
