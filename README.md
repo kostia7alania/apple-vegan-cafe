@@ -96,9 +96,13 @@ changes, `.github/FUNDING.yml` is where they will appear.
 - **SEO rules**: reciprocal hreflang in `<head>` only, self-canonicals, one
   honest page per topic per language, **never** `aggregateRating`/`review` of
   our own business, no `FAQPage` markup (retired May 2026).
-- **Deployment**: `pnpm deploy` (Wrangler → Cloudflare Workers Static Assets),
-  config in `infrastructure/wrangler.jsonc`. CMS OAuth secrets live only in
-  Cloudflare; see `infrastructure/sveltia-auth/README.md`.
+- **Deployment**: production merges deploy to Cloudflare Workers Static Assets
+  only through gated GitHub Actions; the Wrangler config is
+  `infrastructure/wrangler.jsonc`. CI builds once with repository Variables,
+  tests that `dist`, records its artifact digest and passes the same immutable
+  artifact to Wrangler. The release job also refuses a stale SHA that is no
+  longer current `main`. CMS OAuth secrets live only in Cloudflare; see
+  `infrastructure/sveltia-auth/README.md`.
 - **Analytics**: optional; Cloudflare Web Analytics beacon is currently injected
   at the edge (dashboard). Do not also set
   `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` or the beacon will double.

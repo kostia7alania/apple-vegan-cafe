@@ -9,7 +9,8 @@
 2. Check domain expiry in the Cloudflare dashboard (auto-renew must be ON).
 3. Cloudflare status: https://www.cloudflarestatus.com
 4. A broken deploy cannot take the site down — the last good version keeps
-   serving. Check Workers Builds logs only if _changes_ stop appearing.
+   serving. Open the merge commit's GitHub Actions **CI** run: production deploy
+   is the final job and cannot start until the full verification job passes.
 
 ## Owner can't edit via /admin
 
@@ -22,18 +23,47 @@
 
 ## Changes don't appear on the site
 
-1. Wait 3 minutes (build + cache).
-2. Workers Builds → latest build log. A red build = usually content that
-   failed schema validation; the error names the file and field.
-3. Fix the file (or revert the commit in GitHub UI) — the next build heals.
+1. Open the merge commit's GitHub Actions **CI** run and wait for both jobs.
+   Verification currently includes browser and Lighthouse checks, so allow about
+   5–7 minutes before treating a running job as stuck.
+2. A red **verify** job usually means invalid content or a failed quality gate;
+   the error names the file, field or check. A red **Deploy verified main / deploy**
+   job means the verified artifact was not released; inspect its Wrangler output.
+3. Fix the file or revert the offending merge through a new PR. The next green
+   `verify → deploy` chain releases the replacement; never bypass CI with a
+   local production deploy. Do not use **Re-run all jobs** on an older main run:
+   the release job compares its verified SHA with live `main` and rejects stale
+   runs. Re-running a failed deploy is valid only while that run's SHA is still
+   current `main` and its one-day artifact is available.
+
+The pre-2026-08-20 standalone `Deploy` workflow (legacy workflow ID
+`314276139`) must remain disabled. Its still-rerunnable run history was removed
+during the gated-release migration because those historical runs contain the old
+unguarded deployment definition. Do not re-enable or recreate that workflow;
+production releases belong only to `CI → Deploy verified main`.
+
+## Roll back a bad release
+
+1. In GitHub Actions, record the last known-good successful **CI** run and its
+   commit SHA. Confirm that its final deploy job completed successfully.
+2. Identify the offending merge commit. Create a rollback branch from current
+   `main`, run `git revert -m 1 <bad-merge-sha>` (parent 1 is `main`), and open
+   a PR. For a single-parent direct or squash commit, use
+   `git revert <bad-commit-sha>` instead. Do not force-push `main` or re-run an
+   unverified old artifact.
+3. Review that the revert removes only the bad change, merge it, and wait for
+   the same `verify → deploy` chain. Confirm `/` and `/menu/` on the resulting
+   merge SHA. Cloudflare keeps serving the previous deployed version until the
+   replacement artifact is successfully activated.
 
 ## Backups
 
 - Content + code + history: this git repository (GitHub + every local clone).
   Quarterly: `git clone` onto the family laptop.
 - NOT in git (document changes here): Cloudflare dashboard settings — DNS
-  records, domain auto-renew, Workers Builds config, the sveltia-auth Worker
-  secrets, Email Routing rules. GitHub settings: collaborators, the OAuth app.
+  records, domain auto-renew, the sveltia-auth Worker secrets, Email Routing
+  rules. GitHub settings: collaborators, the OAuth app, Actions deploy secret
+  and public build variables.
 
 ## Google Search Console (configured)
 

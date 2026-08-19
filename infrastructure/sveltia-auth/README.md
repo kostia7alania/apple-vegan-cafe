@@ -39,8 +39,8 @@ The Worker is deployed but idle until its two OAuth secrets exist:
 
 ## Secret boundaries (repo-wide rule)
 
-| Location             | What lives there                             |
-| -------------------- | -------------------------------------------- |
-| This public repo     | code, content, `PUBLIC_*` config only        |
-| Cloudflare dashboard | OAuth secrets, Workers Builds variables, DNS |
-| GitHub settings      | collaborator access, the OAuth app           |
+| Location             | What lives there                                |
+| -------------------- | ----------------------------------------------- |
+| This public repo     | code, content, `PUBLIC_*` config names only     |
+| Cloudflare dashboard | OAuth Worker secrets, zone settings, DNS        |
+| GitHub settings      | collaborators, OAuth app, Actions secret + vars |

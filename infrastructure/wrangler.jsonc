@@ -1,7 +1,7 @@
 {
   // Assets-only Worker: no script, no SSR. Static asset requests are free and
-  // unlimited on every Cloudflare plan. Deploy: `pnpm deploy` (wrangler deploy
-  // --config infrastructure/wrangler.jsonc) or via Workers Builds git integration.
+  // unlimited on every Cloudflare plan. Production deploys only through the
+  // gated GitHub Actions CI workflow, which consumes this config.
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
   "name": "apple-vegan-cafe",
   "compatibility_date": "2026-07-15",

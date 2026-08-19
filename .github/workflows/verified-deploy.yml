@@ -1,0 +1,64 @@
+# Reusable Cloudflare deployment, called by CI only after the full verification
+# job succeeds for the same main-branch commit.
+# Requires the CLOUDFLARE_API_TOKEN repository secret
+# (create token: dash.cloudflare.com/profile/api-tokens → "Edit Cloudflare
+# Workers" template; add it yourself: repo Settings → Secrets → Actions).
+# A missing secret fails the release visibly instead of reporting a green no-op.
+# This replaces the Workers Builds git integration — no GitHub App needed.
+name: Verified production deploy
+
+on:
+  workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        description: Cloudflare token used by Wrangler for the production deploy
+        required: true
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require deploy token
+        env:
+          DEPLOY_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [[ -z "$DEPLOY_TOKEN" ]]; then
+            echo "CLOUDFLARE_API_TOKEN is missing — production deploy blocked." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v5
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Download verified production artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: production-dist-${{ github.sha }}
+          path: dist
+          digest-mismatch: error
+
+      - name: Deploy current verified main
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          current_main=$(git ls-remote --exit-code origin refs/heads/main | cut -f1)
+          if [[ "$current_main" != "$GITHUB_SHA" ]]; then
+            echo "Deploy blocked: verified SHA $GITHUB_SHA is no longer current main ($current_main)." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          pnpm run deploy
