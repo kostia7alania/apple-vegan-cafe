@@ -1,12 +1,16 @@
 ---
 translationKey: welcome
 locale: th
-title: 'ยินดีต้อนรับสู่เว็บไซต์ของคาเฟ่เจครอบครัวเรา'
+title: 'ยินดีต้อนรับสู่ Apple Vegan Cafe Pattaya'
 description: 'ร้านอาหารเจของครอบครัวเราในพัทยามีเว็บไซต์แล้ว: เมนูจริง ราคาจริง เวลาเปิดจริง'
 slug: ยินดีต้อนรับ
 author: editorial
 publishedAt: 2026-07-15
+updatedAt: 2026-08-19
 draft: false
+seo:
+  title: 'Apple Vegan Cafe Pattaya | เว็บไซต์ทางการและเมนูอาหารเจ'
+  description: 'เว็บไซต์อย่างเป็นทางการของ Apple Vegan Cafe Pattaya ดูเมนูอาหารเจและวีแกน พร้อมราคา เวลาเปิดทำการ และข้อมูลการเดินทาง'
 ---
 
 สวัสดีค่ะ! เราเป็นร้านอาหารเจเล็ก ๆ ของครอบครัวในพัทยา ทำอาหารเจ 100% ทุกวัน
