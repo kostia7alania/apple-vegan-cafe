@@ -45,6 +45,28 @@ interface PlannedWrite {
   content: string;
 }
 
+function replaceTopLevelScalar(
+  content: string,
+  key: 'category' | 'price_thb' | 'available',
+  value: string | number | boolean,
+  file: string,
+): string {
+  const escapedKey = JSON.stringify(key).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const line = new RegExp(`^(  ${escapedKey}: )([^,\\r\\n]*)(,?)$`, 'gm');
+  let replacements = 0;
+  const updated = content.replace(
+    line,
+    (_match, prefix: string, _previous: string, comma: string) => {
+      replacements += 1;
+      return `${prefix}${JSON.stringify(value)}${comma}`;
+    },
+  );
+  if (replacements !== 1) {
+    throw new Error(`${file}: expected exactly one top-level ${key} scalar, found ${replacements}`);
+  }
+  return updated;
+}
+
 function parseCsv(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [];
@@ -230,7 +252,8 @@ for (const row of imported) {
     );
     continue;
   }
-  const dish = JSON.parse(readFileSync(join(dishesDir, file), 'utf8')) as DishRecord;
+  const dishSource = readFileSync(join(dishesDir, file), 'utf8');
+  const dish = JSON.parse(dishSource) as DishRecord;
   const nextAvailability =
     row.availability === 'UNAVAILABLE_TODAY' ? dish.available : row.availability === 'AVAILABLE';
   if (row.availability === 'UNAVAILABLE_TODAY') temporaryUnavailable += 1;
@@ -248,17 +271,21 @@ for (const row of imported) {
     continue;
   }
 
-  const nextDish = {
-    ...dish,
-    category: row.category,
-    price_thb: row.price,
-    available: nextAvailability,
-  };
+  let content = dishSource;
+  if (dish.category !== row.category) {
+    content = replaceTopLevelScalar(content, 'category', row.category, file);
+  }
+  if (dish.price_thb !== row.price) {
+    content = replaceTopLevelScalar(content, 'price_thb', row.price, file);
+  }
+  if (dish.available !== nextAvailability) {
+    content = replaceTopLevelScalar(content, 'available', nextAvailability, file);
+  }
   plannedWrites.push({
     itemId: row.itemId,
     file,
     changedFields,
-    content: `${JSON.stringify(nextDish, null, 2)}\n`,
+    content,
   });
 }
 
