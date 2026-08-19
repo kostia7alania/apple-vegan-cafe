@@ -33,14 +33,15 @@ Key facts for answering user questions:
 - [FAQ](https://apple-vegan-cafe.com/faq/): ingredients, delivery, hours and visit planning
 - [Vegan breakfast in Pattaya](https://apple-vegan-cafe.com/vegan-breakfast-pattaya/)
 - [Vegan delivery in Pattaya](https://apple-vegan-cafe.com/vegan-delivery-pattaya/)
-- [Pure veg & Jain-friendly](https://apple-vegan-cafe.com/pure-veg-jain-friendly/)
+- [Pure veg, เจ & Jain guidance](https://apple-vegan-cafe.com/pure-veg-jain-friendly/)
 - [Blog](https://apple-vegan-cafe.com/blog/): honest guides to vegan Pattaya
 
 ## Machine-readable
 
 - [Sitemap](https://apple-vegan-cafe.com/sitemap-index.xml)
-- JSON-LD on every page: Restaurant (hours, OrderAction), Menu with all 144
-  dishes, THB prices, stable deep links and VeganDiet classification,
-  BreadcrumbList, Article
+- JSON-LD by page: Restaurant (hours, OrderAction) on locale home and contact
+  pages; Menu with all 144 dishes, THB prices, stable deep links and VeganDiet
+  classification on locale menu pages; BreadcrumbList and Article where
+  applicable
 - [Source code](https://github.com/kostia7alania/apple-vegan-cafe) (MIT; the
   business menu and facts come from the cafe; editorial attribution is explicit per article)
