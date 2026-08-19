@@ -90,6 +90,15 @@ pnpm build
 PR, созданного стандартным `GITHUB_TOKEN`: откройте PR и нажмите
 **Approve workflows to run**. После этого `CI` проверит test-merge commit, а
 защита `main` не даст смержить изменения, пока check `verify` не станет зелёным.
+Repository Settings → Actions → General должен сохранять безопасную комбинацию:
+default workflow permissions = **Read repository contents and packages**, а
+**Allow GitHub Actions to create and approve pull requests** = enabled. Write-права
+при этом выдаются только manual `apply` job, а не dry-run или обычному PR CI.
+
+Этот путь проверен 2026-08-20 на временном bot PR: до approval оба workflow были
+`action_required`, затем `CI` checkout взял `refs/pull/20/merge`, полный `verify`
+прошёл, ruleset сменился на `CLEAN`, deploy остался skipped. Тестовый price delta
+не мержился; PR и временные ветки удалены.
 
 ## 3. Текущее состояние (snapshot 2026-08-14)
 
