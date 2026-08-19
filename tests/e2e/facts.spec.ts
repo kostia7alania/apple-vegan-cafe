@@ -22,9 +22,11 @@ for (const prefix of ['', '/th', '/ru']) {
     await expect(page.locator('[data-menu-item]')).toHaveCount(availableDishCount);
   });
 
-  test(`menu${prefix || '/en'} keeps both GrabFood CTAs`, async ({ page }) => {
+  test(`menu${prefix || '/en'} keeps persistent and closing GrabFood CTAs`, async ({ page }) => {
     await page.goto(`${prefix}/menu/`);
     await expect(page.locator('main a[href*="r.grab.com"]')).toHaveCount(2);
+    await expect(page.locator('[data-menu-category-nav] a[href*="r.grab.com"]')).toHaveCount(1);
+    expect(await page.locator('body a[href*="r.grab.com"]').count()).toBeGreaterThanOrEqual(2);
   });
 }
 

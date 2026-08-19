@@ -623,8 +623,22 @@ test('blog article renders with localized slug', async ({ page }) => {
   await expect(page.locator('h1')).toContainText('Добро пожаловать');
 });
 
-test('content pages ship no external client bundle', async ({ page }) => {
+test('menu ships one bounded same-origin enhancement bundle', async ({ page }) => {
   await page.goto('/menu/');
-  const scripts = await page.locator('script[src]').count();
-  expect(scripts).toBe(0);
+  const scripts = await page.locator('script[src]').evaluateAll((elements) =>
+    elements.map((element) => ({
+      src: new URL(element.getAttribute('src') ?? '', document.baseURI).href,
+      type: element.getAttribute('type'),
+    })),
+  );
+
+  expect(scripts).toHaveLength(1);
+  const [menuBundle] = scripts;
+  expect(menuBundle).toBeDefined();
+  expect(new URL(menuBundle!.src).origin).toBe(new URL(page.url()).origin);
+  expect(menuBundle!.type).toBe('module');
+
+  const response = await page.request.get(menuBundle!.src);
+  expect(response.ok()).toBe(true);
+  expect((await response.body()).byteLength).toBeLessThanOrEqual(6 * 1024);
 });
