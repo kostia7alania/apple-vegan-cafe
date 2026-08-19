@@ -1,63 +1,31 @@
 ---
-// TH copy pending family review (draft) — backlog R1. The shared review gate
-// redirects this route to the verified menu and keeps it out of the sitemap.
-// Seasonal Thai landing page for the «ร้านอาหารเจ พัทยา» query cluster.
-// Thai-only: `alternates` carries a single `th` entry, so Seo emits a
-// self-referential hreflang and no x-default — correct while the page
-// has no EN/RU translation.
+// Thai-only, fact-backed landing for the established local-intent URL.
+// The former cultural/festival draft remains unpublished; this page uses only
+// the same restaurant, menu, hours and contact sources as the rest of the site.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
-import LeafDivider from '../../components/LeafDivider.astro';
+import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import Sprig from '../../components/Sprig.astro';
 import type { Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath } from '../../lib/urls';
 import { buildBreadcrumb } from '../../lib/jsonld';
 import { getRegularHours } from '../../lib/hours';
 import { t, type UiKey } from '../../lib/ui';
-import { getPublicDishDescription } from '../../lib/dishes';
-import { TH_JAY_LANDING_REVIEWED } from '../../lib/site';
 
 const locale: Locale = 'th';
 const PAGE_PATH = '/th/ร้านอาหารเจ-พัทยา/';
 
-if (!TH_JAY_LANDING_REVIEWED) {
-  return Astro.redirect(localePath(locale, '/menu/'), 302);
-}
-
-const [settings] = (await getCollection('settings')).map((e) => e.data);
-const [location] = (await getCollection('locations')).map((e) => e.data);
+const [settings] = (await getCollection('settings')).map((entry) => entry.data);
+const [location] = (await getCollection('locations')).map((entry) => entry.data);
 if (!settings || !location) throw new Error('settings/locations content is missing');
 
-// A sample of the เจ kitchen (copy above the list already says «ตัวอย่าง»):
-// Savoury dishes only, cheapest first, capped; the full catalogue is on /th/menu/.
-const JAY_SAMPLE_LIMIT = 12;
-const jayDishes = (
-  await getCollection('dishes', ({ data }) => data.available && data.dietaryTags.includes('jay'))
-)
-  .map((e) => e.data)
-  .filter((d) => d.category.id !== 'drinks')
-  .sort((a, b) => a.price_thb - b.price_thb)
-  .slice(0, JAY_SAMPLE_LIMIT);
-
-const alternates = { th: PAGE_PATH };
-const site = Astro.site!;
-const regularHours = getRegularHours(location.hours);
-
-const title = `ร้านอาหารเจ พัทยา — Apple Vegan Cafe${regularHours ? ` เปิด ${regularHours.open} น.` : ''}`;
-const description = `ร้านอาหารเจของครอบครัวในพัทยา อาหารเจ 100% ทุกวันตลอดปี ไม่ใส่น้ำปลา ไข่ นม${regularHours ? ` เวลาปกติ ${regularHours.range} น.` : ''} ย่านบางละมุง ชลบุรี ดูเมนูเจพร้อมราคาได้เลย`;
-
-const jsonld = [
-  buildBreadcrumb([
-    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
-    { name: 'ร้านอาหารเจ พัทยา', url: absoluteUrl(site, PAGE_PATH) },
-  ]),
-];
-
 const menuPath = localePath(locale, '/menu/');
+const contactPath = localePath(locale, '/contact/');
 const phoneHref = `tel:${settings.phone.replace(/\s/g, '')}`;
-
-const dayLabel = (d: string) => t(locale, `days.${d}` as UiKey);
+const regularHours = getRegularHours(location.hours);
+const mainHours = location.hours[0];
+const dayLabel = (day: string) => t(locale, `days.${day}` as UiKey);
 const daysLabel = (days: readonly string[]) =>
   days.length === 7
     ? t(locale, 'days.daily')
@@ -65,13 +33,26 @@ const daysLabel = (days: readonly string[]) =>
       ? `${dayLabel(days[0]!)}–${dayLabel(days.at(-1)!)}`
       : days.map(dayLabel).join(', ');
 
-const [mainHours] = location.hours;
-const openChip = mainHours
-  ? t(locale, 'home.openChip')
-      .replace('{days}', daysLabel(mainHours.days))
-      .replace('{open}', mainHours.open.replace(/^0/, ''))
-      .replace('{close}', mainHours.close)
-  : '';
+const sampleDishes = (
+  await getCollection(
+    'dishes',
+    ({ data }) => data.available && data.featured && data.dietaryTags.includes('jay'),
+  )
+)
+  .map((entry) => entry.data)
+  .slice(0, 4);
+
+const alternates = { th: PAGE_PATH };
+const site = Astro.site!;
+const title = 'ร้านอาหารเจ 100% ในพัทยา | Apple Vegan Cafe';
+const description =
+  'Apple Vegan Cafe เป็นร้านอาหารเจและวีแกนในพัทยา ทุกเมนูทำจากพืช 100% ดูเมนูพร้อมรูปและราคา หรือเช็กเวลาเปิด-ปิดและข้อมูลติดต่อก่อนมา';
+const jsonld = [
+  buildBreadcrumb([
+    { name: t(locale, 'nav.home'), url: absoluteUrl(site, localePath(locale, '/')) },
+    { name: 'ร้านอาหารเจในพัทยา', url: absoluteUrl(site, PAGE_PATH) },
+  ]),
+];
 ---
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
@@ -89,21 +70,21 @@ const openChip = mainHours
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
-        class="rise rise-1 mt-5 max-w-[24ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
+        class="rise rise-1 mt-5 max-w-[22ch] font-display text-4xl leading-[1.15] font-extrabold tracking-tight text-balance text-cream-50 sm:text-5xl"
       >
-        ร้านอาหารเจ พัทยา — Apple Vegan Cafe &amp; Restaurant
+        ร้านอาหารเจ 100% ในพัทยา
       </h1>
       <p class="rise rise-2 mt-4 max-w-[52ch] text-lg text-leaf-200 sm:text-xl">
-        ครัวเจของครอบครัว อาหารเจ 100% ทุกวันตลอดปี — ไม่ใช่เฉพาะช่วงเทศกาลกินเจ
+        Apple Vegan Cafe เป็นร้านอาหารเจและวีแกนของครอบครัวในพัทยา ทุกเมนูทำจากพืช 100%
       </p>
       {
-        openChip && (
+        regularHours && mainHours && (
           <p
             data-special-hours-replaced
             class="rise rise-2 mt-6 inline-flex items-center gap-2.5 rounded-full border border-cream-100/25 px-4 py-2 text-sm font-medium"
           >
             <span class="h-2 w-2 rounded-full bg-mango-400" aria-hidden="true" />
-            {openChip}
+            {daysLabel(mainHours.days)} {regularHours.range} น.
           </p>
         )
       }
@@ -112,214 +93,165 @@ const openChip = mainHours
           href={menuPath}
           class="inline-flex min-h-12 items-center rounded-full bg-mango-500 px-7 text-base font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
         >
-          {t(locale, 'home.viewMenu')}
+          ดูเมนูพร้อมรูปและราคา
         </a>
         <a
-          href={phoneHref}
+          href={contactPath}
           class="inline-flex min-h-12 items-center rounded-full border border-cream-100/40 px-7 text-base font-semibold text-cream-100 transition-colors hover:border-cream-100 hover:bg-leaf-800 focus-visible:outline-mango-300"
         >
-          {`${t(locale, 'actions.call')} ${settings.phone}`}
+          เช็กที่อยู่และเวลาเปิด-ปิด
         </a>
       </div>
     </div>
   </section>
 
   <section class="wrap py-12 sm:py-14">
-    <div class="prose-editorial">
-      <p>
-        สวัสดีค่ะ เราคือ <strong>Apple Vegan Cafe &amp; Restaurant</strong> ร้านอาหารเจเล็ก ๆ ของครอบครัวในพัทยา
-        (ต.หนองปรือ อ.บางละมุง จ.ชลบุรี) อาหารทุกจานของเราเป็นเจและวีแกน 100% ทุกวันตลอดทั้งปี ไม่ใช่เฉพาะช่วงเทศกาลกินเจ
-      </p>
-      <p data-special-hours-replaced>
-        เราไม่ใช้เนื้อสัตว์ ไม่ใส่น้ำปลา ไม่ใส่ไข่ และไม่ใส่นม
-        เรายังไม่ได้เผยแพร่ขั้นตอนป้องกันการปนเปื้อนที่ตรวจสอบแล้ว หากมีอาการแพ้รุนแรง
-        กรุณาแจ้งทีมงานก่อนสั่งอาหาร ร้านเปิดตั้งแต่เช้า {regularHours?.open} น. แวะมาทานมื้อเช้าก่อนเริ่มวันหรือมื้อเย็นกับครอบครัวก็ได้ค่ะ
-      </p>
-    </div>
-    <LeafDivider class="mt-10 max-w-60" />
-  </section>
-
-  <section class="wrap pb-12">
-    <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-      เจ คืออะไร
-    </h2>
-    <p class="mt-3 max-w-[60ch] leading-relaxed text-ink-700">
-      คำว่า «เจ» «มังสวิรัติ» และ «วีแกน» ใกล้เคียงกัน แต่ไม่เหมือนกันเสียทีเดียว ขออธิบายสั้น ๆ
-      ตามความเข้าใจของเรานะคะ
-    </p>
-    <ul class="mt-6 grid gap-5 sm:grid-cols-3">
-      <li class="rounded-2xl border border-cream-300 bg-cream-50 p-6">
-        <h3 class="font-display text-xl font-bold text-leaf-900">อาหารเจ</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-700">
-          ไม่มีเนื้อสัตว์และผลิตภัณฑ์จากสัตว์ทุกชนิด และตามธรรมเนียมของผู้ถือศีลกินเจ จะงดผักฉุนด้วย
-          เช่น กระเทียม หัวหอม กุยช่าย
+    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.65fr)] lg:items-start">
+      <div>
+        <p class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+          อาหารเจทุกวัน
         </p>
-      </li>
-      <li class="rounded-2xl border border-cream-300 bg-cream-50 p-6">
-        <h3 class="font-display text-xl font-bold text-leaf-900">มังสวิรัติ</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-700">
-          ไม่ทานเนื้อสัตว์ แต่บางท่านยังทานไข่ นม หรือน้ำผึ้งอยู่ แล้วแต่แนวทางของแต่ละคน
+        <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+          เจและวีแกน 100%
+        </h2>
+        <p class="mt-4 max-w-[62ch] text-lg leading-relaxed text-ink-700">
+          Apple Vegan Cafe เป็นร้านอาหารเจของครอบครัวในบางละมุง พัทยา ทุกเมนูเป็นอาหารจากพืช 100%
+          และปรุงแบบเจ
         </p>
-      </li>
-      <li class="rounded-2xl border border-cream-300 bg-cream-50 p-6">
-        <h3 class="font-display text-xl font-bold text-leaf-900">วีแกน</h3>
-        <p class="mt-2 text-sm leading-relaxed text-ink-700">
-          ไม่ทานผลิตภัณฑ์จากสัตว์ทุกชนิดเหมือนเจ แต่ไม่ได้กำหนดเรื่องผักฉุน
+      </div>
+      <aside class="rounded-2xl border border-mango-500/25 bg-mango-200/30 p-6">
+        <h2 class="font-display text-xl font-bold text-leaf-900">ข้อมูลสำหรับผู้มีอาการแพ้</h2>
+        <p class="mt-3 leading-relaxed text-ink-700">
+          หากมีอาการแพ้รุนแรง กรุณาแจ้งทีมงานก่อนสั่งอาหาร
+          ร้านยังไม่ได้เผยแพร่ขั้นตอนป้องกันการปนเปื้อนที่ตรวจสอบแล้ว
         </p>
-      </li>
-    </ul>
-    <p
-      class="mt-5 flex max-w-[64ch] flex-wrap items-baseline gap-x-1.5 leading-relaxed text-ink-700"
-    >
-      เมนูทั้งร้านของเราเป็นวีแกน ส่วนเมนูที่ติดป้าย
-      <JayBadge size="sm" label={t(locale, 'tag.jay')} />
-      คือเมนูที่ทางร้านปรุงแบบเจ หากท่านถือศีลและเคร่งเรื่องผักฉุน กรุณาสอบถามพนักงานเรื่องส่วนผสมก่อนสั่งอาหารค่ะ
-    </p>
-  </section>
-
-  <section class="wrap pb-12">
-    <div
-      class="relative overflow-hidden rounded-3xl border border-jay-500/20 bg-mango-200/30 px-6 py-8 sm:px-10 sm:py-10"
-    >
-      <Sprig
-        class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-jay-500 opacity-10"
-      />
-      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
-        เทศกาลกินเจ 2569
-      </h2>
-      <p class="relative mt-4 max-w-[62ch] leading-relaxed text-ink-700">
-        ปีนี้เทศกาลกินเจตรงกับช่วงประมาณวันที่ <strong>11–20 ตุลาคม 2569</strong>{' '}
-        ช่วงเทศกาลร้านเราเสิร์ฟเมนูเจเต็มรูปแบบเหมือนทุก ๆ วัน เพราะครัวของเราเป็นครัวเจอยู่แล้วตลอดปี
-        ก่อนเทศกาล หลังเทศกาล หรือวันธรรมดา ก็แวะมาทานได้เสมอค่ะ
-      </p>
-      <p class="relative mt-3 text-sm text-ink-500">
-        * วันที่อาจคลาดเคลื่อนตามปฏิทินจันทรคติ โปรดตรวจสอบวันที่ที่แน่นอนอีกครั้งเมื่อใกล้เทศกาล
-      </p>
+        <a
+          href={`${localePath(locale, '/faq/')}#cross-contact`}
+          class="mt-4 inline-flex font-semibold text-leaf-800 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+        >
+          อ่านคำแนะนำเรื่องอาหารและอาการแพ้
+        </a>
+      </aside>
     </div>
   </section>
 
-  <section class="wrap pb-12">
-    <div class="flex items-baseline justify-between gap-4">
-      <h2 class="font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
-        เมนูเจแนะนำ
-      </h2>
-      <a
-        href={menuPath}
-        class="hidden text-sm font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900 sm:inline"
-      >
-        {t(locale, 'home.viewMenu')} →
-      </a>
-    </div>
-    <p class="mt-3 max-w-[60ch] text-ink-500">
-      ตัวอย่างเมนูเจจากครัวของเรา ราคาจริงตามหน้าเมนู และอาจมีเมนูเจอื่น ๆ หมุนเวียนตามวัตถุดิบ
-    </p>
-    <ul class="mt-4 divide-y divide-cream-200">
-      {
-        jayDishes.map((dish) => (
-          <li class="py-5">
-            <div class="flex items-baseline gap-3">
-              <h3 class="font-display text-lg leading-snug font-bold">
-                <a
-                  href={`${menuPath}#${dish.slug[locale]}`}
-                  class="transition-colors hover:text-leaf-800"
-                >
-                  {dish.name[locale]}
-                </a>
-              </h3>
-              <span class="leader" aria-hidden="true" />
-              <span class="text-lg font-bold whitespace-nowrap text-leaf-800 tabular-nums">
-                ฿{dish.price_thb}
-              </span>
-            </div>
-            {getPublicDishDescription(dish, locale) && (
-              <p class="mt-1.5 max-w-[56ch] text-sm leading-relaxed text-ink-500">
-                {getPublicDishDescription(dish, locale)}
-              </p>
-            )}
-          </li>
-        ))
-      }
-    </ul>
-    <p class="mt-6">
-      <a
-        href={menuPath}
-        class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
-      >
-        ดูเมนูทั้งหมดพร้อมราคา
-      </a>
-    </p>
-  </section>
+  {
+    sampleDishes.length > 0 && (
+      <section class="wrap pb-14 sm:pb-16">
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <p class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
+              จากเมนูปัจจุบัน
+            </p>
+            <h2 class="mt-3 font-display text-3xl font-bold tracking-tight text-leaf-900 sm:text-4xl">
+              ตัวอย่างเมนูเจ
+            </h2>
+          </div>
+          <a
+            href={menuPath}
+            class="hidden font-semibold text-leaf-800 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900 sm:inline"
+          >
+            ดูเมนูทั้งหมด →
+          </a>
+        </div>
+        <ul class="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {sampleDishes.map((dish) => (
+            <li>
+              <article class="group relative flex h-full flex-col rounded-lg border border-cream-300 bg-cream-50 p-4 transition-[border-color,box-shadow] hover:border-leaf-600/50 hover:shadow-[0_14px_34px_-20px_rgba(38,34,27,0.32)]">
+                {dish.images[0] && (
+                  <figure>
+                    <ResponsiveMedia
+                      asset={dish.images[0]}
+                      alt={dish.name[locale]}
+                      sizes="(min-width: 1280px) 280px, (min-width: 640px) 45vw, calc(100vw - 3rem)"
+                      className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover"
+                    />
+                    {dish.images[0].credit ? (
+                      <figcaption class="mt-1.5 text-xs text-ink-500">
+                        {t(locale, 'media.credit')}: {dish.images[0].credit}
+                      </figcaption>
+                    ) : null}
+                  </figure>
+                )}
+                <p class="mt-4 text-[11px] font-bold text-jay-700 uppercase">เจ · วีแกน</p>
+                <h3 class="mt-1.5 text-lg leading-snug font-extrabold">
+                  <a
+                    href={`${menuPath}#${dish.slug[locale]}`}
+                    class="transition-colors after:absolute after:inset-0 after:rounded-lg group-hover:text-leaf-800"
+                  >
+                    {dish.name[locale]}
+                  </a>
+                </h3>
+                <p class="mt-auto pt-3 text-lg font-bold text-leaf-800 tabular-nums">
+                  ฿{dish.price_thb}
+                </p>
+              </article>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-7 sm:hidden">
+          <a
+            href={menuPath}
+            class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+          >
+            ดูเมนูทั้งหมดพร้อมราคา
+          </a>
+        </p>
+      </section>
+    )
+  }
 
-  <section class="wrap pb-4">
+  <section class="wrap pb-6">
     <div
       class="relative overflow-hidden rounded-3xl border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
     >
       <Sprig
         class="pointer-events-none absolute -right-6 -bottom-9 h-44 w-auto text-leaf-700 opacity-[0.13]"
       />
-      <h2 class="font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
-        {t(locale, 'home.findUs')}
+      <h2 class="relative font-display text-2xl font-bold tracking-tight text-leaf-900 sm:text-3xl">
+        ที่อยู่และเวลาเปิด-ปิด
       </h2>
       <div class="relative mt-6 grid gap-8 sm:grid-cols-2">
         <div>
-          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
-            {t(locale, 'contact.address')}
-          </h3>
-          <p class="mt-2 max-w-[36ch] leading-relaxed">{location.address[locale]}</p>
-          <div class="mt-5 flex flex-wrap gap-3">
-            <a
-              href={phoneHref}
-              class="inline-flex min-h-12 items-center gap-2.5 rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                class="h-4.5 w-4.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
-                ></path>
-              </svg>
-              {settings.phone}
-            </a>
-            <a
-              href={menuPath}
-              class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
-            >
-              {t(locale, 'home.viewMenu')}
-            </a>
-          </div>
+          <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">ที่อยู่</h3>
+          <address class="mt-2 max-w-[38ch] leading-relaxed not-italic">
+            {location.address[locale]}
+          </address>
         </div>
         <div>
           <h3 class="text-xs font-bold tracking-[0.14em] text-terracotta-700 uppercase">
-            {t(locale, 'contact.hours')}
+            เวลาปกติ
           </h3>
-          <table class="mt-2 text-left">
-            <tbody>
-              {
-                location.hours.map((h) => (
-                  <tr data-special-hours-replaced>
-                    <th scope="row" class="py-1 pr-6 font-medium">
-                      {daysLabel(h.days)}
-                    </th>
-                    <td class="py-1 tabular-nums">
-                      {h.open}–{h.close}
-                    </td>
-                  </tr>
-                ))
-              }
-              <tr>
-                <th scope="row" class="py-1 pr-6 font-medium">{t(locale, 'hours.delivery')}</th>
-                <td class="py-1">{t(locale, 'hours.deliveryValue')}</td>
-              </tr>
-            </tbody>
-          </table>
+          <dl class="mt-2 space-y-1.5">
+            {
+              location.hours.map((hours) => (
+                <div
+                  data-special-hours-replaced
+                  class="flex flex-wrap gap-x-3 text-lg font-semibold"
+                >
+                  <dt>{daysLabel(hours.days)}</dt>
+                  <dd class="tabular-nums">
+                    {hours.open}–{hours.close} น.
+                  </dd>
+                </div>
+              ))
+            }
+          </dl>
         </div>
+      </div>
+      <div class="relative mt-7 flex flex-wrap gap-3">
+        <a
+          href={contactPath}
+          class="inline-flex min-h-12 items-center rounded-full bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
+        >
+          ดูข้อมูลติดต่อ
+        </a>
+        <a
+          href={phoneHref}
+          class="inline-flex min-h-12 items-center rounded-full border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
+        >
+          โทร {settings.phone}
+        </a>
       </div>
     </div>
   </section>

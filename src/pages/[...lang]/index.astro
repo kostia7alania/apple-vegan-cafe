@@ -13,7 +13,6 @@ import { getPublishableMedia, isPublishableMedia } from '../../lib/media';
 import { t } from '../../lib/ui';
 import { getPublicDishDescription } from '../../lib/dishes';
 import { orderingAnalyticsProvider, orderingCtaLabel } from '../../lib/ordering';
-import { TH_JAY_LANDING_REVIEWED } from '../../lib/site';
 
 export function getStaticPaths() {
   return localeStaticPaths();
@@ -482,9 +481,9 @@ const openChip = mainHours
   }
 
   {
-    /* TH-only: internal link to the seasonal เจ landing page (backlog R1).
+    /* TH-only: internal link to the fact-backed local-intent เจ landing.
        Locale-conditional — the EN/RU home pages must not render this block. */
-    locale === 'th' && TH_JAY_LANDING_REVIEWED && (
+    locale === 'th' && (
       <section class="wrap pt-10">
         <a
           href="/th/ร้านอาหารเจ-พัทยา/"
