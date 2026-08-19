@@ -102,6 +102,11 @@
     scroll-padding-top: 10rem;
   }
 
+  html.static-header {
+    /* The menu owns the only sticky navigation on this page. */
+    scroll-padding-top: 5rem;
+  }
+
   body {
     background:
       linear-gradient(90deg, rgb(47 93 58 / 0.025) 1px, transparent 1px),
@@ -368,15 +373,45 @@
     display: none;
   }
 
+  .scrollbar-subtle {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-cream-400) transparent;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar {
+    height: 0.35rem;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--color-cream-400);
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .menu-section-deferred {
     content-visibility: auto;
     contain-intrinsic-size: auto none auto var(--menu-estimate-mobile, 42rem);
   }
 
-  @media (min-width: 80rem) {
+  @media (min-width: 64rem) {
     .menu-section-deferred {
       contain-intrinsic-size: auto none auto var(--menu-estimate-wide, 42rem);
     }
+  }
+
+  .menu-guidance-summary {
+    list-style: none;
+  }
+
+  .menu-guidance-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-guidance-summary::marker {
+    content: '';
   }
 
   .menu-category-anchor[aria-current='location'] {

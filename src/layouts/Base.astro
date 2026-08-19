@@ -25,9 +25,20 @@ interface Props {
   ogType?: 'website' | 'article';
   /** JSON-LD objects to embed on this page */
   jsonld?: Record<string, unknown>[];
+  /** Long discovery pages can keep their own compact navigation sticky. */
+  staticHeader?: boolean;
 }
 
-const { locale, title, description, alternates, noindex, ogType, jsonld = [] } = Astro.props;
+const {
+  locale,
+  title,
+  description,
+  alternates,
+  noindex,
+  ogType,
+  jsonld = [],
+  staticHeader = false,
+} = Astro.props;
 
 // Pre-launch gate: placeholder menu must not get indexed (see src/lib/site.ts)
 const effectiveNoindex = noindex || !SITE_LAUNCHED;
@@ -167,7 +178,7 @@ const specialHoursScript = `
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} class:list={[staticHeader && 'static-header']}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -199,7 +210,10 @@ const specialHoursScript = `
         horizontally-scrollable row — the hero stays high above the fold. */
     }
     <header
-      class="sticky top-0 z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md print:hidden"
+      class:list={[
+        'z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md print:hidden',
+        staticHeader ? 'relative' : 'sticky top-0',
+      ]}
     >
       <div class="wrap py-3">
         <div class="flex items-center justify-between gap-3">

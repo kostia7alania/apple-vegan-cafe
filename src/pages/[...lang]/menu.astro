@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import JayBadge from '../../components/JayBadge.astro';
-import LeafDivider from '../../components/LeafDivider.astro';
 import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
 import { localeStaticPaths, LOCALES, type Locale } from '../../lib/i18n';
 import { absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
@@ -80,11 +79,6 @@ const featuredDishes = MENU_QUICK_PICK_IDS.flatMap((id) => {
 });
 const allergens = await getCollection('allergens');
 const allergenName = (id: string) => allergens.find((a) => a.id === id)?.data.name[locale] ?? id;
-// Grab's catalogue attribute is retained for reconciliation, but it must not override the
-// cafe-owned dietary contract. One Grab item is currently mislabelled Vegetarian; every public
-// dish record is explicitly vegan + jay, so cards show the less repetitive jay mark only.
-const displayDietaryTags = (dish: (typeof dishes)[number]['data']) =>
-  dish.dietaryTags.filter((tag) => tag === 'jay');
 const largestImageCandidate = (asset: (typeof dishes)[number]['data']['images'][number]) => {
   const width = asset.srcLargeWidth ?? asset.srcSmallWidth ?? asset.width;
   const src = asset.srcLarge ?? asset.srcSmall ?? asset.src;
@@ -169,107 +163,293 @@ const jsonld = [
 ];
 ---
 
-<Base {locale} {title} {description} {alternates} {jsonld}>
-  <div id="top" class="page-shell wrap pt-10 pb-2 sm:pt-14">
-    <p class="page-kicker">
-      <JayBadge label={t(locale, 'trust.jay')} />
-    </p>
-    <h1
-      class="page-heading mt-4 text-4xl leading-tight font-black tracking-tight text-leaf-900 sm:text-5xl"
-    >
-      {t(locale, 'menu.title')}
-    </h1>
-    <p class="page-deck mt-3 text-ink-500">{t(locale, 'trust.honest')}</p>
-    <p class="hidden print:block">
-      Apple Vegan Cafe &amp; Restaurant · {t(locale, 'days.daily')} 7:00–22:00 · {settings?.phone} · apple-vegan-cafe.com
-    </p>
-    <LeafDivider class="mt-6 max-w-52 sm:max-w-60" />
+<Base {locale} {title} {description} {alternates} {jsonld} staticHeader>
+  <section
+    id="top"
+    class="wrap grid gap-8 pt-8 pb-6 lg:grid-cols-[minmax(0,0.76fr)_minmax(0,1.24fr)] lg:items-start lg:gap-10 lg:pt-12 lg:pb-8"
+  >
+    <div class="min-w-0 lg:pt-4">
+      <p class="text-center lg:text-left">
+        <JayBadge label={t(locale, 'trust.jay')} />
+      </p>
+      <h1
+        class="font-display mx-auto mt-4 max-w-[13ch] text-center text-4xl leading-[1.05] font-bold tracking-tight text-leaf-900 text-balance sm:text-5xl lg:mx-0 lg:text-left"
+      >
+        {t(locale, 'menu.title')}
+      </h1>
+      <p
+        class="mx-auto mt-3 max-w-[40ch] text-center text-base leading-relaxed text-ink-700 text-pretty lg:mx-0 lg:text-left"
+      >
+        {t(locale, 'trust.honest')}
+      </p>
+      <p class="mt-2 text-center text-sm font-semibold text-leaf-700 lg:text-left">
+        {t(locale, 'menu.catalogueSummary').replace('{count}', String(dishes.length))}
+      </p>
+      <p class="hidden print:block">
+        Apple Vegan Cafe &amp; Restaurant · {t(locale, 'days.daily')} 7:00–22:00 · {settings.phone} ·
+        apple-vegan-cafe.com
+      </p>
+
+      <search
+        id="menu-search"
+        data-menu-search
+        data-results-template={t(locale, 'menu.resultsCount')}
+        data-results-one={t(locale, 'menu.resultsCountOne')}
+        hidden
+        class="mt-6 scroll-mt-20 print:hidden"
+      >
+        <form data-menu-search-form action={localePath(locale, '/menu/')} method="get">
+          <label for={`menu-search-${locale}`} class="block text-sm font-bold text-leaf-900">
+            {t(locale, 'menu.searchLabel')}
+          </label>
+          <div class="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+            <input
+              id={`menu-search-${locale}`}
+              data-menu-search-input
+              name="q"
+              type="search"
+              enterkeyhint="search"
+              aria-describedby={`menu-search-status-${locale}`}
+              placeholder={t(locale, 'menu.searchPlaceholder')}
+              class="min-h-12 min-w-0 rounded-lg border border-cream-400 bg-cream-50 px-4 text-base text-ink-900 placeholder:text-ink-500/80 focus:border-leaf-700"
+            />
+            <button
+              type="submit"
+              class="min-h-12 rounded-lg bg-leaf-700 px-4 font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-5"
+            >
+              {t(locale, 'menu.searchAction')}
+            </button>
+          </div>
+          <div class="mt-2 flex min-h-11 flex-wrap items-center gap-2 text-sm">
+            <label
+              class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-cream-300 bg-cream-50 px-3 font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900"
+            >
+              <input
+                data-menu-price-filter
+                type="checkbox"
+                name="price"
+                value="150"
+                class="h-4 w-4 shrink-0 accent-leaf-700"
+              />
+              <span class="sr-only">{t(locale, 'menu.priceFilter')}: </span>
+              <span>{t(locale, 'menu.priceUpTo150')}</span>
+            </label>
+            {
+              verifiedDietFilters.length > 0 && (
+                <fieldset class="contents">
+                  <legend class="sr-only">{t(locale, 'menu.verifiedDietFilter')}</legend>
+                  {verifiedDietFilters.map((option) => (
+                    <label class="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-cream-300 bg-cream-50 px-3 font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900">
+                      <input
+                        data-menu-diet-filter
+                        type="checkbox"
+                        name="diet"
+                        value={option.value}
+                        class="h-4 w-4 shrink-0 accent-leaf-700"
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </fieldset>
+              )
+            }
+            <button
+              data-menu-search-clear
+              type="button"
+              hidden
+              class="ml-auto inline-flex min-h-11 items-center px-1 font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+            >
+              {t(locale, 'menu.clearFilters')}
+            </button>
+          </div>
+          <p
+            id={`menu-search-status-${locale}`}
+            data-menu-search-status
+            aria-live="polite"
+            aria-atomic="true"
+            hidden
+            class="mt-2 text-sm font-semibold text-leaf-800"
+          >
+          </p>
+        </form>
+      </search>
+
+      {
+        orderingLinks.length > 1 && (
+          <section
+            id="delivery-options"
+            aria-label={t(locale, 'ordering.deliveryOptions')}
+            class="mt-5 scroll-mt-20 print:hidden"
+          >
+            <ul class="flex flex-wrap justify-center gap-2 lg:justify-start">
+              {orderingLinks.map((link) => (
+                <li>
+                  <a
+                    href={link.url}
+                    rel="noopener"
+                    data-analytics-event="order_click"
+                    data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                    class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-5 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                  >
+                    {orderingCtaLabel(locale, link.provider)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+
     {
-      orderingLinks.length > 0 && (
+      featuredDishes.length > 0 && (
         <section
-          id="delivery-options"
-          aria-label={t(locale, 'ordering.deliveryOptions')}
-          class="mt-5 scroll-mt-28 print:hidden"
+          data-menu-quick-picks
+          class="min-w-0 print:hidden"
+          aria-labelledby={`quick-picks-${locale}`}
         >
-          <ul class="flex flex-wrap justify-center gap-3">
-            {orderingLinks.map((link) => (
-              <li>
+          <div class="flex flex-wrap items-end justify-between gap-x-5 gap-y-1">
+            <h2
+              id={`quick-picks-${locale}`}
+              class="font-display text-2xl font-bold text-leaf-900 sm:text-3xl"
+            >
+              {t(locale, 'menu.quickPicks')}
+            </h2>
+            <p class="text-sm text-ink-500">{t(locale, 'menu.quickPicksHint')}</p>
+          </div>
+          <ul class="scrollbar-subtle -mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 lg:mx-0 lg:grid lg:grid-cols-2 lg:px-0">
+            {featuredDishes.map(({ data: dish }, index) => (
+              <li
+                data-menu-quick-pick
+                data-menu-quick-pick-target={dish.slug[locale]}
+                class="w-[15.5rem] shrink-0 snap-start sm:w-[18rem] lg:w-auto"
+              >
                 <a
-                  href={link.url}
-                  rel="noopener"
-                  data-analytics-event="order_click"
-                  data-analytics-provider={orderingAnalyticsProvider(link.provider)}
-                  class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
+                  href={`#${dish.slug[locale]}`}
+                  data-analytics-event="menu_popular_pick_click"
+                  data-analytics-provider="grab"
+                  class="group flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-cream-50 shadow-[0_16px_35px_-30px_rgba(38,34,27,0.55)] transition hover:-translate-y-0.5 hover:border-leaf-700/40 hover:shadow-[0_20px_38px_-28px_rgba(38,34,27,0.6)] motion-reduce:transform-none motion-reduce:transition-none"
                 >
-                  {orderingCtaLabel(locale, link.provider)}
+                  {dish.images[0] && (
+                    <ResponsiveMedia
+                      asset={dish.images[0]}
+                      alt=""
+                      eager={index === 0}
+                      sizes="(min-width: 1024px) 280px, (min-width: 640px) 288px, 248px"
+                      className="aspect-[4/3] w-full border-b border-cream-300 bg-cream-100 object-cover transition duration-300 group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
+                    />
+                  )}
+                  <span class="flex flex-1 flex-col px-4 py-3">
+                    <span class="text-[0.7rem] font-bold tracking-wide text-terracotta-700 uppercase">
+                      {categories.find(({ id }) => id === dish.category.id)?.data.name[locale]}
+                    </span>
+                    <span class="mt-1 leading-snug font-extrabold text-ink-900 group-hover:text-leaf-800">
+                      {dish.name[locale]}
+                    </span>
+                    <span class="mt-auto flex items-end justify-between gap-3 pt-3">
+                      <span class="font-bold text-leaf-800 tabular-nums">฿{dish.price_thb}</span>
+                      <span class="text-sm font-semibold text-leaf-700">
+                        {t(locale, 'menu.viewDish')} →
+                      </span>
+                    </span>
+                  </span>
                 </a>
               </li>
             ))}
           </ul>
+          <p class="mt-2 text-xs leading-relaxed text-ink-500">
+            {t(locale, 'menu.catalogueImageNote')}
+          </p>
         </section>
       )
     }
-  </div>
+  </section>
 
-  <aside class="wrap pb-6" aria-label={t(locale, 'menu.priceFilter')}>
-    <p class="mx-auto max-w-2xl text-center text-sm leading-relaxed text-ink-500">
-      {pricePolicyText}
-    </p>
-  </aside>
-
-  <aside class="wrap pb-6" aria-label={t(locale, 'menu.dietGuidance')}>
-    <div
-      class="mx-auto grid max-w-2xl gap-2 rounded-lg border border-leaf-700/20 bg-leaf-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
-    >
-      <p class="flex items-start gap-3">
-        <span aria-hidden="true">🌱</span>
-        <span>
-          <strong class="font-bold text-leaf-900">{t(locale, 'menu.allVeganJay')}</strong>{' '}
-          {t(locale, 'menu.plantNamesNote')}
-          <details class="mt-1.5">
-            <summary
-              class="cursor-pointer font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 marker:text-mango-600 hover:text-leaf-900"
-            >
-              {t(locale, 'menu.jayMeaningAction')}
-            </summary>
-            <p class="mt-1.5 border-l-2 border-mango-500/70 pl-3 text-ink-600">
-              {t(locale, 'menu.jayMeaning')}
-            </p>
-          </details>
-        </span>
-      </p>
-      <p id={`diet-facts-note-${locale}`} class="border-t border-leaf-700/15 pt-2">
-        {t(locale, 'menu.dietFactsNote')}{' '}
-        <a
-          href={`${localePath(locale, '/faq/')}#cross-contact`}
-          class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+  <section class="wrap pb-5 print:hidden" aria-label={t(locale, 'menu.dietGuidance')}>
+    <div class="grid gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(17rem,0.65fr)]">
+      <details class="menu-guidance group rounded-xl border border-leaf-700/20 bg-leaf-50">
+        <summary
+          class="menu-guidance-summary flex min-h-16 cursor-pointer items-center gap-3 px-4 py-3 text-sm leading-relaxed text-ink-700"
         >
-          {t(locale, 'menu.dietGuidance')} →
-        </a>
-        {
-          dietaryContactHref && (
-            <span class="mt-2 block">
-              {t(locale, 'operations.dietaryPrompt')}{' '}
-              <a
-                href={dietaryContactHref}
-                rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
-                data-analytics-event="dietary_contact_click"
-                data-analytics-provider={dietaryContact}
-                class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
-              >
-                {dietaryContactLabel} →
-              </a>
-            </span>
-          )
-        }
-      </p>
+          <span
+            lang="th"
+            aria-hidden="true"
+            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-mango-200 font-display text-base font-bold text-jay-700"
+          >
+            เจ
+          </span>
+          <span class="min-w-0 flex-1">
+            <strong class="block font-bold text-leaf-900">{t(locale, 'menu.allVeganJay')}</strong>
+            <span>{t(locale, 'menu.plantNamesNote')}</span>
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            class="h-5 w-5 shrink-0 text-leaf-700 transition-transform group-open:rotate-180"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </summary>
+        <div class="border-t border-leaf-700/15 px-4 py-3 text-sm leading-relaxed text-ink-700">
+          <p>
+            <strong class="font-semibold text-leaf-900">{t(locale, 'menu.jayMeaningAction')}</strong
+            >{' '}
+            {t(locale, 'menu.jayMeaning')}
+          </p>
+          <p id={`diet-facts-note-${locale}`} class="mt-2">
+            {t(locale, 'menu.dietFactsNote')}{' '}
+            <a
+              href={`${localePath(locale, '/faq/')}#cross-contact`}
+              class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+            >
+              {t(locale, 'menu.dietGuidance')} →
+            </a>
+          </p>
+          {
+            dietaryContactHref && (
+              <p class="mt-2">
+                {t(locale, 'operations.dietaryPrompt')}{' '}
+                <a
+                  href={dietaryContactHref}
+                  rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
+                  data-analytics-event="dietary_contact_click"
+                  data-analytics-provider={dietaryContact}
+                  class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
+                >
+                  {dietaryContactLabel} →
+                </a>
+              </p>
+            )
+          }
+        </div>
+      </details>
+      <aside
+        class="flex items-start gap-3 rounded-xl border border-cream-300 bg-cream-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
+        aria-label={t(locale, 'menu.priceNote')}
+      >
+        <span
+          aria-hidden="true"
+          class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-mango-200 font-bold text-leaf-900"
+        >
+          ฿
+        </span>
+        <span>
+          <strong class="block font-bold text-leaf-900">{t(locale, 'menu.priceNote')}</strong>
+          {pricePolicyText}
+        </span>
+      </aside>
     </div>
-  </aside>
+  </section>
 
   {
     spiceRequests && spiceRequestText && (
-      <aside class="wrap pb-6" aria-label={t(locale, 'operations.spiceQuestion')}>
-        <div class="mx-auto max-w-2xl rounded-lg border border-mango-500/30 bg-mango-200/25 px-4 py-3 text-sm leading-relaxed text-ink-700">
+      <aside class="wrap pb-5" aria-label={t(locale, 'operations.spiceQuestion')}>
+        <div class="rounded-xl border border-mango-500/30 bg-mango-200/25 px-4 py-3 text-sm leading-relaxed text-ink-700">
           <p class="font-semibold text-leaf-900">{t(locale, 'operations.spiceQuestion')}</p>
           <p class="mt-1">{spiceRequestText}</p>
           {spiceRequests.scopeNote && <p class="mt-1">{spiceRequests.scopeNote[locale]}</p>}
@@ -278,169 +458,15 @@ const jsonld = [
     )
   }
 
-  <search
-    id="menu-search"
-    data-menu-search
-    data-results-template={t(locale, 'menu.resultsCount')}
-    hidden
-    class="wrap scroll-mt-44 pb-7"
-  >
-    <form
-      data-menu-search-form
-      action={localePath(locale, '/menu/')}
-      method="get"
-      class="mx-auto max-w-2xl rounded-lg border border-cream-300 bg-cream-50 p-4 shadow-[0_12px_30px_-24px_rgba(38,34,27,0.35)] sm:p-5"
-    >
-      <label for={`menu-search-${locale}`} class="block font-bold text-leaf-900">
-        {t(locale, 'menu.searchLabel')}
-      </label>
-      <div class="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-        <input
-          id={`menu-search-${locale}`}
-          data-menu-search-input
-          name="q"
-          type="search"
-          autocomplete="off"
-          enterkeyhint="search"
-          aria-describedby={`menu-search-hint-${locale} menu-search-status-${locale}`}
-          placeholder={t(locale, 'menu.searchPlaceholder')}
-          class="min-h-12 min-w-0 flex-1 rounded-lg border border-cream-400 bg-cream-100 px-4 text-base text-ink-900 placeholder:text-ink-500/80 focus:border-leaf-700"
-        />
-        <button
-          type="submit"
-          class="min-h-12 rounded-lg bg-leaf-700 px-4 font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-6"
-        >
-          {t(locale, 'menu.searchAction')}
-        </button>
-      </div>
-      <fieldset class="mt-4">
-        <legend class="text-sm font-bold text-leaf-900">{t(locale, 'menu.priceFilter')}</legend>
-        <div class="mt-2 grid grid-cols-3 gap-2">
-          {
-            [
-              { value: 'all', label: t(locale, 'menu.priceAny') },
-              { value: '150', label: t(locale, 'menu.priceUpTo150') },
-              { value: '200', label: t(locale, 'menu.priceUpTo200') },
-            ].map((option, index) => (
-              <label class="flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-lg border border-cream-300 bg-cream-100 px-2 py-2 text-center text-sm font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900">
-                <input
-                  data-menu-price-filter
-                  type="radio"
-                  name="price"
-                  value={option.value}
-                  checked={index === 0}
-                  class="h-4 w-4 shrink-0 accent-leaf-700"
-                />
-                <span>{option.label}</span>
-              </label>
-            ))
-          }
-        </div>
-      </fieldset>
-      {
-        verifiedDietFilters.length > 0 && (
-          <fieldset class="mt-4">
-            <legend class="text-sm font-bold text-leaf-900">
-              {t(locale, 'menu.verifiedDietFilter')}
-            </legend>
-            <div class="mt-2 grid gap-2 sm:grid-cols-2">
-              {verifiedDietFilters.map((option) => (
-                <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-lg border border-cream-300 bg-cream-100 px-3 py-2 text-sm font-semibold text-ink-700 has-checked:border-leaf-700 has-checked:bg-leaf-50 has-checked:text-leaf-900">
-                  <input
-                    data-menu-diet-filter
-                    type="checkbox"
-                    name="diet"
-                    value={option.value}
-                    class="h-4 w-4 shrink-0 accent-leaf-700"
-                  />
-                  <span>{option.label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-        )
-      }
-      <div class="mt-2 flex min-h-6 flex-wrap items-start justify-between gap-x-4 gap-y-1 text-sm">
-        <p id={`menu-search-hint-${locale}`} class="text-ink-500">
-          {t(locale, 'menu.searchHint')}
-        </p>
-        <button
-          data-menu-search-clear
-          type="button"
-          hidden
-          class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
-        >
-          {t(locale, 'menu.clearSearch')}
-        </button>
-      </div>
-      <p
-        id={`menu-search-status-${locale}`}
-        data-menu-search-status
-        aria-live="polite"
-        aria-atomic="true"
-        class="mt-2 font-semibold text-leaf-800"
-      >
-      </p>
-    </form>
-  </search>
-
-  {
-    featuredDishes.length > 0 && (
-      <section data-menu-quick-picks class="wrap pb-7" aria-labelledby={`quick-picks-${locale}`}>
-        <div class="flex flex-wrap items-end justify-between gap-x-5 gap-y-1">
-          <h2 id={`quick-picks-${locale}`} class="text-xl font-black text-leaf-900 sm:text-2xl">
-            {t(locale, 'menu.quickPicks')}
-          </h2>
-          <p class="text-sm text-ink-500">{t(locale, 'menu.quickPicksHint')}</p>
-        </div>
-        <ul class="scrollbar-none -mx-5 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 lg:grid-cols-4">
-          {featuredDishes.map(({ data: dish }) => (
-            <li
-              data-menu-quick-pick
-              data-menu-quick-pick-target={dish.slug[locale]}
-              class="w-[17rem] shrink-0 snap-start sm:w-auto"
-            >
-              <a
-                href={`#${dish.slug[locale]}`}
-                class:list={[
-                  'group grid h-full min-h-28 items-center gap-3 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/40 hover:bg-leaf-50',
-                  dish.images[0] ? 'grid-cols-[minmax(0,1fr)_4.5rem]' : 'grid-cols-1',
-                ]}
-              >
-                <span class="flex min-w-0 flex-col self-stretch">
-                  <span class="text-[11px] font-bold tracking-wide text-terracotta-700 uppercase">
-                    {categories.find(({ id }) => id === dish.category.id)?.data.name[locale]}
-                  </span>
-                  <span class="mt-1 leading-snug font-extrabold text-ink-900 group-hover:text-leaf-800">
-                    {dish.name[locale]}
-                  </span>
-                  <span class="mt-auto pt-2 text-sm font-bold text-leaf-700 tabular-nums">
-                    ฿{dish.price_thb} ↓
-                  </span>
-                </span>
-                {dish.images[0] && (
-                  <ResponsiveMedia
-                    asset={dish.images[0]}
-                    alt=""
-                    sizes="72px"
-                    className="aspect-square w-18 rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm"
-                  />
-                )}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )
-  }
-
   <nav
     data-menu-category-nav
     aria-label={t(locale, 'menu.categoriesNav')}
-    class="sticky top-[6.75rem] z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md sm:top-[6.5rem] print:hidden"
+    class="sticky top-0 z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md print:hidden"
   >
     <div class="wrap flex items-center gap-2">
       <a
+        data-menu-search-jump
+        hidden
         href="#menu-search"
         aria-label={t(locale, 'menu.searchLabel')}
         class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-leaf-700 px-3 text-sm font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-4"
@@ -459,27 +485,8 @@ const jsonld = [
         </svg>
         <span class="hidden sm:inline">{t(locale, 'menu.searchAction')}</span>
       </a>
-      <a
-        href="#top"
-        aria-label={t(locale, 'menu.backToTop')}
-        class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-leaf-700/20 bg-cream-50 text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          class="h-4 w-4"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.25"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M12 19V5"></path>
-          <path d="m5 12 7-7 7 7"></path>
-        </svg>
-      </a>
       <div class="min-w-0 flex-1 overflow-hidden">
-        <ul class="scrollbar-none -mx-1 flex snap-x gap-2 overflow-x-auto px-1 py-3">
+        <ul class="scrollbar-subtle -mx-1 flex snap-x gap-2 overflow-x-auto px-1 py-3">
           {
             nonEmptyCategories.map((category) => (
               <li data-menu-category-link={category.id} class="snap-start">
@@ -498,6 +505,23 @@ const jsonld = [
           }
         </ul>
       </div>
+      {
+        orderingLinks.length > 0 && (
+          <a
+            href={orderingLinks.length === 1 ? orderingLinks[0]!.url : '#delivery-options'}
+            rel={orderingLinks.length === 1 ? 'noopener' : undefined}
+            data-analytics-event={orderingLinks.length === 1 ? 'order_click' : undefined}
+            data-analytics-provider={
+              orderingLinks.length === 1
+                ? orderingAnalyticsProvider(orderingLinks[0]!.provider)
+                : undefined
+            }
+            class="hidden min-h-11 shrink-0 items-center rounded-lg bg-mango-500 px-4 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300 md:inline-flex"
+          >
+            {t(locale, 'actions.order')}
+          </a>
+        )
+      }
     </div>
   </nav>
 
@@ -510,7 +534,7 @@ const jsonld = [
             data-menu-section={category.id}
             id={category.data.slug[locale]}
             style={`--menu-estimate-mobile: ${Math.max(items.length * 9.75, 42)}rem; --menu-estimate-wide: ${Math.max(Math.ceil(items.length / 2) * 10.75, 42)}rem;`}
-            class:list={['scroll-mt-24 pt-12', categoryIndex > 0 && 'menu-section-deferred']}
+            class:list={['scroll-mt-20 pt-10', categoryIndex > 0 && 'menu-section-deferred']}
           >
             <div class="flex items-center gap-4">
               <h2 class="section-heading text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl">
@@ -518,7 +542,7 @@ const jsonld = [
               </h2>
               <span class="h-px flex-1 bg-cream-300" aria-hidden="true" />
             </div>
-            <ul class="mt-4 grid gap-2 xl:grid-cols-2">
+            <ul class="mt-4 grid gap-2 lg:grid-cols-2 lg:gap-3">
               {items.map(({ data: dish }) => (
                 <li
                   data-menu-item
@@ -535,7 +559,7 @@ const jsonld = [
                     class:list={[
                       'grid items-start gap-4',
                       dish.images[0]
-                        ? 'grid-cols-[minmax(0,1fr)_7rem] sm:grid-cols-[minmax(0,1fr)_9rem]'
+                        ? 'grid-cols-[minmax(0,1fr)_7rem] sm:grid-cols-[minmax(0,1fr)_9rem] lg:grid-cols-[minmax(0,1fr)_7rem]'
                         : 'grid-cols-1',
                     ]}
                   >
@@ -553,16 +577,12 @@ const jsonld = [
                           {getPublicDishDescription(dish, locale)}
                         </p>
                       )}
-                      {(displayDietaryTags(dish).length > 0 ||
-                        dish.foodFacts.spicyLevel !== null ||
+                      {(dish.foodFacts.spicyLevel !== null ||
                         (dish.foodFacts.allergens.status === 'verified' &&
                           dish.foodFacts.allergens.contains.length > 0) ||
                         dish.foodFacts.noGlutenIngredients === 'yes' ||
                         dish.foodFacts.jainFriendly === 'yes') && (
                         <p class="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                          {displayDietaryTags(dish).map(() => (
-                            <JayBadge size="sm" label={t(locale, 'tag.jay')} />
-                          ))}
                           {dish.foodFacts.spicyLevel !== null &&
                             (dish.foodFacts.spicyLevel === 0 ? (
                               <span class="text-xs font-semibold text-ink-500">
@@ -600,7 +620,7 @@ const jsonld = [
                       )}
                     </div>
                     {dish.images[0] && (
-                      <figure class="w-28 sm:w-36 xl:w-28">
+                      <figure class="w-28 sm:w-36 lg:w-28">
                         <a
                           href={largestImageCandidate(dish.images[0]).src}
                           target="_blank"
@@ -619,7 +639,7 @@ const jsonld = [
                           <ResponsiveMedia
                             asset={dish.images[0]}
                             alt={dish.name[locale]}
-                            sizes="(min-width: 1280px) 112px, (min-width: 640px) 144px, 112px"
+                            sizes="(min-width: 1024px) 112px, (min-width: 640px) 144px, 112px"
                             className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm transition group-hover/photo:brightness-95"
                           />
                           <span
@@ -770,11 +790,13 @@ const jsonld = [
         document.querySelectorAll<HTMLAnchorElement>('[data-menu-category-anchor]'),
       );
       const categoryNav = document.querySelector<HTMLElement>('[data-menu-category-nav]');
+      const searchJump = document.querySelector<HTMLAnchorElement>('[data-menu-search-jump]');
       const quickPicksRoot = document.querySelector<HTMLElement>('[data-menu-quick-picks]');
       const quickPicks = Array.from(
         document.querySelectorAll<HTMLElement>('[data-menu-quick-pick]'),
       );
       const resultsTemplate = searchRoot.dataset.resultsTemplate ?? '{count}';
+      const resultsOne = searchRoot.dataset.resultsOne ?? resultsTemplate;
       const recognizedDietFilters = new Set(['no-gluten', 'jain']);
       let unavailableInitialDietFilters = new Set<string>();
       let updateTimer = 0;
@@ -798,7 +820,7 @@ const jsonld = [
       const applySearch = (updateUrl = false) => {
         if (!input || !status || !clearButton || !noResults || !noResultsMessage) return;
 
-        const query = normalize(input.value);
+        const queryTokens = normalize(input.value).split(/\s+/).filter(Boolean);
         const selectedPrice = priceInputs.find((priceInput) => priceInput.checked)?.value ?? 'all';
         const selectedDiet = dietInputs
           .filter((dietInput) => dietInput.checked)
@@ -808,8 +830,8 @@ const jsonld = [
         let visibleCount = 0;
 
         items.forEach((item) => {
-          const matchesQuery =
-            !query || normalize(item.dataset.menuSearchIndex ?? '').includes(query);
+          const normalizedIndex = normalize(item.dataset.menuSearchIndex ?? '');
+          const matchesQuery = queryTokens.every((token) => normalizedIndex.includes(token));
           const matchesPrice = Number(item.dataset.menuPrice) <= maxPrice;
           const matchesDiet = selectedDiet.every((filter) =>
             filter === 'no-gluten'
@@ -851,17 +873,25 @@ const jsonld = [
           setActiveCategory(sections.find((section) => !section.hidden)?.dataset.menuSection);
         }
 
-        clearButton.hidden = query.length === 0;
+        const hasActiveFilters =
+          queryTokens.length > 0 || selectedPrice !== 'all' || selectedDiet.length > 0;
+        clearButton.hidden = !hasActiveFilters;
         noResults.hidden = visibleCount > 0;
         noResultsMessage.textContent =
           selectedDiet.length > 0
             ? (noResultsMessage.dataset.verifiedMessage ?? '')
             : (noResultsMessage.dataset.defaultMessage ?? '');
-        status.textContent = resultsTemplate.replace('{count}', String(visibleCount));
+        status.hidden = !hasActiveFilters;
+        status.textContent = hasActiveFilters
+          ? (visibleCount === 1 ? resultsOne : resultsTemplate).replace(
+              '{count}',
+              String(visibleCount),
+            )
+          : '';
 
         if (updateUrl) {
           const nextUrl = new URL(window.location.href);
-          if (query) nextUrl.searchParams.set('q', input.value.trim());
+          if (queryTokens.length > 0) nextUrl.searchParams.set('q', input.value.trim());
           else nextUrl.searchParams.delete('q');
 
           if (selectedPrice === 'all') nextUrl.searchParams.delete('price');
@@ -904,6 +934,13 @@ const jsonld = [
       clearButton?.addEventListener('click', () => {
         if (!input) return;
         input.value = '';
+        priceInputs.forEach((priceInput) => {
+          priceInput.checked = false;
+        });
+        dietInputs.forEach((dietInput) => {
+          dietInput.checked = false;
+        });
+        unavailableInitialDietFilters.clear();
         applySearch(true);
         input.focus();
       });
@@ -929,6 +966,7 @@ const jsonld = [
         ),
       );
       searchRoot.hidden = false;
+      if (searchJump) searchJump.hidden = false;
       applySearch();
 
       categoryAnchors.forEach((anchor) =>
@@ -952,7 +990,7 @@ const jsonld = [
               )[0];
             if (activeSection) setActiveCategory(activeSection.dataset.menuSection);
           },
-          { rootMargin: '-178px 0px -60% 0px' },
+          { rootMargin: '-88px 0px -60% 0px' },
         );
         sections.forEach((section) => sectionObserver.observe(section));
       }
