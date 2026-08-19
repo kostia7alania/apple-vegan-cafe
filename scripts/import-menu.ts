@@ -13,12 +13,16 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
+import { format, resolveConfig } from 'prettier';
 
 const root = resolve(import.meta.dirname, '..');
 const dishesDir = join(root, 'src/content/dishes');
 const categoriesFile = join(root, 'src/content/categories.json');
 const itemMapFile = join(root, 'scripts/data/grab-item-map.json');
 const ITEM_ID_RE = /^THITE\d{19}$/;
+const prettierConfig = (await resolveConfig(join(root, '.prettierrc.json'))) ?? {};
+// JSON output does not need the Astro plugin referenced by the shared CLI config.
+prettierConfig.plugins = [];
 
 type Availability = 'AVAILABLE' | 'UNAVAILABLE_PERMANENTLY' | 'UNAVAILABLE_TODAY';
 
@@ -258,7 +262,10 @@ for (const row of imported) {
     itemId: row.itemId,
     file,
     changedFields,
-    content: `${JSON.stringify(nextDish, null, 2)}\n`,
+    content: await format(JSON.stringify(nextDish), {
+      ...prettierConfig,
+      parser: 'json',
+    }),
   });
 }
 
