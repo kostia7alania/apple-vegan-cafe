@@ -41,6 +41,15 @@ node --import tsx scripts/sync-grab-menu-media.ts \
 node --import tsx scripts/sync-grab-menu-media.ts \
   --input /private/tmp/grab-full-menu.json \
   --captured-at YYYY-MM-DD \
+  --fetch-metadata
+```
+
+После проверки списка `CHANGED` примените тот же snapshot явно:
+
+```bash
+node --import tsx scripts/sync-grab-menu-media.ts \
+  --input /private/tmp/grab-full-menu.json \
+  --captured-at YYYY-MM-DD \
   --fetch-metadata \
   --write
 ```
