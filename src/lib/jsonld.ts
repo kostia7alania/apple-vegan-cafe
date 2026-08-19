@@ -93,6 +93,20 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
   return jsonld;
 }
 
+export function buildWebsite(input: {
+  name: string;
+  alternateName?: string;
+  url: string;
+}): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: input.name,
+    ...(input.alternateName ? { alternateName: input.alternateName } : {}),
+    url: input.url,
+  };
+}
+
 export interface MenuSectionInput {
   name: string;
   items: {
