@@ -1,7 +1,7 @@
 /**
- * Verifies that the static build satisfies the external uptime-monitor handoff.
- * This command is deliberately local and read-only: it never calls a live URL
- * and never creates or updates a monitor.
+ * Verifies the uptime-monitor contract against the static build by default, or
+ * against production with --live. Neither mode creates a monitor or sends an
+ * alert; the live mode is used as a bounded post-deploy availability check.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -14,6 +14,8 @@ const requiredChecks = new Map([
   ['menu', 'https://apple-vegan-cafe.com/menu/'],
 ]);
 const errors: string[] = [];
+const args = process.argv.slice(2);
+const liveMode = args.length === 1 && args[0] === '--live';
 
 interface MonitorSpec {
   version: number;
@@ -55,6 +57,36 @@ function readSpec(): MonitorSpec | null {
 function distFileFor(url: URL): string {
   if (url.pathname === '/') return join(distDir, 'index.html');
   return join(distDir, url.pathname.replace(/^\//, ''), 'index.html');
+}
+
+async function checkLive(spec: MonitorSpec) {
+  await Promise.all(
+    spec.checks.map(async (check) => {
+      try {
+        const response = await fetch(check.url, {
+          redirect: 'manual',
+          signal: AbortSignal.timeout(spec.timeoutSeconds * 1000),
+        });
+
+        if (response.status !== check.expectedStatus) {
+          fail(`${check.id}: live status ${response.status}; expected ${check.expectedStatus}`);
+          return;
+        }
+
+        const html = await response.text();
+        if (!html.includes(spec.expectedKeyword)) {
+          fail(`${check.id}: live response is missing keyword "${spec.expectedKeyword}"`);
+        }
+      } catch (error) {
+        const reason = error instanceof Error ? error.name : 'unknown error';
+        fail(`${check.id}: live request failed (${reason})`);
+      }
+    }),
+  );
+}
+
+if (args.length > 0 && !liveMode) {
+  fail('usage: pnpm monitor:check [--live]');
 }
 
 const spec = readSpec();
@@ -112,14 +144,16 @@ if (spec) {
         continue;
       }
 
-      const file = distFileFor(url);
-      if (!existsSync(file)) {
-        fail(`${check.id}: dist file is missing; run pnpm build`);
-        continue;
-      }
-      const html = readFileSync(file, 'utf8');
-      if (!html.includes(spec.expectedKeyword)) {
-        fail(`${check.id}: dist response does not contain keyword "${spec.expectedKeyword}"`);
+      if (!liveMode) {
+        const file = distFileFor(url);
+        if (!existsSync(file)) {
+          fail(`${check.id}: dist file is missing; run pnpm build`);
+          continue;
+        }
+        const html = readFileSync(file, 'utf8');
+        if (!html.includes(spec.expectedKeyword)) {
+          fail(`${check.id}: dist response does not contain keyword "${spec.expectedKeyword}"`);
+        }
       }
     }
 
@@ -129,12 +163,22 @@ if (spec) {
   }
 }
 
+if (spec && liveMode && errors.length === 0) {
+  await checkLive(spec);
+}
+
 if (errors.length > 0) {
   for (const message of [...new Set(errors)].sort()) console.error(`error: ${message}`);
   process.exit(1);
 }
 
-const state = spec!.alertContact === null ? 'NOT CONFIGURED — alertContact is null' : spec!.state;
-console.log(
-  `uptime handoff check passed: ${spec!.checks.length} dist routes match; external monitor: ${state}`,
-);
+if (liveMode) {
+  console.log(
+    `post-deploy availability check passed: ${spec!.checks.length} production routes match`,
+  );
+} else {
+  const state = spec!.alertContact === null ? 'NOT CONFIGURED — alertContact is null' : spec!.state;
+  console.log(
+    `uptime handoff check passed: ${spec!.checks.length} dist routes match; external monitor: ${state}`,
+  );
+}
