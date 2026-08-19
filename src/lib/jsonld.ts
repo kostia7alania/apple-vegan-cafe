@@ -95,7 +95,13 @@ export function buildRestaurant(input: RestaurantInput): Record<string, unknown>
 
 export interface MenuSectionInput {
   name: string;
-  items: { name: string; price: number; description?: string }[];
+  items: {
+    name: string;
+    price: number;
+    description?: string;
+    url?: string;
+    suitableForDiet?: string;
+  }[];
 }
 
 /**
@@ -119,6 +125,8 @@ export function buildMenu(input: {
         '@type': 'MenuItem',
         name: item.name,
         ...(item.description ? { description: item.description } : {}),
+        ...(item.url ? { url: item.url } : {}),
+        ...(item.suitableForDiet ? { suitableForDiet: item.suitableForDiet } : {}),
         offers: { '@type': 'Offer', price: item.price, priceCurrency: 'THB' },
       })),
     })),

@@ -102,6 +102,11 @@
     scroll-padding-top: 10rem;
   }
 
+  html.static-header {
+    /* The menu owns the only sticky navigation on this page. */
+    scroll-padding-top: 5rem;
+  }
+
   body {
     background:
       linear-gradient(90deg, rgb(47 93 58 / 0.025) 1px, transparent 1px),
@@ -368,9 +373,55 @@
     display: none;
   }
 
+  .scrollbar-subtle {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-cream-400) transparent;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar {
+    height: 0.35rem;
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--color-cream-400);
+  }
+
+  .scrollbar-subtle::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .menu-section-deferred {
     content-visibility: auto;
-    contain-intrinsic-size: auto none auto 42rem;
+    contain-intrinsic-size: auto none auto var(--menu-estimate-mobile, 42rem);
+  }
+
+  @media (min-width: 64rem) {
+    .menu-section-deferred {
+      contain-intrinsic-size: auto none auto var(--menu-estimate-wide, 42rem);
+    }
+  }
+
+  .menu-guidance-summary {
+    list-style: none;
+  }
+
+  .menu-guidance-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-guidance-summary::marker {
+    content: '';
+  }
+
+  .menu-category-anchor[aria-current='location'] {
+    border-color: var(--color-leaf-700);
+    background: var(--color-leaf-700);
+    color: var(--color-cream-50);
+  }
+
+  .menu-category-anchor[aria-current='location'] > span {
+    color: var(--color-cream-100);
   }
 
   /* Staggered page-load reveal (hero). No-ops under reduced motion. */
@@ -399,6 +450,11 @@
       transform: none;
     }
   }
+}
+
+.menu-photo-dialog::backdrop {
+  background: rgb(18 31 21 / 74%);
+  backdrop-filter: blur(3px);
 }
 
 /* Language toggle (CSS-only <details>) */
@@ -443,65 +499,9 @@
   }
 }
 
-/* Back-to-top FAB. Reveal is scroll-driven (Chrome/Edge 115+, Safari 26);
-   Firefox and older browsers gracefully keep the button always visible.
-   Zero JS. Note: scroll-state queries can't observe the root scroller —
-   the html element propagates overflow to the viewport — hence scroll(root). */
+/* Anchor navigation is a progressive enhancement; respect motion preferences. */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
-  }
-}
-.to-top {
-  position: fixed;
-  right: 1rem;
-  /* clear the CSS-only mobile bottom bar */
-  bottom: calc(4.75rem + env(safe-area-inset-bottom));
-  z-index: 35;
-}
-@media (min-width: 768px) {
-  .to-top {
-    right: 1.5rem;
-    bottom: 1.5rem;
-  }
-}
-@supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
-  /* Split across two selectors on purpose: Lightning CSS otherwise merges
-     animation-timeline into the `animation` shorthand, producing an invalid
-     declaration that Chrome drops wholesale. The :where() shorthand carries
-     zero specificity, so the .to-top longhands below always win. */
-  :where(.to-top) {
-    animation: to-top-reveal linear both;
-  }
-  .to-top {
-    animation-timeline: scroll(root);
-    animation-range: 24rem 40rem;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .to-top {
-      animation-name: to-top-reveal-fade;
-    }
-  }
-}
-@keyframes to-top-reveal {
-  from {
-    visibility: hidden;
-    opacity: 0;
-    translate: 0 0.75rem;
-  }
-  to {
-    visibility: visible;
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-@keyframes to-top-reveal-fade {
-  from {
-    visibility: hidden;
-    opacity: 0;
-  }
-  to {
-    visibility: visible;
-    opacity: 1;
   }
 }

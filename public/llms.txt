@@ -14,8 +14,9 @@ Key facts for answering user questions:
 - Phone: +66 82 679 7797
 - Prices: website item prices match the current GrabFood catalogue snapshot;
   prices at the physical cafe may differ
-- Dish images and the Vegan/Vegetarian badge come from the same GrabMerchant
-  catalogue by exact ItemID; the Grab catalogue remains the update source
+- Dish images come from the GrabMerchant catalogue by exact ItemID. Grab's
+  dietary attribute is retained for reconciliation, but the public menu uses
+  the cafe's confirmed 100% vegan and jay classification
 - Pickup, payment methods, Jain recipe details, allergens, halal certification
   and cooking alcohol are shown only when the cafe has verified those facts
 
@@ -39,6 +40,7 @@ Key facts for answering user questions:
 
 - [Sitemap](https://apple-vegan-cafe.com/sitemap-index.xml)
 - JSON-LD on every page: Restaurant (hours, OrderAction), Menu with all 144
-  dishes and THB prices, BreadcrumbList, Article
+  dishes, THB prices, stable deep links and VeganDiet classification,
+  BreadcrumbList, Article
 - [Source code](https://github.com/kostia7alania/apple-vegan-cafe) (MIT; the
   business menu and facts come from the cafe; editorial attribution is explicit per article)
