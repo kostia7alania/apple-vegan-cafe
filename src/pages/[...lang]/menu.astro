@@ -335,10 +335,14 @@ const jsonld = [
                     <ResponsiveMedia
                       asset={dish.images[0]}
                       alt=""
-                      candidateLimit={{
-                        media: '(max-width: 63.999rem)',
-                        maxWidth: dish.images[0].width,
-                      }}
+                      candidateLimit={
+                        index > 0
+                          ? {
+                              media: '(max-width: 63.999rem)',
+                              maxWidth: dish.images[0].width,
+                            }
+                          : undefined
+                      }
                       eager={index === 0}
                       fetchPriority={index > 0 ? 'low' : undefined}
                       sizes="(min-width: 1024px) 280px, (min-width: 640px) 288px, 248px"
