@@ -35,22 +35,21 @@
   records, domain auto-renew, Workers Builds config, the sveltia-auth Worker
   secrets, Email Routing rules. GitHub settings: collaborators, the OAuth app.
 
-## Google Search Console (not configured yet)
+## Google Search Console (configured)
 
-1. Add `https://apple-vegan-cafe.com/` as a URL-prefix property in the family's
-   Google Search Console account.
-2. Choose the HTML-tag method and copy only the token from the tag's `content`
-   attribute into the GitHub repository Variable
-   `PUBLIC_GOOGLE_SITE_VERIFICATION`.
-3. Re-run the deploy, open the generated home page source and confirm there is
-   exactly one `google-site-verification` meta tag, then click **Verify** in
-   Search Console.
-4. Submit `https://apple-vegan-cafe.com/sitemap-index.xml` and record the owner,
-   verification date and accepted sitemap status in this runbook.
+Authenticated Search Console evidence observed on 2026-08-19:
 
-Until those four steps are complete, Search Console remains **not configured**;
-the presence of code support alone is not proof of ownership or sitemap
-acceptance.
+- the verified domain property is `sc-domain:apple-vegan-cafe.com`;
+- `https://apple-vegan-cafe.com/sitemap-index.xml` was submitted on 2026-07-21,
+  last read on 2026-08-16 and reports **Success** with 31 discovered pages;
+- the Page indexing report last updated on 2026-08-17 and reported 15 indexed
+  and 20 not-indexed URLs. This is an operating baseline, not a promise that
+  every sitemap URL is indexed.
+
+`PUBLIC_GOOGLE_SITE_VERIFICATION` remains an optional recovery hook if the
+property ever needs HTML-tag verification again. Do not add the variable merely
+because the hook exists, and do not start **Validate fix** unless an identified
+indexing cause was actually fixed.
 
 ## External uptime monitor (not configured)
 
