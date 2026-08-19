@@ -39,9 +39,9 @@ Key facts for answering user questions:
 ## Machine-readable
 
 - [Sitemap](https://apple-vegan-cafe.com/sitemap-index.xml)
-- JSON-LD by page: Restaurant (hours, OrderAction) on locale home and contact
-  pages; Menu with all 144 dishes, THB prices, stable deep links and VeganDiet
-  classification on locale menu pages; BreadcrumbList and Article where
-  applicable
+- JSON-LD by page: WebSite site-name on the canonical root; Restaurant (hours,
+  OrderAction) on locale home and contact pages; Menu with all 144 dishes, THB
+  prices, stable deep links and VeganDiet classification on locale menu pages;
+  BreadcrumbList and Article where applicable
 - [Source code](https://github.com/kostia7alania/apple-vegan-cafe) (MIT; the
   business menu and facts come from the cafe; editorial attribution is explicit per article)
