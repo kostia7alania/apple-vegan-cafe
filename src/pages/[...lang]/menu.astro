@@ -195,8 +195,9 @@ const jsonld = [
         data-menu-search
         data-results-template={t(locale, 'menu.resultsCount')}
         data-results-one={t(locale, 'menu.resultsCountOne')}
-        hidden
-        class="mt-6 scroll-mt-20 print:hidden"
+        inert
+        aria-hidden="true"
+        class="invisible mt-6 scroll-mt-20 print:hidden"
       >
         <form data-menu-search-form action={localePath(locale, '/menu/')} method="get">
           <label for={`menu-search-${locale}`} class="block text-sm font-bold text-leaf-900">
@@ -334,7 +335,12 @@ const jsonld = [
                     <ResponsiveMedia
                       asset={dish.images[0]}
                       alt=""
+                      candidateLimit={{
+                        media: '(max-width: 63.999rem)',
+                        maxWidth: dish.images[0].width,
+                      }}
                       eager={index === 0}
+                      fetchPriority={index > 0 ? 'low' : undefined}
                       sizes="(min-width: 1024px) 280px, (min-width: 640px) 288px, 248px"
                       className="aspect-[4/3] w-full border-b border-cream-300 bg-cream-100 object-cover transition duration-300 group-hover:scale-[1.015] motion-reduce:transform-none motion-reduce:transition-none"
                     />
@@ -1005,7 +1011,9 @@ const jsonld = [
           (filter) => !dietInputs.some((dietInput) => dietInput.value === filter),
         ),
       );
-      searchRoot.hidden = false;
+      searchRoot.removeAttribute('inert');
+      searchRoot.removeAttribute('aria-hidden');
+      searchRoot.classList.remove('invisible');
       if (searchJump) searchJump.hidden = false;
       applySearch();
       syncMenuHashTarget();
