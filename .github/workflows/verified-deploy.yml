@@ -62,3 +62,21 @@ jobs:
             exit 1
           fi
           pnpm run deploy
+
+      - name: Check live production availability
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec tsx scripts/check-uptime-monitor.ts --live; then
+              echo "Live home/menu availability check passed on attempt $attempt." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 4 ]]; then
+              echo "Live home/menu availability check failed after $attempt attempts." >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+
+            sleep 5
+          done

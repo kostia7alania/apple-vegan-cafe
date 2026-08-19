@@ -8,9 +8,11 @@
    is recorded as **configured**.
 2. Check domain expiry in the Cloudflare dashboard (auto-renew must be ON).
 3. Cloudflare status: https://www.cloudflarestatus.com
-4. A broken deploy cannot take the site down — the last good version keeps
+4. A deploy that fails before Wrangler publishes keeps the last good version
    serving. Open the merge commit's GitHub Actions **CI** run: production deploy
-   is the final job and cannot start until the full verification job passes.
+   is the final job and cannot start until the full verification job passes. If
+   Wrangler succeeded but the following availability check failed, the new
+   artifact is already released and needs inspection or a merge-safe revert.
 
 ## Owner can't edit via /admin
 
@@ -27,8 +29,12 @@
    Verification currently includes browser and Lighthouse checks, so allow about
    5–7 minutes before treating a running job as stuck.
 2. A red **verify** job usually means invalid content or a failed quality gate;
-   the error names the file, field or check. A red **Deploy verified main / deploy**
-   job means the verified artifact was not released; inspect its Wrangler output.
+   the error names the file, field or check. For a red **Deploy verified main /
+   deploy** job, inspect the failed step. If **Deploy current verified main**
+   failed, publication is unconfirmed: inspect Wrangler output and the live
+   URLs. If that step succeeded and **Check live production availability**
+   failed, the artifact was released but live home/menu did not meet the
+   contract.
 3. Fix the file or revert the offending merge through a new PR. The next green
    `verify → deploy` chain releases the replacement; never bypass CI with a
    local production deploy. Do not use **Re-run all jobs** on an older main run:
@@ -117,6 +123,19 @@ and cannot express a scheme-wide rule. Configure `www` → apex separately with 
 proxied DNS record and a zone Redirect Rule that preserves path and query.
 Defer HSTS preload until both redirects cover all required subdomains and have
 remained stable; the current header intentionally has no `preload` directive.
+
+## Post-deploy live availability check
+
+Every verified `main` deploy checks the live home and menu responses against
+the same status/keyword contract below. The deploy job retries briefly to avoid
+one transient network or edge response and fails visibly if production still
+does not match. For a manual diagnostic run, use
+`pnpm monitor:check --live`.
+
+This is a release check, not continuous monitoring: it cannot detect an outage
+that begins later and it does not prove that anyone receives an alert. It also
+checks availability, not whether every edge is already serving this exact Git
+SHA; the current-main and artifact-digest gates provide the release identity.
 
 ## External uptime monitor (not configured)
 
