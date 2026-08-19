@@ -131,9 +131,10 @@ const itemMap = JSON.parse(readFileSync(itemMapFile, 'utf8')) as {
 if (!itemMap.items || typeof itemMap.items !== 'object') {
   throw new Error('grab-item-map.json must contain an items object');
 }
+const mappedItems = itemMap.items;
 
 const mappedTargets = new Set<string>();
-for (const [itemId, file] of Object.entries(itemMap.items)) {
+for (const [itemId, file] of Object.entries(mappedItems)) {
   if (!ITEM_ID_RE.test(itemId)) throw new Error(`invalid mapped Grab ItemID: ${itemId}`);
   if (basename(file) !== file || !file.endsWith('.json')) {
     throw new Error(`unsafe mapped dish filename for ${itemId}: ${file}`);
@@ -222,7 +223,7 @@ const plannedWrites: PlannedWrite[] = [];
 let unchanged = 0;
 let temporaryUnavailable = 0;
 for (const row of imported) {
-  const file = itemMap.items[row.itemId];
+  const file = mappedItems[row.itemId];
   if (!file) {
     errors.push(
       `line ${row.line}: unmapped Grab ItemID ${row.itemId} (${row.sourceName || 'unnamed item'}); add an exact file mapping before importing`,
@@ -261,7 +262,17 @@ for (const row of imported) {
   });
 }
 
-const missingMapped = Object.keys(itemMap.items).filter((itemId) => !seenItemIds.has(itemId));
+const missingMapped = Object.keys(mappedItems).filter((itemId) => !seenItemIds.has(itemId));
+if (missingMapped.length > 0) {
+  const preview = missingMapped
+    .slice(0, 10)
+    .map((itemId) => `${itemId} → ${mappedItems[itemId]}`)
+    .join(', ');
+  const remainder = missingMapped.length > 10 ? `, plus ${missingMapped.length - 10} more` : '';
+  errors.push(
+    `${missingMapped.length} mapped Grab ItemID(s) are missing from this export; a complete Bulk Update export is required: ${preview}${remainder}`,
+  );
+}
 if (errors.length > 0) {
   console.error(`import rejected — ${errors.length} problem(s), no files written:`);
   for (const error of errors) console.error(`  - ${error}`);
@@ -270,9 +281,6 @@ if (errors.length > 0) {
 
 for (const plan of plannedWrites) {
   console.log(`CHANGED ${plan.itemId} → ${plan.file}: ${plan.changedFields.join(', ')}`);
-}
-for (const itemId of missingMapped) {
-  console.log(`MISSING ${itemId} → ${itemMap.items[itemId]} (reported only; never auto-deleted)`);
 }
 
 if (write) {

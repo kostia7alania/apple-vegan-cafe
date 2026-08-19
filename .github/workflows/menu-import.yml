@@ -31,11 +31,16 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Dry-run diff into summary
+        shell: bash
         run: |
           echo '## Menu import — dry run (nothing applied)' >> "$GITHUB_STEP_SUMMARY"
           echo '```' >> "$GITHUB_STEP_SUMMARY"
-          pnpm import:menu -- --input imports/menu.csv | tee -a "$GITHUB_STEP_SUMMARY"
+          set +e
+          pnpm import:menu -- --input imports/menu.csv 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          import_status=${PIPESTATUS[0]}
+          set -e
           echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$import_status"
 
   apply:
     if: github.event_name == 'workflow_dispatch'
