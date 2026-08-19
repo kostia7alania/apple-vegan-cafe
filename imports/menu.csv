@@ -1,0 +1,145 @@
+grab_item_id,name_en,name_th,price_thb,category,availability
+THITE2023111408055732309,Deep-fried enoki mushrooms in batter,เห็ดเข็มทองทอด,149,snacks,AVAILABLE
+THITE2023111408071345816,Fried banana fritters,กล้วยทอด,119,snacks,AVAILABLE
+THITE2023111408082805071,Vegan seaweed fish roll,ปลาม้วนสาหร่ายเจ,149,snacks,AVAILABLE
+THITE2023111412183840968,Curry-paste kale stir-fry with crispy vegan pork,ผัดเครื่องแกงคะน้าหมูกรอบเจ,179,one-plate,AVAILABLE
+THITE2023112107382652291,Kiwi mango smoothie,กีวี่มะม่วงปั่น,99,drinks,AVAILABLE
+THITE2023122800120373952,Vegan grilled pork,หมูย่างเจ,179,snacks,AVAILABLE
+THITE2023122800131927507,Vegan shiitake mushroom balls,ลูกชิ้นเห็ดหอมเจ,149,snacks,AVAILABLE
+THITE2023122800161820985,Vegan seaweed balls,ลูกชิ้นสาหร่ายเจ,149,snacks,AVAILABLE
+THITE2023122800200180463,Vegan black pepper balls,ลูกชิ้นพริกไทยดำเจ,149,snacks,AVAILABLE
+THITE2023122800233480479,Vegan fish balls,ลูกชิ้นปลา,149,snacks,AVAILABLE
+THITE2023122800253680505,Tempura vegetables,ผักชุปแป้งทอด,149,snacks,AVAILABLE
+THITE2023122800272082453,Mushroom naem,แหนมเห็ด,159,snacks,AVAILABLE
+THITE2024012612360791264,French fries,เฟรนช์ฟรายส์,129,snacks,AVAILABLE
+THITE2024020210260346089,Stir-fried kale with vegan sea bass,ผัดคะน้าปลากะพงเจ,150,mains-share,AVAILABLE
+THITE2024020210283235902,Vegan ham fried rice,ข้าวผัดแฮม,150,one-plate,AVAILABLE
+THITE2024020210355657994,Pad Mama — stir-fried instant noodles,ผัดมาม่าเจ,150,one-plate,AVAILABLE
+THITE2024020311245934350,Vegan tuna sandwich with fries,ทูน่าแซนวิชเจกับมันทอด,160,pizza-fastfood,AVAILABLE
+THITE2024122812072534360,Pancake,แพนเค้ก,159,snacks,AVAILABLE
+THITE2025030509223867217,Spicy pad cha vegan sea bass,ปลากระพงเจผัดฉ่า,169,mains-share,AVAILABLE
+THITE2025030509272446505,Fresh vegetable salad,สลัดผัก,149,snacks,AVAILABLE
+THITE2025030509292308007,Eryngii mushroom pad krapao over rice,กระเพราเห็ดออรินจิราดข้าว,159,one-plate,AVAILABLE
+THITE2025102104483148634,Spinach pizza vegan,พิซซ่าผักโขมเจ,439,pizza-fastfood,AVAILABLE
+THITE2025102104502425682,Vegetable pizza vegan,พิซซ่าผักรวมเจ,439,pizza-fastfood,AVAILABLE
+THITE2025102104521999265,Margherita pizza vegan,พิซซ่ามาร์เกริต้าเจ,419,pizza-fastfood,AVAILABLE
+THITE2025102104535395368,Hawaiian pizza vegan,พิซซ่าฮาวายเอี้ยนเจ,439,pizza-fastfood,AVAILABLE
+THITE2026052712583414406,Fresh fruit,ผลไม้สด,149,snacks,AVAILABLE
+THITE2026052713420946485,Vegan fried salted fish,ปลาเค็มทอด,149,snacks,AVAILABLE
+THITE2026052713435412411,Vegan Thai fish cakes,ทอดมันเจ,169,snacks,AVAILABLE
+THITE2026052713455045586,Vegan fried chicken (drumstick),น่องไก่เจทอด,149,snacks,AVAILABLE
+THITE2026052713474490903,Vegan fried barramundi,ปลากะพงเจทอด,149,snacks,AVAILABLE
+THITE2026052713493505677,Vegan hamburger,แฮมเบอร์เกอ,199,snacks,AVAILABLE
+THITE2026052713510380482,Fried vegetables tofu,เต้าหู้ผักทอด,149,snacks,AVAILABLE
+THITE2026052714223958743,Fried vegan chicken,เนื้อไก่เจทอด,149,snacks,AVAILABLE
+THITE2026052714244999276,Crispy vegan shrimp,กุ้งเจทอดกรอบ,189,snacks,AVAILABLE
+THITE2026052714264160265,Vegan spring rolls,เปาะเปี๊ยะทอดไส้ผัก,150,snacks,AVAILABLE
+THITE2026052802352287776,Vegan mushroom fried rice,ข้าวผัดเห็ด,149,one-plate,AVAILABLE
+THITE2026052802390395240,Vegan basil pork stir-fry with rice and vegan fried egg,กะเพราราดข้าวไข่ดาวเจ,189,one-plate,AVAILABLE
+THITE2026052802415248134,Vegan pad thai,ผัดไทยเจ,149,one-plate,AVAILABLE
+THITE2026052802442496050,Vegan black pepper steak,สเต็กซอสพริกไทยดำ,359,one-plate,AVAILABLE
+THITE2026052802463953842,Vegan creamy steak,สเต็กครีมซอส,359,one-plate,AVAILABLE
+THITE2026052802485298355,Vegan spaghetti in creamy tom yum soup,สปาเก็ตตี้ต้มยำเจ,199,one-plate,AVAILABLE
+THITE2026052806512810608,Vegan clear vegetable noodle soup,ก๋วยเตี๋ยวน้ำใสผักเจ,159,one-plate,AVAILABLE
+THITE2026052806554013382,Vegan mushroom Hainanese rice,ข้าวมันเห็ด,159,one-plate,AVAILABLE
+THITE2026052806582174569,Thai vegan noodle soup (nam tok style),ก๋วยเตี๋ยวน้ำตกเจ,159,one-plate,AVAILABLE
+THITE2026052807023084453,Stir-fried kale & vegan sea bass in red curry paste with rice,พริกแกงปลาราดข้าว,169,one-plate,AVAILABLE
+THITE2026052807042409886,Vegan spaghetti carbonara,สปาเก็ตตี้ราโบนาร่าเจ,199,one-plate,AVAILABLE
+THITE2026052807062135803,Vegan American fried rice,ข้าวผัดอเมริกันเจ,189,one-plate,AVAILABLE
+THITE2026052807074866467,Vegan pineapple fried rice,ข้าวผัดสับปะรดเจ,149,one-plate,AVAILABLE
+THITE2026052807121259098,Vegan red pork noodle soup,ก๋วยเตี๋ยวหมูแดงเจ,159,one-plate,AVAILABLE
+THITE2026052807134816382,Vegan fried rice with vegetables & vegan egg,ข้าวผัดผักไข่ดาวเจ,189,one-plate,AVAILABLE
+THITE2026052807170489386,Vegan crispy pork fried rice,ข้าวผัดหมูกรอบ,159,one-plate,AVAILABLE
+THITE2026052807193464749,Steamed rice,ข้าวสวย,40,one-plate,AVAILABLE
+THITE2026052807234699358,Pad see ew vegan,ผัดซีอิ้วเจ,149,one-plate,AVAILABLE
+THITE2026052807251173962,Vegan sukiyaki,สุกี้เจ,149,one-plate,AVAILABLE
+THITE2026052807274093067,Vegan seafood curry fried rice,ข้าวผัดผงกะหรี่ทะเลเจ,159,one-plate,AVAILABLE
+THITE2026052807294947525,Vegan glass noodle spicy salad,ยำวุ้นเส้นเจ,189,one-plate,AVAILABLE
+THITE2026052807321981167,Vegan spicy green bean salad,ตำถั่วเจ,149,one-plate,AVAILABLE
+THITE2026052808105834364,Vegan Vietnamese sausage,ยำหมูยอ,189,one-plate,AVAILABLE
+THITE2026052808223806767,Vegan som tum (vegan papaya salad) with fermented soybean sauce,ส้มตำปลาร้าเจ,149,one-plate,AVAILABLE
+THITE2026052809293140626,Vegan som tum Thai,ส้มตำไทย,149,one-plate,AVAILABLE
+THITE2026052809324392517,Vegan spicy Mama noodle salad,ยำมาม่า,189,one-plate,AVAILABLE
+THITE2026052809351155999,Vegan radna,ราดหน้าเจ,149,one-plate,AVAILABLE
+THITE2026052809382226355,Crispy breaded vegan chicken,ไก่ชุปแป้งทอด,329,one-plate,AVAILABLE
+THITE2026052809402947366,Vegan seafood fried rice,ข้าวผัดชีฟู๊ดเจ,169,one-plate,AVAILABLE
+THITE2026052809421809904,Spaghetti with mushrooms sauce,สปาเก็ตตี้ซอสเห็ด,199,one-plate,AVAILABLE
+THITE2026052809444366323,Vegan fried chicken with rice,อกไก่ทอดเจกับข้าว,189,one-plate,AVAILABLE
+THITE2026052809481653942,Vegan Chiang chun fried rice,ข้าวผัดเชียงชุน,159,one-plate,AVAILABLE
+THITE2026052809513601621,Stir-fried kale with vegan salted fish with rice,ผัดคะน้าปลาเค็มราดข้าว,159,one-plate,AVAILABLE
+THITE2026052809533489407,Vegan fried pork on rice,หมูทอดเจราดข้าว,159,one-plate,AVAILABLE
+THITE2026052809555191906,Spaghetti pad kee mao,สปาเก็ตตี้ผัดจี้เมาเจ,199,one-plate,AVAILABLE
+THITE2026052809595586328,Crispy vegan pork with kale stir-fry over rice,คะน้าหมูกรอบเจราดข้าว,159,one-plate,AVAILABLE
+THITE2026052810100347728,Stir-fried rice with kale and salted fish,ข้าวผัดคะน้าปลาเค็มเจ,149,one-plate,AVAILABLE
+THITE2026052810140709878,Vegan creamy tom yum noodles,ก๋วยเตี๋ยวต้มยำน้ำจ้นเจ,159,one-plate,AVAILABLE
+THITE2026052810172823416,Vegan spicy drunken Mama noodles,มาม่าผัดขี้เมาเจ,199,one-plate,AVAILABLE
+THITE2026052810480166021,Stir-fried tofu with basil vegan,ผัดกระเพราเต้าหู้เจ,149,mains-share,AVAILABLE
+THITE2026052810523401630,Stir-fried glass noodles,ผัดวุ้นเส้น,149,mains-share,AVAILABLE
+THITE2026052810573793052,Stir-fried tofu with celery,เต้าหู้ผัดขึ้นฉ่าย,149,mains-share,AVAILABLE
+THITE2026052811021315575,Massaman curry vegan,แกงมัสมันเจ,189,mains-share,AVAILABLE
+THITE2026052813564617430,Vegan panaeng pork,แผนงหมูเจ,179,mains-share,AVAILABLE
+THITE2026052813594380237,Stir-fried Chinese kale with vegan salted fish,ผัดคะน้าปลาเค็มเจ,159,mains-share,AVAILABLE
+THITE2026052814020820521,Vegan chu chee mackerel,ฉู่ฉี่ปลาทูเจ,189,mains-share,AVAILABLE
+THITE2026052814053122594,Vegan Luuk Chuey,ไข่ลูกเขยเจ,189,mains-share,AVAILABLE
+THITE2026052814084036000,Stir-fried tofu with light soy sauce,เต้าหู้คั่วซีอิ้วขาว,149,mains-share,AVAILABLE
+THITE2026052814120883054,Vegan clear soup with soft tofu and minced pork,แกงจืดเต้าหู้หมูสับเจ,189,mains-share,AVAILABLE
+THITE2026052814152562441,Vegan spicy stir-fried minced pork,คั่วกลิ้งหมูสับเจ,169,mains-share,AVAILABLE
+THITE2026052814183784157,Vegan stir-fried sea bass with ginger,ปลากะพงเจผัดขิง,179,mains-share,AVAILABLE
+THITE2026052902100686522,Stir-fried tofu with vegetables,เต้าหู้ผัดผักรวม,149,mains-share,AVAILABLE
+THITE2026052902140275354,Grilled vegan chicken breast,อกไก่ย่างเจ,209,mains-share,AVAILABLE
+THITE2026052902484455120,Black pepper tofu stir-fry,เต้าหู้ผัดพริกไทยดำ,149,mains-share,AVAILABLE
+THITE2026052903040959711,Vegan tom yum soup,ต้มยำเจ,189,mains-share,AVAILABLE
+THITE2026052903154012677,Vegan Thai coconut soup,ต้มข่าเจ,189,mains-share,AVAILABLE
+THITE2026052903182459434,Vegan chu chee sea bass,ฉู่ฉี่ ปลากะพงเจ,179,mains-share,AVAILABLE
+THITE2026052903204556893,Vegan Peking duck,เป็ดฮ่องเต้เจ,229,mains-share,AVAILABLE
+THITE2026052903232626030,Vegan sea bass with red curry sauce,ปลากะพงเจราดพริกแกง,179,mains-share,AVAILABLE
+THITE2026052903260965158,Stir-fried kale with crispy vegan pork,คะน้าหมูกรอบเจ,179,mains-share,AVAILABLE
+THITE2026052903290396183,Green curry vegan,แกงเขียวหวานเจ,179,mains-share,AVAILABLE
+THITE2026052903311313634,Red curry with roasted duck vegan,แกงเผ็ดเป็ดย่างเจ,189,mains-share,AVAILABLE
+THITE2026052903335480726,Red curry vegan,แกงเผ็ดเจ,179,mains-share,AVAILABLE
+THITE2026052905371913776,Vegan larb moo (vegan spicy salad),ลาบหมูเจ,159,mains-share,AVAILABLE
+THITE2026052905462199592,Steamed vegan sea bass with lime sauce,ปลากะพงเจนึงมะนาว,219,mains-share,AVAILABLE
+THITE2026052905474865075,Stir-fried mixed mushrooms,ผัดเห็ดรวม,159,mains-share,AVAILABLE
+THITE2026052905490521482,Stir-fried mixed vegetables,ผัดผักรวม,159,mains-share,AVAILABLE
+THITE2026052905512931711,Vegan chicken stir-fry with bell peppers,ไก่เจผัดพริกหวาน,189,mains-share,AVAILABLE
+THITE2026052905543228771,Vegan spicy pork salad,น้ำตกหมูเจ,179,mains-share,AVAILABLE
+THITE2026052906002206960,Stir-fried vegan minced pork with holy basil,ผัดกระเพราหมูสับเจ,149,mains-share,AVAILABLE
+THITE2026052906053248148,Savory fully-dressed silken tofu,เต้าหู้อ่อนทรงเครื่อง,149,mains-share,AVAILABLE
+THITE2026052906073667980,Sweet and sour stir-fry,ผัดเปรี้ยวหวาน,149,mains-share,AVAILABLE
+THITE2026052906211846301,Spaghetti with tomato sauce vegan,สปาเก็ตตี้ซอสมะเขือเทศเจ,199,one-plate,AVAILABLE
+THITE2026052906235195416,Spaghetti mushroom sauce,สปาเก็ตตี้ซอสเห็ด,199,one-plate,AVAILABLE
+THITE2026052906261171772,Crispy vegan pork with spicy jaew sauce,หมูกรอบเจน้ำจิ้มแจ่ว,189,mains-share,AVAILABLE
+THITE2026052906351925543,Vegan clear soup with soft tofu and vegan pork,แกงจืดหมูสับเจ,189,mains-share,AVAILABLE
+THITE2026070605425636281,Iced cocoa,โกโก้เย็น,105,drinks,AVAILABLE
+THITE2026070605462976031,Orange americano,อเมริกาโน่ส้ม,120,drinks,AVAILABLE
+THITE2026070605484079765,Pink milk with milk foam,นมชมพูฟองนม,100,drinks,AVAILABLE
+THITE2026070605495767257,Green tea with milk foam,ชาเขียวฟองนม,100,drinks,AVAILABLE
+THITE2026070605505762903,Thai tea with milk foam,ชาไทยฟองนม,100,drinks,AVAILABLE
+THITE2026070605524808520,Tomato smoothie,มะเขือเทศปั่น,90,drinks,AVAILABLE
+THITE2026070605542432318,Fresh tomato juice,มะเขือเทศคั้น,120,drinks,AVAILABLE
+THITE2026070605554049023,Fresh pineapple juice,สับปะรดคั้น,100,drinks,AVAILABLE
+THITE2026070605582215263,Fresh carrot juice,แครอทคั้น,120,drinks,AVAILABLE
+THITE2026070605592163155,Carrot smoothie,แครอทปั่น,90,drinks,AVAILABLE
+THITE2026070606003889444,Fresh orange juice,น้ำส้มคั้น,90,drinks,AVAILABLE
+THITE2026070606014010292,Lime smoothie,มะนาวปั่น,80,drinks,AVAILABLE
+THITE2026070606032309141,Red apple smoothie,แอปเปิ้ลแดงปั่น,100,drinks,AVAILABLE
+THITE2026070606045948574,Green apple smoothie,แอปเปิ้ลเขียวปั่น,100,drinks,AVAILABLE
+THITE2026070606060661347,Beetroot smoothie,บิทรูทปั่น,100,drinks,AVAILABLE
+THITE2026070606080514850,Fresh beetroot juice,บิทรูทคั้น,110,drinks,AVAILABLE
+THITE2026070606093429153,Coconut milk smoothie,มะพร้าวนมปั่น,100,drinks,AVAILABLE
+THITE2026070606104723695,Coconut smoothie,มะพร้าวปั่น,90,drinks,AVAILABLE
+THITE2026070606121352986,Kiwi smoothie,กีวี่ปั่น,100,drinks,AVAILABLE
+THITE2026070606411374844,Banana smoothie,กล้วยปั่น,100,drinks,AVAILABLE
+THITE2026070606420013653,Strawberry smoothie,สตอเบอรี่ปั่น,100,drinks,AVAILABLE
+THITE2026070606432119610,Strawberry yogurt smoothie,สตอเบอรี่โยเกิตปั่น,105,drinks,AVAILABLE
+THITE2026070606440668547,Mango smoothie,มะม่วงปั่น,100,drinks,AVAILABLE
+THITE2026070606444700685,Passion fruit smoothie,เสาวรสปั่น,100,drinks,AVAILABLE
+THITE2026070606453189964,Pineapple smoothie,สับปะรดปั่น,100,drinks,AVAILABLE
+THITE2026070606461508259,Orange smoothie,ส้มปั่น,90,drinks,AVAILABLE
+THITE2026070606470844377,Watermelon smoothie,แตงโมปั่น,90,drinks,AVAILABLE
+THITE2026070606481383509,Iced americano,อเมริกาโนเย็น,100,drinks,AVAILABLE
+THITE2026070606491486647,Iced mocha,มอคค่าเย็น,120,drinks,AVAILABLE
+THITE2026070606503190682,Iced espresso,เอสเพสโซ่เย็น,110,drinks,AVAILABLE
+THITE2026070606513638468,Iced latte,ลาเต้เย็น,110,drinks,AVAILABLE
+THITE2026070606521698237,Iced cappuccino,คาปูชิโน่เย็น,110,drinks,AVAILABLE
+THITE2026071308443248085,Khao kluk kapi — vegan shrimp-paste style rice,ข้าวคลุกกะปิเจ,189,one-plate,AVAILABLE
