@@ -486,7 +486,10 @@ const jsonld = [
         <span class="hidden sm:inline">{t(locale, 'menu.searchAction')}</span>
       </a>
       <div class="min-w-0 flex-1 overflow-hidden">
-        <ul class="scrollbar-subtle -mx-1 flex snap-x gap-2 overflow-x-auto px-1 py-3">
+        <ul
+          data-menu-category-scroller
+          class="scrollbar-subtle -mx-1 flex snap-x gap-2 overflow-x-auto px-1 py-3"
+        >
           {
             nonEmptyCategories.map((category) => (
               <li data-menu-category-link={category.id} class="snap-start">
@@ -533,7 +536,7 @@ const jsonld = [
           <section
             data-menu-section={category.id}
             id={category.data.slug[locale]}
-            style={`--menu-estimate-mobile: ${Math.max(items.length * 9.75, 42)}rem; --menu-estimate-wide: ${Math.max(Math.ceil(items.length / 2) * 10.75, 42)}rem;`}
+            style={`--menu-estimate-mobile: ${Math.max(items.length * 9.75, 42)}rem;`}
             class:list={['scroll-mt-20 pt-10', categoryIndex > 0 && 'menu-section-deferred']}
           >
             <div class="flex items-center gap-4">
@@ -790,6 +793,7 @@ const jsonld = [
         document.querySelectorAll<HTMLAnchorElement>('[data-menu-category-anchor]'),
       );
       const categoryNav = document.querySelector<HTMLElement>('[data-menu-category-nav]');
+      const categoryScroller = document.querySelector<HTMLElement>('[data-menu-category-scroller]');
       const searchJump = document.querySelector<HTMLAnchorElement>('[data-menu-search-jump]');
       const quickPicksRoot = document.querySelector<HTMLElement>('[data-menu-quick-picks]');
       const quickPicks = Array.from(
@@ -805,13 +809,49 @@ const jsonld = [
         categoryAnchors.forEach((anchor) => {
           if (anchor.dataset.menuCategoryAnchor === categoryId) {
             anchor.setAttribute('aria-current', 'location');
-            if (categoryNav && categoryNav.getBoundingClientRect().top <= 112) {
-              anchor.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            if (categoryNav && categoryScroller && categoryNav.getBoundingClientRect().top <= 112) {
+              const anchorRect = anchor.getBoundingClientRect();
+              const scrollerRect = categoryScroller.getBoundingClientRect();
+              if (anchorRect.left < scrollerRect.left || anchorRect.right > scrollerRect.right) {
+                categoryScroller.scrollLeft +=
+                  anchorRect.left - scrollerRect.left - (scrollerRect.width - anchorRect.width) / 2;
+              }
             }
           } else {
             anchor.removeAttribute('aria-current');
           }
         });
+      };
+
+      const revealSectionsThrough = (targetSection: HTMLElement) => {
+        const targetIndex = sections.indexOf(targetSection);
+        if (targetIndex < 0) return;
+
+        sections
+          .slice(0, targetIndex + 1)
+          .forEach((section) => section.classList.remove('menu-section-deferred'));
+      };
+
+      const syncMenuHashTarget = () => {
+        const encodedId = window.location.hash.slice(1);
+        if (!encodedId) return;
+
+        let sectionId: string;
+        try {
+          sectionId = decodeURIComponent(encodedId);
+        } catch {
+          return;
+        }
+
+        const target = document.getElementById(sectionId);
+        const section = target?.matches('[data-menu-section]')
+          ? (target as HTMLElement)
+          : target?.closest<HTMLElement>('[data-menu-section]');
+        if (!target || !section || section.hidden) return;
+
+        revealSectionsThrough(section);
+        setActiveCategory(section.dataset.menuSection);
+        window.requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
       };
 
       const normalize = (value: string) =>
@@ -968,11 +1008,18 @@ const jsonld = [
       searchRoot.hidden = false;
       if (searchJump) searchJump.hidden = false;
       applySearch();
+      syncMenuHashTarget();
+      window.addEventListener('hashchange', syncMenuHashTarget);
 
       categoryAnchors.forEach((anchor) =>
-        anchor.addEventListener('click', () =>
-          setActiveCategory(anchor.dataset.menuCategoryAnchor),
-        ),
+        anchor.addEventListener('click', () => {
+          const categoryId = anchor.dataset.menuCategoryAnchor;
+          const targetSection = sections.find(
+            (section) => section.dataset.menuSection === categoryId,
+          );
+          if (targetSection) revealSectionsThrough(targetSection);
+          setActiveCategory(categoryId);
+        }),
       );
       if ('IntersectionObserver' in window) {
         const visibleSections = new Set<Element>();
@@ -982,15 +1029,17 @@ const jsonld = [
               if (entry.isIntersecting) visibleSections.add(entry.target);
               else visibleSections.delete(entry.target);
             });
+            const navBottom = categoryNav?.getBoundingClientRect().bottom ?? 88;
             const activeSection = sections
               .filter((section) => visibleSections.has(section) && !section.hidden)
               .sort(
                 (left, right) =>
-                  left.getBoundingClientRect().top - right.getBoundingClientRect().top,
+                  Math.abs(left.getBoundingClientRect().top - navBottom) -
+                  Math.abs(right.getBoundingClientRect().top - navBottom),
               )[0];
             if (activeSection) setActiveCategory(activeSection.dataset.menuSection);
           },
-          { rootMargin: '-88px 0px -60% 0px' },
+          { rootMargin: '-88px 0px -75% 0px' },
         );
         sections.forEach((section) => sectionObserver.observe(section));
       }
