@@ -5,9 +5,9 @@ import JayBadge from '../../components/JayBadge.astro';
 import Sprig from '../../components/Sprig.astro';
 import SpecialHoursNotice from '../../components/SpecialHoursNotice.astro';
 import ResponsiveMedia from '../../components/ResponsiveMedia.astro';
-import { localeStaticPaths, type Locale } from '../../lib/i18n';
+import { DEFAULT_LOCALE, localeStaticPaths, type Locale } from '../../lib/i18n';
 import { absoluteAssetUrl, absoluteUrl, localePath, structuralAlternates } from '../../lib/urls';
-import { buildRestaurant } from '../../lib/jsonld';
+import { buildRestaurant, buildWebsite } from '../../lib/jsonld';
 import { getRegularHours } from '../../lib/hours';
 import { getPublishableMedia, isPublishableMedia } from '../../lib/media';
 import { t } from '../../lib/ui';
@@ -71,6 +71,16 @@ const jsonld = [
     specialHours: location.specialHours,
     orderUrl: orderingLinks[0]?.url,
   }),
+  // Google supports site-name markup at the domain root, not locale subdirectories.
+  ...(locale === DEFAULT_LOCALE
+    ? [
+        buildWebsite({
+          name: 'Apple Vegan Cafe',
+          alternateName: settings.name,
+          url: absoluteUrl(site, '/'),
+        }),
+      ]
+    : []),
 ];
 
 const title = {

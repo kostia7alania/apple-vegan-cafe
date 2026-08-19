@@ -16,7 +16,7 @@ const availableDishCount = readdirSync(DISHES_DIR)
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(readFileSync(`${DISHES_DIR}/${f}`, 'utf8')) as { available: boolean })
   .filter((d) => d.available).length;
-const allowedSchemaTypes = new Set(['Article', 'BreadcrumbList', 'Menu', 'Restaurant']);
+const allowedSchemaTypes = new Set(['Article', 'BreadcrumbList', 'Menu', 'Restaurant', 'WebSite']);
 
 interface ArticleFrontmatter {
   locale: string;
@@ -547,7 +547,9 @@ test('restaurant JSON-LD is present and has no self-serving rating', async ({ pa
 
 test('structured data stays parseable, useful and within safe schema types', async ({ page }) => {
   const pageExpectations: { path: string; types: string[] }[] = [
-    { path: '/', types: ['Restaurant'] },
+    { path: '/', types: ['Restaurant', 'WebSite'] },
+    { path: '/th/', types: ['Restaurant'] },
+    { path: '/ru/', types: ['Restaurant'] },
     { path: '/contact/', types: ['Restaurant', 'BreadcrumbList'] },
     { path: '/menu/', types: ['BreadcrumbList', 'Menu'] },
     { path: '/th/menu/', types: ['BreadcrumbList', 'Menu'] },
@@ -583,6 +585,12 @@ test('structured data stays parseable, useful and within safe schema types', asy
         if (!isObject(action)) throw new Error(`${path} Restaurant OrderAction is missing`);
         expect(action['@type']).toBe('OrderAction');
         expectAbsoluteUrl(action.target, `${path} Restaurant OrderAction target`);
+      }
+
+      if (type === 'WebSite') {
+        expect(schema.name).toBe('Apple Vegan Cafe');
+        expect(schema.alternateName).toBe('Apple Vegan Cafe & Restaurant');
+        expect(schema.url).toBe(`${SITE_ORIGIN}/`);
       }
 
       if (type === 'Menu') {
