@@ -9,7 +9,7 @@ const strings = {
   'nav.home': { en: 'Home', th: 'หน้าแรก', ru: 'Главная' },
   'nav.menu': { en: 'Menu', th: 'เมนู', ru: 'Меню' },
   'nav.about': { en: 'About us', th: 'เกี่ยวกับเรา', ru: 'О нас' },
-  'nav.contact': { en: 'Contact & location', th: 'ติดต่อและแผนที่', ru: 'Контакты и адрес' },
+  'nav.contact': { en: 'Contact & location', th: 'ติดต่อและที่อยู่', ru: 'Контакты и адрес' },
   'nav.blog': { en: 'Blog', th: 'บทความ', ru: 'Блог' },
   'nav.faq': { en: 'FAQ', th: 'คำถามที่พบบ่อย', ru: 'Вопросы и ответы' },
   'home.viewMenu': { en: 'View the menu', th: 'ดูเมนู', ru: 'Смотреть меню' },
