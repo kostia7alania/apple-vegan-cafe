@@ -53,6 +53,40 @@ re-verify the current domain property. Do not add the variable merely because
 the hook exists, and do not start **Validate fix** unless an identified indexing
 cause was actually fixed.
 
+## HTTPS redirects (not configured)
+
+Observed on 2026-08-19: the apex domain serves a complete `200` response over
+plain HTTP, including deep EN/TH/RU paths and query strings. The HTTPS response
+does send `Strict-Transport-Security: max-age=63072000; includeSubDomains`, but
+that header cannot protect a visitor's first plain-HTTP request. Google Search
+Console has also discovered an HTTP copy of a landing page.
+
+This is a Cloudflare zone setting, not an application redirect. In the
+family-owned Cloudflare account:
+
+1. Open **SSL/TLS → Edge Certificates** and enable **Always Use HTTPS**. Confirm
+   that the zone's SSL/TLS encryption mode is not `Off`.
+2. Verify the redirect without following it:
+
+   ```sh
+   curl -I 'http://apple-vegan-cafe.com/vegan-breakfast-pattaya/?utm_source=redirect-check'
+   ```
+
+   The response must be a single permanent `301` or `308`; `Location` must be
+   the identical HTTPS host, path, and query string.
+
+3. Spot-check `/`, one `/th/` path, and one `/ru/` path. No HTTP response may
+   serve a `200` body. Each final HTTPS target must return `200` and retain the
+   HSTS header above without a redirect loop.
+4. Re-inspect the known HTTP URL in Search Console after Google recrawls it.
+
+Keep the deploy assets-only: do not add a Worker script or
+`assets.run_worker_first` for this redirect. `public/_redirects` is path-based
+and cannot express a scheme-wide rule. Configure `www` → apex separately with a
+proxied DNS record and a zone Redirect Rule that preserves path and query.
+Defer HSTS preload until both redirects cover all required subdomains and have
+remained stable; the current header intentionally has no `preload` directive.
+
 ## External uptime monitor (not configured)
 
 Current state: **monitor not configured**. The machine-readable contract at
