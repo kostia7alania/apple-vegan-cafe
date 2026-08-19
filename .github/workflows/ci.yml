@@ -8,6 +8,10 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -38,6 +42,10 @@ jobs:
         run: pnpm validate:content
 
       - name: Build
+        env:
+          PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN: ${{ vars.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN }}
+          PUBLIC_GA_MEASUREMENT_ID: ${{ vars.PUBLIC_GA_MEASUREMENT_ID }}
+          PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_SITE_VERIFICATION }}
         run: pnpm build
 
       # canonical/hreflang tags point at the production origin; before the domain
@@ -62,3 +70,25 @@ jobs:
 
       - name: Lighthouse budget
         run: pnpm exec lhci autorun
+
+      - name: Upload verified production artifact
+        id: production-artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: production-dist-${{ github.sha }}
+          path: dist
+          if-no-files-found: error
+          # Preserve the audited public .well-known/security.txt in the tested tree.
+          include-hidden-files: true
+          retention-days: 1
+
+      - name: Record production artifact digest
+        run: echo "Production artifact SHA-256 — \`${{ steps.production-artifact.outputs.artifact-digest }}\`" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    name: Deploy verified main
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/verified-deploy.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
