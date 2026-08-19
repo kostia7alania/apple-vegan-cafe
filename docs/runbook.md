@@ -164,9 +164,25 @@ key, or recovery code.
 
 ## Dependency updates
 
-Renovate opens grouped PRs; minor/patch automerge when CI is green. Major
-updates wait for a human. TypeScript is intentionally capped at 6.x
-(renovate.json comment explains why; revisit at TS 7.1).
+GitHub's dependency graph, Dependabot alerts and Dependabot security updates
+are enabled. Security update PRs must pass the same protected `verify` check as
+any other PR; they are not auto-merged. Check the current settings with:
+
+```sh
+gh api --include repos/kostia7alania/apple-vegan-cafe/vulnerability-alerts
+gh api repos/kostia7alania/apple-vegan-cafe/automated-security-fixes
+```
+
+The activation snapshot on 2026-08-20 contained 860 dependency-graph packages
+and 19 open alerts (10 high, 8 medium, 1 low). `pnpm audit` is useful for local
+triage but is deliberately not a release gate: the public site is static, most
+findings are in the build graph, and remediation still needs the normal PR
+verification.
+
+`renovate.json` remains a future version-update policy, but Renovate is not
+installed and does not currently open PRs. If the app is installed later,
+review its automerge policy before enabling it. TypeScript is intentionally
+capped at 6.x (the config comment explains why; revisit at TS 7.1).
 
 ## Contacts
 
