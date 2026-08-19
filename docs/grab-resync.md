@@ -51,8 +51,13 @@ node --import tsx scripts/sync-grab-menu-media.ts \
 - связывает фото только по ItemID и отклоняет missing/unmapped/duplicate identity;
 - измеряет реальный MIME/dimensions, не апскейлит и не кладёт image bytes в Git;
 - сохраняет все полезные responsive candidates в `srcset`: карточку и detail;
-- строит и валидирует полный план до записи, затем заменяет прошлый Grab snapshot, сохраняя
-  отдельные local/licensed images после него;
+- dry-run печатает только реальные изменения как
+  `CHANGED <ItemID> → <dish-file>: media | dietary old→new`; одинаковый snapshot с новой датой
+  даёт `0 changed` и не создаёт diff;
+- строит и валидирует полный план до записи, затем переписывает только изменившиеся dishes;
+  новый `capturedAt` применяется только при изменении самих Grab media, а dietary-only update
+  сохраняет media и прежний `capturedAt` byte-for-byte;
+- при замене Grab snapshot сохраняет отдельные local/licensed images после него;
 - переносит enabled `Dietary preferences` из Grab как provider metadata для аудита и обратной
   синхронизации. Публичная диетическая классификация берётся из подтверждённого контракта кафе,
   поэтому ошибка поставщика не может понизить vegan/jay блюдо до `Vegetarian`;

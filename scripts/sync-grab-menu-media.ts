@@ -34,8 +34,13 @@ interface DownloadedManifestItem {
   height?: number;
 }
 
+interface DishImage {
+  origin?: string;
+  [key: string]: unknown;
+}
+
 interface DishRecord {
-  images?: { origin?: string; [key: string]: unknown }[];
+  images?: DishImage[];
   grabDietaryPreference?: 'vegan' | 'vegetarian' | null;
   [key: string]: unknown;
 }
@@ -57,6 +62,13 @@ interface GrabMediaAsset {
   grabItemId: string;
   capturedAt: string;
   credit: null;
+}
+
+interface PlannedWrite {
+  itemId: string;
+  dishFile: string;
+  changedFields: string[];
+  content: string;
 }
 
 function fail(message: string): never {
@@ -128,6 +140,29 @@ function safeGrabImageUrl(raw: string, itemId: string): string {
 
 function urlHash(url: string): string {
   return createHash('sha256').update(url).digest('hex');
+}
+
+function comparableGrabMedia(asset: DishImage | GrabMediaAsset) {
+  const stringOrNull = (value: unknown) => (typeof value === 'string' ? value : null);
+  const numberOrNull = (value: unknown) => (typeof value === 'number' ? value : null);
+  return {
+    src: stringOrNull(asset.src),
+    srcSmall: stringOrNull(asset.srcSmall),
+    srcLarge: stringOrNull(asset.srcLarge),
+    srcSmallWidth: numberOrNull(asset.srcSmallWidth),
+    srcLargeWidth: numberOrNull(asset.srcLargeWidth),
+    width: numberOrNull(asset.width),
+    height: numberOrNull(asset.height),
+    origin: stringOrNull(asset.origin),
+    grabItemId: stringOrNull(asset.grabItemId),
+  };
+}
+
+function sameGrabMedia(current: DishImage[], proposed: GrabMediaAsset[]): boolean {
+  return (
+    JSON.stringify(current.map(comparableGrabMedia)) ===
+    JSON.stringify(proposed.map(comparableGrabMedia))
+  );
 }
 
 function readManifestMetadata(paths: string[]): Map<string, ImageMetadata> {
@@ -298,8 +333,10 @@ async function main() {
   }
 
   const metadata = readManifestMetadata(manifestPaths);
-  const planned: { dishFile: string; content: string; imageCount: number }[] = [];
+  const planned: PlannedWrite[] = [];
   const dietaryPreferenceCounts = new Map<string, number>();
+  let unchanged = 0;
+  let imageCount = 0;
   for (const [itemId, dishFile] of Object.entries(itemMap.items)) {
     const item = uniqueItems.get(itemId)!;
     const dietaryPreferences = [
@@ -324,25 +361,43 @@ async function main() {
     );
     const grabImages = await buildMediaAssets(item, capturedAt, metadata, fetchMissing);
     if (grabImages.length === 0) fail(`no Grab catalogue image found for ${itemId}`);
+    imageCount += grabImages.length;
     const dishPath = join(dishesDir, dishFile);
     const dish = JSON.parse(readFileSync(dishPath, 'utf8')) as DishRecord;
-    const localImages = (dish.images ?? []).filter(
-      ({ origin }) => origin !== 'grab-merchant-catalogue',
+    const existingImages = dish.images ?? [];
+    const existingGrabImages = existingImages.filter(
+      ({ origin }) => origin === 'grab-merchant-catalogue',
     );
+    const localImages = existingImages.filter(({ origin }) => origin !== 'grab-merchant-catalogue');
+    const mediaChanged = !sameGrabMedia(existingGrabImages, grabImages);
+    const currentDietaryPreference = dish.grabDietaryPreference ?? null;
+    const dietaryChanged = currentDietaryPreference !== grabDietaryPreference;
+    if (!mediaChanged && !dietaryChanged) {
+      unchanged += 1;
+      continue;
+    }
+
+    const changedFields = [
+      ...(mediaChanged ? ['media'] : []),
+      ...(dietaryChanged
+        ? [`dietary ${currentDietaryPreference ?? 'unset'}→${grabDietaryPreference}`]
+        : []),
+    ];
     const next = {
       ...dish,
-      images: [...grabImages, ...localImages],
+      images: mediaChanged ? [...grabImages, ...localImages] : existingImages,
       grabDietaryPreference,
     };
     planned.push({
+      itemId,
       dishFile,
-      imageCount: grabImages.length,
+      changedFields,
       content: `${JSON.stringify(next, null, 2)}\n`,
     });
   }
 
   console.log(
-    `Grab media reconciliation: ${uniqueItems.size} items, ${planned.reduce((sum, item) => sum + item.imageCount, 0)} images`,
+    `Grab media reconciliation: ${uniqueItems.size} items, ${planned.length} changed, ${unchanged} unchanged, ${imageCount} images`,
   );
   console.log(
     `Grab dietary preferences: ${[...dietaryPreferenceCounts.entries()].map(([name, count]) => `${name}=${count}`).join(', ')}`,
@@ -350,6 +405,9 @@ async function main() {
   console.log(
     `Metadata: ${metadata.size} measured CDN asset(s); mode=${write ? 'write' : 'dry-run'}`,
   );
+  for (const plan of planned) {
+    console.log(`CHANGED ${plan.itemId} → ${plan.dishFile}: ${plan.changedFields.join(' | ')}`);
+  }
   if (write) {
     for (const plan of planned) writeFileSync(join(dishesDir, plan.dishFile), plan.content);
   }
