@@ -49,6 +49,13 @@ migration because those historical runs contain the old unguarded deployment
 definition. Do not recreate that workflow; production releases belong only to
 `CI → Deploy verified main`.
 
+The deploy job targets the GitHub `production` environment, whose deployment
+branch policy allows only `main`. `CLOUDFLARE_API_TOKEN` belongs only in that
+environment; do not keep a repository-scoped copy, because repository secrets
+are available to workflows on collaborator branches. To rotate the token, add
+the replacement environment secret first, verify one current-main release, then
+delete the old GitHub secret and revoke the old Cloudflare token.
+
 ## Roll back a bad release
 
 1. In GitHub Actions, record the last known-good successful **CI** run and its
