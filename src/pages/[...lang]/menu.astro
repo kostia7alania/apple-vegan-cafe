@@ -649,9 +649,14 @@ const jsonld = [
                           )}
                           class="group/photo relative block rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mango-500"
                         >
+                          {/* The zoom link keeps the largest asset; 112–144px list thumbnails use Grab's base image. */}
                           <ResponsiveMedia
                             asset={dish.images[0]}
                             alt={dish.name[locale]}
+                            candidateLimit={{
+                              media: 'screen, print',
+                              maxWidth: dish.images[0].width,
+                            }}
                             sizes="(min-width: 1024px) 112px, (min-width: 640px) 144px, 112px"
                             className="aspect-square w-full rounded-md border border-cream-300 bg-cream-100 object-cover shadow-sm transition group-hover/photo:brightness-95"
                           />
