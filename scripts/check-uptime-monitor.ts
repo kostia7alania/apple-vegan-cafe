@@ -1,7 +1,7 @@
 /**
  * Verifies the uptime-monitor contract against the static build by default, or
  * against production with --live. Neither mode creates a monitor or sends an
- * alert; the live mode is used as a bounded post-deploy availability check.
+ * alert; the live mode is used as a bounded availability check.
  */
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -173,9 +173,7 @@ if (errors.length > 0) {
 }
 
 if (liveMode) {
-  console.log(
-    `post-deploy availability check passed: ${spec!.checks.length} production routes match`,
-  );
+  console.log(`live availability check passed: ${spec!.checks.length} production routes match`);
 } else {
   const state = spec!.alertContact === null ? 'NOT CONFIGURED — alertContact is null' : spec!.state;
   console.log(

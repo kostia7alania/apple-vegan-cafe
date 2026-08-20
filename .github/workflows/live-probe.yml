@@ -1,0 +1,42 @@
+name: Best-effort live availability probe
+
+on:
+  schedule:
+    # Avoid the start-of-hour load spike documented by GitHub Actions.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-availability-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+
+      - name: Check live home and menu availability
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            if node scripts/check-uptime-monitor.ts --live; then
+              echo "Live home/menu availability check passed on attempt $attempt." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            if [[ "$attempt" -eq 3 ]]; then
+              echo "Live home/menu availability check failed after $attempt attempts." >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
+
+            sleep 10
+          done
