@@ -117,6 +117,23 @@ for (const trackedPath of trackedFiles) {
 }
 
 async function checkPublicTree(root: string): Promise<void> {
+  let rootInfo;
+  try {
+    rootInfo = await lstat(root);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+    throw error;
+  }
+  const displayRoot = relative(projectRoot, root);
+  if (rootInfo.isSymbolicLink()) {
+    failures.push(`${displayRoot} is a symlink; public source/build output must use real files`);
+    return;
+  }
+  if (!rootInfo.isDirectory()) {
+    failures.push(`${displayRoot} must be a directory`);
+    return;
+  }
+
   for (const path of await walk(root)) {
     const displayPath = relative(projectRoot, path);
     const info = await lstat(path);
@@ -136,6 +153,10 @@ async function checkPublicTree(root: string): Promise<void> {
     for (const marker of sensitiveMarkers) {
       if (text.includes(marker))
         failures.push(`${displayPath} contains confidential marker: ${marker}`);
+    }
+    for (const marker of privateArtifactMarkers) {
+      if (text.includes(marker))
+        failures.push(`${displayPath} contains a generated private business marker`);
     }
   }
 }

@@ -15,7 +15,7 @@ Keep each snapshot in one of these locations:
 The snapshot can contain immutable raw payloads, reports, ItemID-keyed assets, normalized
 tables, derived AI context and a local dashboard. Do not force-add an ignored snapshot or
 move it to a tracked directory. Never store passwords, OTPs, cookies, authorization
-headers, private keys or live signed URLs. Keep any invoice decryption value in a password
+headers, private keys or live signed URLs. Keep any invoice-decryption value in a password
 manager or other secret store, separate from the invoices it unlocks.
 
 Before processing a snapshot, the Grab tools resolve the real output path and fail closed

@@ -257,18 +257,21 @@ def write_private_text_atomic(directory: Path, filename: str, content: str) -> N
         dir=directory, prefix=f".{filename}.", suffix=".tmp", text=True
     )
     temporary_path = Path(temporary_name)
+    descriptor_owned = True
     try:
         os.fchmod(descriptor, 0o600)
         with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as output:
+            descriptor_owned = False
             output.write(content)
             output.flush()
             os.fsync(output.fileno())
         os.replace(temporary_path, directory / filename)
     except Exception:
-        try:
-            os.close(descriptor)
-        except OSError:
-            pass
+        if descriptor_owned:
+            try:
+                os.close(descriptor)
+            except OSError:
+                pass
         temporary_path.unlink(missing_ok=True)
         raise
 

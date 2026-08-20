@@ -290,8 +290,9 @@ const [
   readCsv(join(normalizedDir, 'business-action-log-template.csv')),
 ]);
 
-if (!summary || typeof summary !== 'object') throw new Error('summary.json must be an object');
-if (!rating || typeof rating !== 'object')
+if (!summary || typeof summary !== 'object' || Array.isArray(summary))
+  throw new Error('summary.json must be an object');
+if (!rating || typeof rating !== 'object' || Array.isArray(rating))
   throw new Error('rating-overview-current.json must be an object');
 if (!Array.isArray(menuItems)) throw new Error('menu-items-current.json must be an array');
 
@@ -457,7 +458,7 @@ const repeatSharePct =
     ? round((currentCustomers.repeatCustomers / currentCustomers.total) * 100)
     : null;
 
-const reviewText = reviewCsv.map((row) => row['Review text']?.toLocaleLowerCase() ?? '');
+const reviewText = reviewCsv.map((row) => row['Review text']?.toLowerCase() ?? '');
 const themeRules = [
   ['Taste praise', ['delicious', 'อร่อย', 'вкусн']],
   ['Fresh / hot food', ['fresh', 'hot', 'สด', 'ร้อน']],
@@ -562,7 +563,7 @@ const topItem = topItems[0];
 const bestWeekday = weekdayPerformance[0]!;
 const weakestWeekday = weekdayPerformance.at(-1)!;
 const completedActionRows = actionCsv.filter(
-  (row) => row.status?.trim().toLocaleLowerCase() === 'completed',
+  (row) => row.status?.trim().toLowerCase() === 'completed',
 ).length;
 const recommendations: Recommendation[] = [];
 const addRecommendation = (recommendation: Omit<Recommendation, 'priority'>) => {
@@ -725,6 +726,11 @@ for (const [index, item] of menuItems.entries()) {
   if (nonnegative(item.image_count, `menu item ${index + 1} image_count`, true) > 0) {
     menuItemsWithImages++;
   }
+}
+if (summaryMenuItems !== menuItems.length || summaryMenuItemsWithImages !== menuItemsWithImages) {
+  throw new Error(
+    `menu coverage mismatch: summary=${summaryMenuItems}/${summaryMenuItemsWithImages}, items=${menuItems.length}/${menuItemsWithImages}`,
+  );
 }
 
 const context = {
