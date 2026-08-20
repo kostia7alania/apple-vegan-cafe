@@ -28,6 +28,7 @@
     "generate:redirects": "tsx scripts/generate-redirects.ts",
     "grab:photos": "tsx scripts/grab-photo-recovery.ts",
     "import:menu": "tsx scripts/import-menu.ts",
+    "privacy:check": "tsx scripts/check-private-data-boundary.ts",
     "deploy": "wrangler deploy --config infrastructure/wrangler.jsonc"
   },
   "dependencies": {
