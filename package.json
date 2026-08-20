@@ -29,6 +29,7 @@
     "grab:photos": "tsx scripts/grab-photo-recovery.ts",
     "grab:extract-gmfr": "tsx scripts/extract-grab-gmfr.ts",
     "grab:extract-invoices": "python3 scripts/extract-grab-invoices.py",
+    "grab:analyze": "tsx scripts/analyze-grab-business.ts",
     "import:menu": "tsx scripts/import-menu.ts",
     "privacy:check": "tsx scripts/check-private-data-boundary.ts",
     "deploy": "wrangler deploy --config infrastructure/wrangler.jsonc"

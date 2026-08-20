@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { lstat, mkdir, open, realpath, rename, unlink } from 'node:fs/promises';
+import { link, lstat, mkdir, open, realpath, rename, unlink } from 'node:fs/promises';
 import { basename, join, resolve, sep } from 'node:path';
 
 function isWithin(path: string, root: string): boolean {
@@ -104,5 +104,53 @@ export async function writePrivateFileAtomic(
     await handle.close().catch(() => undefined);
     await unlink(temporaryPath).catch(() => undefined);
     throw error;
+  }
+}
+
+/** Create a private template once while refusing an existing symlink or non-file target. */
+export async function writePrivateFileIfMissing(
+  directory: string,
+  filename: string,
+  content: string,
+): Promise<void> {
+  if (basename(filename) !== filename) throw new Error(`invalid private filename: ${filename}`);
+  const realDirectory = await realpath(directory);
+  if (realDirectory !== directory) {
+    throw new Error(`private output directory changed during write: ${directory}`);
+  }
+
+  const targetPath = join(directory, filename);
+  try {
+    const status = await lstat(targetPath);
+    if (status.isSymbolicLink() || !status.isFile()) {
+      throw new Error(`private template target must be a real file: ${targetPath}`);
+    }
+    return;
+  } catch (error) {
+    if (!(error instanceof Error && 'code' in error && error.code === 'ENOENT')) throw error;
+  }
+
+  const temporaryPath = join(directory, `.${filename}.${process.pid}.${randomUUID()}.tmp`);
+  const handle = await open(temporaryPath, 'wx', 0o600);
+  try {
+    await handle.writeFile(content, 'utf8');
+    await handle.sync();
+    await handle.close();
+    try {
+      await link(temporaryPath, targetPath);
+    } catch (error) {
+      if (!(error instanceof Error && 'code' in error && error.code === 'EEXIST')) throw error;
+      const status = await lstat(targetPath);
+      if (status.isSymbolicLink() || !status.isFile()) {
+        throw new Error(`private template target must be a real file: ${targetPath}`, {
+          cause: error,
+        });
+      }
+    }
+  } catch (error) {
+    await handle.close().catch(() => undefined);
+    throw error;
+  } finally {
+    await unlink(temporaryPath).catch(() => undefined);
   }
 }
