@@ -146,6 +146,22 @@ that begins later and it does not prove that anyone receives an alert. It also
 checks availability, not whether every edge is already serving this exact Git
 SHA; the current-main and artifact-digest gates provide the release identity.
 
+## Best-effort GitHub live probe
+
+`.github/workflows/live-probe.yml` requests the same live home/menu check once
+an hour at minute 17 and also supports a manual run. It uses only read access,
+installs no packages, receives no secrets and cannot deploy or change the site.
+The check retries three times before failing. The schedule actor's GitHub
+Actions setting was confirmed on 2026-08-20 to email failed workflows; the
+recipient is intentionally not stored in the repository.
+
+This is a fallback signal, not a guaranteed monitor or SLA. GitHub may delay or
+drop scheduled runs, runs schedules only from the default branch, and disables
+scheduled workflows in a public repository after 60 days without activity.
+Notifications depend on the schedule actor's current personal settings and move
+to the user who later edits the cron schedule or re-enables the workflow. Check
+the Actions history after an ownership or schedule change.
+
 ## External uptime monitor (not configured)
 
 Current state: **monitor not configured**. The machine-readable contract at
