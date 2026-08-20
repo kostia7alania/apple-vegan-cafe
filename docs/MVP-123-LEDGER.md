@@ -3,7 +3,7 @@
 Это не список работ ради числа 123 и не замена реализации. Каждая строка должна
 закончиться наблюдаемым результатом для гостя или владельца кафе.
 
-Текущий срез: **123 outcomes = 66 DONE · 0 READY · 57 BLOCKED**.
+Текущий срез: **123 outcomes = 69 DONE · 0 READY · 54 BLOCKED**.
 
 - `DONE` — есть прямое доказательство в текущем репозитории или рабочем diff.
 - `READY` — можно делать автономно, не выдумывая business facts.
@@ -151,7 +151,7 @@
 | ID      | Конкретный результат                                                        | Статус  | Evidence / DoD                                                                                                                                            |
 | ------- | --------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | MVP-106 | Все публичные canonical pages перечислены в sitemap                         | DONE    | Astro sitemap integration и sitemap coverage зафиксированы в BACKLOG R14/R23; robots ссылается на sitemap.                                                |
-| MVP-107 | Домен подтверждён в Google Search Console и sitemap принят                  | DONE    | Authenticated GSC evidence 2026-08-19: verified domain property; sitemap submitted 2026-07-21, last read 2026-08-16, status Success, 31 discovered pages. |
+| MVP-107 | Домен подтверждён в Google Search Console и sitemap принят                  | DONE    | Authenticated GSC evidence 2026-08-20: verified domain property; sitemap resubmitted 2026-08-20, last read same day, status Success, 31 discovered pages. |
 | MVP-108 | Google Business Profile claimed правильным владельцем                       | BLOCKED | DoD: owner/manager access подтверждён; primary category и business identity управляются семьёй.                                                           |
 | MVP-109 | GBP содержит единые часы, pin, phone, website, menu и Grab order link       | BLOCKED | Prep: listing packet готов; конфликтующие directory pin/часы не перенесены в repo, поэтому DONE требует owner-shared Maps URL, GBP access и live sync.    |
 | MVP-110 | Сайт ссылается на точный GBP/Maps и Google review destination               | BLOCKED | Owner должен прислать Maps Share URL с визуально проверенного пина и review link из того же verified GBP; guessed Place ID/coordinates запрещены.         |
