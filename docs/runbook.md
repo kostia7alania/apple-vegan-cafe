@@ -86,7 +86,11 @@ Authenticated Search Console evidence refreshed on 2026-08-20:
   every sitemap URL is indexed;
 - URL Inspection reported both corrected EN/RU delivery landings indexed and
   accepted both into the priority crawl queue on 2026-08-20. The EN live test
-  also reported that the current page is available to Google.
+  also reported that the current page is available to Google;
+- the high-intent EN breakfast landing and the TH homepage remained
+  `Discovered - currently not indexed` with no crawl date. Google accepted both
+  into the priority crawl queue on 2026-08-20. This is a crawl request, not
+  proof that either URL has since been indexed.
 
 The configured domain property is verified through DNS. The optional
 `PUBLIC_GOOGLE_SITE_VERIFICATION` hook applies only if a separate URL-prefix
