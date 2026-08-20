@@ -27,6 +27,8 @@
     "generate:listing-packet": "tsx scripts/generate-listing-packet.ts",
     "generate:redirects": "tsx scripts/generate-redirects.ts",
     "grab:photos": "tsx scripts/grab-photo-recovery.ts",
+    "grab:extract-gmfr": "tsx scripts/extract-grab-gmfr.ts",
+    "grab:extract-invoices": "python3 scripts/extract-grab-invoices.py",
     "import:menu": "tsx scripts/import-menu.ts",
     "privacy:check": "tsx scripts/check-private-data-boundary.ts",
     "deploy": "wrangler deploy --config infrastructure/wrangler.jsonc"
