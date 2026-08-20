@@ -48,6 +48,9 @@ jobs:
           PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_SITE_VERIFICATION }}
         run: pnpm build
 
+      - name: Verify private data stays outside the public build
+        run: pnpm privacy:check -- --dist
+
       # canonical/hreflang tags point at the production origin; before the domain
       # is live those would fail DNS — internal <a> links are relative and checked.
       # Instagram intermittently returns 429 to GitHub Actions link crawlers.
