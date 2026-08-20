@@ -74,14 +74,23 @@ definition. Do not recreate that workflow; production releases belong only to
 
 ## Google Search Console (configured)
 
-Authenticated Search Console evidence observed on 2026-08-19:
+Authenticated Search Console evidence refreshed on 2026-08-20:
 
 - the verified domain property is `sc-domain:apple-vegan-cafe.com`;
-- `https://apple-vegan-cafe.com/sitemap-index.xml` was submitted on 2026-07-21,
-  last read on 2026-08-16 and reports **Success** with 31 discovered pages;
+- `https://apple-vegan-cafe.com/sitemap-index.xml` was resubmitted and last read
+  on 2026-08-20; GSC reports **Success** with 31 discovered pages. The live
+  sitemap currently contains 32 canonical URLs, so recheck after processing
+  instead of treating the immediate one-URL gap as a submission failure;
 - the Page indexing report last updated on 2026-08-17 and reported 15 indexed
   and 20 not-indexed URLs. This is an operating baseline, not a promise that
-  every sitemap URL is indexed.
+  every sitemap URL is indexed;
+- URL Inspection reported both corrected EN/RU delivery landings indexed and
+  accepted both into the priority crawl queue on 2026-08-20. The EN live test
+  also reported that the current page is available to Google;
+- the high-intent EN breakfast landing and the TH homepage remained
+  `Discovered - currently not indexed` with no crawl date. Google accepted both
+  into the priority crawl queue on 2026-08-20. This is a crawl request, not
+  proof that either URL has since been indexed.
 
 The configured domain property is verified through DNS. The optional
 `PUBLIC_GOOGLE_SITE_VERIFICATION` hook applies only if a separate URL-prefix
