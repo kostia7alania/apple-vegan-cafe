@@ -454,6 +454,87 @@
   }
 }
 
+@media (min-width: 64rem) {
+  [data-menu-hero]:has([data-menu-quick-picks][hidden]) {
+    grid-template-columns: minmax(0, 42rem);
+  }
+}
+
+body:has([data-menu-search-clear]:not([hidden])) [data-menu-filter-context] {
+  display: none;
+}
+
+[data-menu-filter-policy] {
+  display: none;
+}
+
+body:has([data-menu-search-clear]:not([hidden]))
+  [data-menu-section]:not([hidden])
+  [data-menu-filter-policy] {
+  display: block;
+}
+
+body:has([data-menu-search-clear]:not([hidden]))
+  [data-menu-section]:not([hidden])
+  ~ [data-menu-section]:not([hidden])
+  [data-menu-filter-policy] {
+  display: none;
+}
+
+@media (max-width: 40rem) and (max-height: 48rem) {
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-hero] {
+    padding-block: 1rem;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-hero-eyebrow],
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-hero-context] {
+    display: none;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-title] {
+    margin-top: 0;
+    max-width: none;
+    font-size: 2rem;
+    line-height: 1.1;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-search] {
+    margin-top: 1rem;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-no-results] {
+    margin-block: 0.75rem;
+    padding-block: 1.5rem;
+  }
+}
+
+@media (max-width: 40rem) and (max-height: 38rem) {
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-hero] {
+    padding-top: 0.5rem;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-title] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-search] {
+    margin-top: 0;
+  }
+
+  body:has([data-menu-search-clear]:not([hidden])) [data-menu-no-results] {
+    margin-block: 0.5rem;
+    padding-block: 1rem;
+  }
+}
+
 .menu-photo-dialog::backdrop {
   background: rgb(18 31 21 / 74%);
   backdrop-filter: blur(3px);

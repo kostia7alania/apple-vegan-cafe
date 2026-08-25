@@ -166,23 +166,30 @@ const jsonld = [
 <Base {locale} {title} {description} {alternates} {jsonld} staticHeader>
   <section
     id="top"
+    data-menu-hero
+    data-analytics-placement="menu_hero"
     class="wrap grid gap-8 pt-8 pb-6 lg:grid-cols-[minmax(0,0.76fr)_minmax(0,1.24fr)] lg:items-start lg:gap-10 lg:pt-12 lg:pb-8"
   >
     <div class="min-w-0 lg:pt-4">
-      <p class="text-center lg:text-left">
+      <p data-menu-hero-eyebrow class="text-center lg:text-left">
         <JayBadge label={t(locale, 'trust.jay')} />
       </p>
       <h1
+        data-menu-title
         class="font-display mx-auto mt-4 max-w-[13ch] text-center text-4xl leading-[1.05] font-bold tracking-tight text-leaf-900 text-balance sm:text-5xl lg:mx-0 lg:text-left"
       >
         {t(locale, 'menu.title')}
       </h1>
       <p
+        data-menu-hero-context
         class="mx-auto mt-3 max-w-[40ch] text-center text-base leading-relaxed text-ink-700 text-pretty lg:mx-0 lg:text-left"
       >
         {t(locale, 'trust.honest')}
       </p>
-      <p class="mt-2 text-center text-sm font-semibold text-leaf-700 lg:text-left">
+      <p
+        data-menu-hero-context
+        class="mt-2 text-center text-sm font-semibold text-leaf-700 lg:text-left"
+      >
         {t(locale, 'menu.catalogueSummary').replace('{count}', String(dishes.length))}
       </p>
       <p class="hidden print:block">
@@ -199,7 +206,13 @@ const jsonld = [
         aria-hidden="true"
         class="invisible mt-6 scroll-mt-20 print:hidden"
       >
-        <form data-menu-search-form action={localePath(locale, '/menu/')} method="get">
+        <form
+          id={`menu-search-form-${locale}`}
+          data-menu-search-form
+          data-analytics-placement="menu_search"
+          action={localePath(locale, '/menu/')}
+          method="get"
+        >
           <label for={`menu-search-${locale}`} class="block text-sm font-bold text-leaf-900">
             {t(locale, 'menu.searchLabel')}
           </label>
@@ -212,7 +225,7 @@ const jsonld = [
               enterkeyhint="search"
               aria-describedby={`menu-search-status-${locale}`}
               placeholder={t(locale, 'menu.searchPlaceholder')}
-              class="min-h-12 min-w-0 rounded-lg border border-cream-400 bg-cream-50 px-4 text-base text-ink-900 placeholder:text-ink-500/80 focus:border-leaf-700"
+              class="min-h-12 min-w-0 rounded-lg border border-ink-500 bg-cream-50 px-4 text-base text-ink-900 placeholder:text-ink-500/80 focus:border-leaf-700"
             />
             <button
               type="submit"
@@ -256,7 +269,9 @@ const jsonld = [
             }
             <button
               data-menu-search-clear
-              type="button"
+              data-analytics-event="menu_filters_clear"
+              data-analytics-placement="menu_search_controls"
+              type="reset"
               hidden
               class="ml-auto inline-flex min-h-11 items-center px-1 font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
             >
@@ -268,8 +283,7 @@ const jsonld = [
             data-menu-search-status
             aria-live="polite"
             aria-atomic="true"
-            hidden
-            class="mt-2 text-sm font-semibold text-leaf-800"
+            class="mt-2 min-h-5 text-sm font-semibold text-leaf-800"
           >
           </p>
         </form>
@@ -290,6 +304,7 @@ const jsonld = [
                     rel="noopener"
                     data-analytics-event="order_click"
                     data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                    data-analytics-goal="true"
                     class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-5 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
                   >
                     {orderingCtaLabel(locale, link.provider)}
@@ -328,21 +343,19 @@ const jsonld = [
                 <a
                   href={`#${dish.slug[locale]}`}
                   data-analytics-event="menu_popular_pick_click"
-                  data-analytics-provider="grab"
+                  data-analytics-placement="menu_quick_picks"
+                  data-analytics-item-id={dish.slug.en}
+                  data-analytics-item-category={dish.category.id}
                   class="group flex h-full flex-col overflow-hidden rounded-xl border border-cream-300 bg-cream-50 shadow-[0_16px_35px_-30px_rgba(38,34,27,0.55)] transition hover:-translate-y-0.5 hover:border-leaf-700/40 hover:shadow-[0_20px_38px_-28px_rgba(38,34,27,0.6)] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   {dish.images[0] && (
                     <ResponsiveMedia
                       asset={dish.images[0]}
                       alt=""
-                      candidateLimit={
-                        index > 0
-                          ? {
-                              media: '(max-width: 63.999rem)',
-                              maxWidth: dish.images[0].width,
-                            }
-                          : undefined
-                      }
+                      candidateLimit={{
+                        media: '(max-width: 63.999rem)',
+                        maxWidth: dish.images[0].width,
+                      }}
                       eager={index === 0}
                       fetchPriority={index > 0 ? 'low' : undefined}
                       sizes="(min-width: 1024px) 280px, (min-width: 640px) 288px, 248px"
@@ -375,7 +388,12 @@ const jsonld = [
     }
   </section>
 
-  <section class="wrap pb-5 print:hidden" aria-label={t(locale, 'menu.dietGuidance')}>
+  <section
+    data-menu-filter-context
+    data-analytics-placement="menu_guidance"
+    class="wrap pb-5 print:hidden"
+    aria-label={t(locale, 'menu.dietGuidance')}
+  >
     <div class="grid gap-3 lg:grid-cols-[minmax(0,1.35fr)_minmax(17rem,0.65fr)]">
       <details class="menu-guidance group rounded-xl border border-leaf-700/20 bg-leaf-50">
         <summary
@@ -429,6 +447,7 @@ const jsonld = [
                   rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
                   data-analytics-event="dietary_contact_click"
                   data-analytics-provider={dietaryContact}
+                  data-analytics-goal="true"
                   class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                 >
                   {dietaryContactLabel} →
@@ -458,7 +477,11 @@ const jsonld = [
 
   {
     spiceRequests && spiceRequestText && (
-      <aside class="wrap pb-5" aria-label={t(locale, 'operations.spiceQuestion')}>
+      <aside
+        data-menu-filter-context
+        class="wrap pb-5"
+        aria-label={t(locale, 'operations.spiceQuestion')}
+      >
         <div class="rounded-xl border border-mango-500/30 bg-mango-200/25 px-4 py-3 text-sm leading-relaxed text-ink-700">
           <p class="font-semibold text-leaf-900">{t(locale, 'operations.spiceQuestion')}</p>
           <p class="mt-1">{spiceRequestText}</p>
@@ -468,8 +491,12 @@ const jsonld = [
     )
   }
 
+  <span data-menu-category-sentinel aria-hidden="true" class="block h-px -mb-px print:hidden"
+  ></span>
+
   <nav
     data-menu-category-nav
+    data-analytics-placement="menu_category_rail"
     aria-label={t(locale, 'menu.categoriesNav')}
     class="sticky top-0 z-30 border-y border-cream-300/80 bg-cream-100/95 backdrop-blur-md print:hidden"
   >
@@ -478,7 +505,8 @@ const jsonld = [
         data-menu-search-jump
         hidden
         href="#menu-search"
-        aria-label={t(locale, 'menu.searchLabel')}
+        data-analytics-event="menu_search_jump"
+        aria-label={t(locale, 'menu.searchAction')}
         class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-leaf-700 px-3 text-sm font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:px-4"
       >
         <svg
@@ -505,11 +533,17 @@ const jsonld = [
               <li data-menu-category-link={category.id} class="snap-start">
                 <a
                   data-menu-category-anchor={category.id}
+                  data-analytics-event="menu_category_click"
+                  data-analytics-item-category={category.id}
                   href={`#${category.data.slug[locale]}`}
                   class="menu-category-anchor inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-leaf-700/20 bg-cream-50 px-4 text-sm font-semibold whitespace-nowrap text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
                 >
                   {category.data.name[locale]}
-                  <span class="text-xs font-normal text-ink-500 tabular-nums" aria-hidden="true">
+                  <span
+                    data-menu-category-count
+                    class="text-xs font-normal text-ink-500 tabular-nums"
+                    aria-hidden="true"
+                  >
                     {dishes.filter((d) => d.data.category.id === category.id).length}
                   </span>
                 </a>
@@ -529,6 +563,9 @@ const jsonld = [
                 ? orderingAnalyticsProvider(orderingLinks[0]!.provider)
                 : undefined
             }
+            data-menu-rail-order
+            data-analytics-goal={orderingLinks.length === 1 ? 'true' : undefined}
+            hidden
             class="hidden min-h-11 shrink-0 items-center rounded-lg bg-mango-500 px-4 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300 md:inline-flex"
           >
             {t(locale, 'actions.order')}
@@ -546,11 +583,17 @@ const jsonld = [
           <section
             data-menu-section={category.id}
             id={category.data.slug[locale]}
+            tabindex="-1"
+            role="group"
+            aria-labelledby={`menu-section-heading-${category.id}`}
             style={`--menu-estimate-mobile: ${Math.max(items.length * 9.75, 42)}rem;`}
             class:list={['scroll-mt-20 pt-10', categoryIndex > 0 && 'menu-section-deferred']}
           >
             <div class="flex items-center gap-4">
-              <h2 class="section-heading text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl">
+              <h2
+                id={`menu-section-heading-${category.id}`}
+                class="section-heading text-2xl font-black tracking-tight text-leaf-900 sm:text-3xl"
+              >
                 {category.data.name[locale]}
               </h2>
               <span class="h-px flex-1 bg-cream-300" aria-hidden="true" />
@@ -559,6 +602,8 @@ const jsonld = [
               {items.map(({ data: dish }) => (
                 <li
                   data-menu-item
+                  data-analytics-item-id={dish.slug.en}
+                  data-analytics-item-category={dish.category.id}
                   data-menu-search-index={searchIndex(dish, category.data.name[locale])}
                   data-menu-price={dish.price_thb}
                   data-menu-diet-no-gluten={
@@ -639,6 +684,8 @@ const jsonld = [
                           target="_blank"
                           rel="noopener"
                           data-menu-photo-open
+                          data-analytics-event="menu_photo_open"
+                          data-analytics-placement="menu_catalogue"
                           data-photo-src={largestImageCandidate(dish.images[0]).src}
                           data-photo-width={largestImageCandidate(dish.images[0]).width}
                           data-photo-height={largestImageCandidate(dish.images[0]).height}
@@ -689,32 +736,50 @@ const jsonld = [
                 </li>
               ))}
             </ul>
+            <p
+              data-menu-filter-policy
+              class="mt-4 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 text-sm leading-relaxed text-ink-700"
+            >
+              <strong class="font-bold text-leaf-900">{t(locale, 'menu.allVeganJay')}</strong>{' '}
+              {t(locale, 'menu.plantNamesNote')} {pricePolicyText}
+            </p>
           </section>
         );
       })
     }
     <div
       data-menu-no-results
+      tabindex="-1"
+      role="group"
+      aria-labelledby="menu-no-results-message"
       hidden
-      class="my-12 rounded-lg border border-cream-300 bg-cream-50 px-6 py-10 text-center text-lg font-semibold text-ink-700"
+      class="my-12 scroll-mt-20 rounded-lg border border-cream-300 bg-cream-50 px-6 py-10 text-center text-lg font-semibold text-ink-700"
     >
       <p
+        id="menu-no-results-message"
         data-menu-no-results-message
         data-default-message={t(locale, 'menu.noResults')}
         data-verified-message={t(locale, 'menu.noVerifiedResults')}
       >
         {t(locale, 'menu.noResults')}
       </p>
-      <a
-        href={localePath(locale, '/menu/')}
+      <button
+        data-menu-no-results-clear
+        data-analytics-event="menu_filters_clear"
+        data-analytics-placement="menu_zero_results"
+        type="reset"
+        form={`menu-search-form-${locale}`}
         class="mt-4 inline-flex min-h-11 items-center rounded-lg border border-leaf-700/30 bg-leaf-50 px-5 text-sm font-bold text-leaf-800 hover:bg-cream-100"
       >
         {t(locale, 'menu.showAllDishes')}
-      </a>
+      </button>
     </div>
     {
       orderingLinks.length > 0 && (
-        <section class="decor-card mt-14 mb-10 rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10 print:hidden">
+        <section
+          data-analytics-placement="menu_closing"
+          class="decor-card mt-14 mb-10 rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 text-center sm:px-10 print:hidden"
+        >
           <p class="text-xl font-black text-leaf-900">{t(locale, 'menu.orderClosing')}</p>
           <ul class="mt-4 flex flex-wrap justify-center gap-3">
             {orderingLinks.map((link) => (
@@ -724,6 +789,7 @@ const jsonld = [
                   rel="noopener"
                   data-analytics-event="order_click"
                   data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                  data-analytics-goal="true"
                   class="inline-flex min-h-12 items-center rounded-lg bg-leaf-700 px-7 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
                 >
                   {orderingCtaLabel(locale, link.provider)}
@@ -739,6 +805,7 @@ const jsonld = [
                 rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
                 data-analytics-event="dietary_contact_click"
                 data-analytics-provider={dietaryContact}
+                data-analytics-goal="true"
                 class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
               >
                 {dietaryContactLabel} →
@@ -809,7 +876,11 @@ const jsonld = [
       );
       const categoryNav = document.querySelector<HTMLElement>('[data-menu-category-nav]');
       const categoryScroller = document.querySelector<HTMLElement>('[data-menu-category-scroller]');
+      const categorySentinel = document.querySelector<HTMLElement>(
+        '[data-menu-category-sentinel]',
+      )!;
       const searchJump = document.querySelector<HTMLAnchorElement>('[data-menu-search-jump]');
+      const railOrder = document.querySelector<HTMLAnchorElement>('[data-menu-rail-order]');
       const quickPicksRoot = document.querySelector<HTMLElement>('[data-menu-quick-picks]');
       const quickPicks = Array.from(
         document.querySelectorAll<HTMLElement>('[data-menu-quick-pick]'),
@@ -818,7 +889,14 @@ const jsonld = [
       const resultsOne = searchRoot.dataset.resultsOne ?? resultsTemplate;
       const recognizedDietFilters = new Set(['no-gluten', 'jain']);
       let unavailableInitialDietFilters = new Set<string>();
-      let updateTimer = 0;
+      let updateTimer: ReturnType<typeof setTimeout>;
+
+      const syncRailActions = () => {
+        const showRailActions =
+          categorySentinel.getBoundingClientRect().top < 0 && !categoryNav?.hidden;
+        if (searchJump) searchJump.hidden = !showRailActions;
+        if (railOrder) railOrder.hidden = !showRailActions;
+      };
 
       const setActiveCategory = (categoryId: string | undefined) => {
         categoryAnchors.forEach((anchor) => {
@@ -866,7 +944,7 @@ const jsonld = [
 
         revealSectionsThrough(section);
         setActiveCategory(section.dataset.menuSection);
-        window.requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+        requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
       };
 
       const normalize = (value: string) =>
@@ -881,6 +959,8 @@ const jsonld = [
           .filter((dietInput) => dietInput.checked)
           .map((dietInput) => dietInput.value);
         unavailableInitialDietFilters.forEach((filter) => selectedDiet.push(filter));
+        const hasActiveFilters =
+          queryTokens.length > 0 || selectedPrice !== 'all' || selectedDiet.length > 0;
         const maxPrice = selectedPrice === 'all' ? Number.POSITIVE_INFINITY : Number(selectedPrice);
         let visibleCount = 0;
 
@@ -899,17 +979,17 @@ const jsonld = [
         });
 
         sections.forEach((section) => {
-          const hasVisibleItems = Array.from(
-            section.querySelectorAll<HTMLElement>('[data-menu-item]'),
-          ).some((item) => !item.hidden);
-          section.hidden = !hasVisibleItems;
-        });
-
-        categoryLinks.forEach((link) => {
-          const section = sections.find(
-            (candidate) => candidate.dataset.menuSection === link.dataset.menuCategoryLink,
+          const visibleItemCount = section.querySelectorAll(
+            '[data-menu-item]:not([hidden])',
+          ).length;
+          section.hidden = visibleItemCount === 0;
+          const link = categoryLinks.find(
+            (candidate) => candidate.dataset.menuCategoryLink === section.dataset.menuSection,
           );
-          link.hidden = Boolean(section?.hidden);
+          if (!link) return;
+          const count = link.querySelector<HTMLElement>('[data-menu-category-count]');
+          if (count) count.textContent = String(visibleItemCount);
+          link.hidden = visibleItemCount === 0;
         });
 
         quickPicks.forEach((quickPick) => {
@@ -928,15 +1008,14 @@ const jsonld = [
           setActiveCategory(sections.find((section) => !section.hidden)?.dataset.menuSection);
         }
 
-        const hasActiveFilters =
-          queryTokens.length > 0 || selectedPrice !== 'all' || selectedDiet.length > 0;
         clearButton.hidden = !hasActiveFilters;
+        if (categoryNav) categoryNav.hidden = visibleCount === 0;
+        syncRailActions();
         noResults.hidden = visibleCount > 0;
         noResultsMessage.textContent =
           selectedDiet.length > 0
             ? (noResultsMessage.dataset.verifiedMessage ?? '')
             : (noResultsMessage.dataset.defaultMessage ?? '');
-        status.hidden = !hasActiveFilters;
         status.textContent = hasActiveFilters
           ? (visibleCount === 1 ? resultsOne : resultsTemplate).replace(
               '{count}',
@@ -945,7 +1024,7 @@ const jsonld = [
           : '';
 
         if (updateUrl) {
-          const nextUrl = new URL(window.location.href);
+          const nextUrl = new URL(location.href);
           if (queryTokens.length > 0) nextUrl.searchParams.set('q', input.value.trim());
           else nextUrl.searchParams.delete('q');
 
@@ -958,19 +1037,28 @@ const jsonld = [
             nextUrl.searchParams.delete('diet');
           }
           nextUrl.hash = '';
-          window.history.replaceState({}, '', nextUrl);
+          history.replaceState({}, '', nextUrl);
         }
       };
 
       const scheduleSearch = () => {
-        window.clearTimeout(updateTimer);
-        updateTimer = window.setTimeout(() => applySearch(true), 140);
+        clearTimeout(updateTimer);
+        updateTimer = setTimeout(() => applySearch(true), 140);
+      };
+
+      const scrollToSearchOutcome = () => {
+        const outcome = noResults?.hidden ? sections.find((section) => !section.hidden) : noResults;
+        requestAnimationFrame(() => {
+          outcome?.focus({ preventScroll: true });
+          outcome?.scrollIntoView({ block: 'start' });
+        });
       };
 
       form?.addEventListener('submit', (event) => {
         event.preventDefault();
-        window.clearTimeout(updateTimer);
+        clearTimeout(updateTimer);
         applySearch(true);
+        scrollToSearchOutcome();
       });
       input?.addEventListener('input', scheduleSearch);
       priceInputs.forEach((priceInput) => priceInput.addEventListener('change', scheduleSearch));
@@ -980,13 +1068,14 @@ const jsonld = [
           scheduleSearch();
         }),
       );
-      input?.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && input.value) {
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && input?.value && !document.querySelector('dialog[open]')) {
           input.value = '';
           applySearch(true);
+          input.focus();
         }
       });
-      clearButton?.addEventListener('click', () => {
+      const clearFilters = () => {
         if (!input) return;
         input.value = '';
         priceInputs.forEach((priceInput) => {
@@ -998,9 +1087,13 @@ const jsonld = [
         unavailableInitialDietFilters.clear();
         applySearch(true);
         input.focus();
+      };
+      form?.addEventListener('reset', (event) => {
+        event.preventDefault();
+        clearFilters();
       });
 
-      const searchParams = new URLSearchParams(window.location.search);
+      const searchParams = new URLSearchParams(location.search);
       if (input) input.value = searchParams.get('q') ?? '';
       const initialPrice = searchParams.get('price');
       if (initialPrice) {
@@ -1023,10 +1116,12 @@ const jsonld = [
       searchRoot.removeAttribute('inert');
       searchRoot.removeAttribute('aria-hidden');
       searchRoot.classList.remove('invisible');
-      if (searchJump) searchJump.hidden = false;
       applySearch();
       syncMenuHashTarget();
       window.addEventListener('hashchange', syncMenuHashTarget);
+
+      addEventListener('scroll', syncRailActions, { passive: true });
+      addEventListener('resize', syncRailActions);
 
       categoryAnchors.forEach((anchor) =>
         anchor.addEventListener('click', () => {

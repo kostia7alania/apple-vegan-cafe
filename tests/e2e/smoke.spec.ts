@@ -625,10 +625,13 @@ test('menu ships one bounded same-origin enhancement bundle', async ({ page }) =
     })),
   );
 
-  expect(scripts).toHaveLength(1);
-  const [menuBundle] = scripts;
+  const pageOrigin = new URL(page.url()).origin;
+  const sameOriginScripts = scripts.filter((script) => new URL(script.src).origin === pageOrigin);
+
+  expect(sameOriginScripts).toHaveLength(1);
+  const [menuBundle] = sameOriginScripts;
   expect(menuBundle).toBeDefined();
-  expect(new URL(menuBundle!.src).origin).toBe(new URL(page.url()).origin);
+  expect(new URL(menuBundle!.src).origin).toBe(pageOrigin);
   expect(menuBundle!.type).toBe('module');
 
   const response = await page.request.get(menuBundle!.src);

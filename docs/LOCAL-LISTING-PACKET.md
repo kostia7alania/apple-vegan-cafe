@@ -32,9 +32,9 @@ The packet reflects the repository source of truth; it does not prove that an ex
 - Menu URL: https://apple-vegan-cafe.com/menu/
 - Order URLs:
   - GrabFood: https://r.grab.com/o/Fj6Zvya2
-- Listing/profile URL: NOT CONFIRMED — DO NOT PUBLISH
+- Listing/profile URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Direct review URL: NOT CONFIRMED — DO NOT PUBLISH
-- Confirmed Maps/pin URL: NOT CONFIRMED — DO NOT PUBLISH
+- Confirmed Maps/pin URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Confirmed coordinates: NOT CONFIRMED — DO NOT PUBLISH
 
 ## HappyCow
@@ -59,7 +59,7 @@ The packet reflects the repository source of truth; it does not prove that an ex
   - GrabFood: https://r.grab.com/o/Fj6Zvya2
 - Listing/profile URL: https://www.happycow.net/reviews/apple-vegan-cafe-and-restaurant-pattaya-386893
 - Direct review URL: NOT CONFIRMED — DO NOT PUBLISH
-- Confirmed Maps/pin URL: NOT CONFIRMED — DO NOT PUBLISH
+- Confirmed Maps/pin URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Confirmed coordinates: NOT CONFIRMED — DO NOT PUBLISH
 
 ## Tripadvisor
@@ -84,7 +84,7 @@ The packet reflects the repository source of truth; it does not prove that an ex
   - GrabFood: https://r.grab.com/o/Fj6Zvya2
 - Listing/profile URL: NOT CONFIRMED — DO NOT PUBLISH
 - Direct review URL: NOT CONFIRMED — DO NOT PUBLISH
-- Confirmed Maps/pin URL: NOT CONFIRMED — DO NOT PUBLISH
+- Confirmed Maps/pin URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Confirmed coordinates: NOT CONFIRMED — DO NOT PUBLISH
 
 ## Bing Places
@@ -109,7 +109,7 @@ The packet reflects the repository source of truth; it does not prove that an ex
   - GrabFood: https://r.grab.com/o/Fj6Zvya2
 - Listing/profile URL: NOT CONFIRMED — DO NOT PUBLISH
 - Direct review URL: NOT CONFIRMED — DO NOT PUBLISH
-- Confirmed Maps/pin URL: NOT CONFIRMED — DO NOT PUBLISH
+- Confirmed Maps/pin URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Confirmed coordinates: NOT CONFIRMED — DO NOT PUBLISH
 
 ## Apple Business Connect
@@ -134,5 +134,5 @@ The packet reflects the repository source of truth; it does not prove that an ex
   - GrabFood: https://r.grab.com/o/Fj6Zvya2
 - Listing/profile URL: NOT CONFIRMED — DO NOT PUBLISH
 - Direct review URL: NOT CONFIRMED — DO NOT PUBLISH
-- Confirmed Maps/pin URL: NOT CONFIRMED — DO NOT PUBLISH
+- Confirmed Maps/pin URL: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 - Confirmed coordinates: NOT CONFIRMED — DO NOT PUBLISH

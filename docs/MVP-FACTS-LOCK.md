@@ -8,7 +8,7 @@ unsure. Keep one value for `a | b | c` fields and tick only confirmed checkboxes
 
 ```text
 MAP / แผนที่
-maps_share_url: ____
+maps_share_url: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 address_en_th_ru_correct: yes | no | unknown
 address_correction_en: ____
 address_correction_th: ____
@@ -182,7 +182,7 @@ credit_text_if_required: ____
 reshoot_date_and_approver_if_needed: ____
 
 GOOGLE + HAPPYCOW
-google_business_profile_url: ____
+google_business_profile_url: https://maps.app.goo.gl/ikAWpeC6pjFSqhze8
 google_direct_review_url: ____
 google_owner_or_manager: ____
 happycow_claimed_and_account_owner: ____

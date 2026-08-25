@@ -194,6 +194,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
               <a
                 href={location.mapsUrl}
                 rel="noopener"
+                data-analytics-event="directions_click"
+                data-analytics-provider="google_maps"
+                data-analytics-placement="contact_address"
+                data-analytics-goal="true"
                 class="mt-5 inline-flex min-h-12 items-center rounded-lg border border-leaf-700/40 px-6 font-semibold text-leaf-800 transition-colors hover:border-leaf-700 hover:bg-leaf-100"
               >
                 {t(locale, 'contact.findUs')}
@@ -242,6 +246,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
           <p class="mt-3 text-sm text-ink-500">{t(locale, 'contact.callUs')}</p>
           <a
             href={phoneHref}
+            data-analytics-event="phone_click"
+            data-analytics-provider="phone"
+            data-analytics-placement="contact_phone"
+            data-analytics-goal="true"
             class="mt-4 inline-flex min-h-13 w-full items-center justify-center rounded-lg bg-leaf-700 px-6 text-lg font-bold text-cream-50 transition-colors hover:bg-leaf-800 sm:w-auto"
           >
             {settings.phone}
@@ -252,6 +260,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
                 <a
                   href={settings.lineUrl}
                   rel="noopener"
+                  data-analytics-event="contact_click"
+                  data-analytics-provider="line"
+                  data-analytics-placement="contact_phone"
+                  data-analytics-goal="true"
                   class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                 >
                   LINE
@@ -265,6 +277,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
                 <a
                   href={settings.whatsappUrl}
                   rel="noopener"
+                  data-analytics-event="contact_click"
+                  data-analytics-provider="whatsapp"
+                  data-analytics-placement="contact_phone"
+                  data-analytics-goal="true"
                   class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                 >
                   WhatsApp
@@ -277,6 +293,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
               <p class="mt-3">
                 <a
                   href={`mailto:${settings.email}`}
+                  data-analytics-event="contact_click"
+                  data-analytics-provider="email"
+                  data-analytics-placement="contact_phone"
+                  data-analytics-goal="true"
                   class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                 >
                   {settings.email}
@@ -369,6 +389,8 @@ const paymentLabels = operations.paymentMethods.map((method) =>
                       rel="noopener"
                       data-analytics-event="order_click"
                       data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                      data-analytics-placement="contact_hours"
+                      data-analytics-goal="true"
                       class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-4 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
                     >
                       {orderingCtaLabel(locale, link.provider)}
@@ -435,6 +457,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
                 <a
                   href={pickupHref}
                   rel={pickupHref.startsWith('https:') ? 'noopener' : undefined}
+                  data-analytics-event="pickup_contact_click"
+                  data-analytics-provider={pickupContact}
+                  data-analytics-placement="contact_pickup"
+                  data-analytics-goal="true"
                   class="mt-4 inline-flex min-h-11 items-center rounded-lg bg-leaf-700 px-5 font-bold text-cream-50 hover:bg-leaf-800"
                 >
                   {operations.pickup.contact === 'phone'
@@ -466,6 +492,10 @@ const paymentLabels = operations.paymentMethods.map((method) =>
                 <a
                   href={reservationHref}
                   rel={reservationHref.startsWith('https:') ? 'noopener' : undefined}
+                  data-analytics-event="reservation_contact_click"
+                  data-analytics-provider={reservationContact}
+                  data-analytics-placement="contact_reservations"
+                  data-analytics-goal="true"
                   class="mt-4 inline-flex min-h-11 items-center rounded-lg bg-leaf-700 px-5 font-bold text-cream-50 hover:bg-leaf-800"
                 >
                   {t(locale, 'operations.reservationRequest')} ·{' '}

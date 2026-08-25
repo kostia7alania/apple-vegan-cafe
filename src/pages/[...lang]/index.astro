@@ -118,6 +118,7 @@ const openChip = mainHours
 
 <Base {locale} {title} {description} {alternates} {jsonld}>
   <section
+    data-analytics-placement="home_hero"
     class="relative min-h-[78svh] overflow-hidden bg-leaf-900 text-cream-100 sm:min-h-[72svh]"
   >
     {
@@ -223,6 +224,7 @@ const openChip = mainHours
               rel="noopener"
               data-analytics-event="order_click"
               data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+              data-analytics-goal="true"
               class="inline-flex min-h-12 items-center rounded-lg bg-mango-500 px-7 text-base font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
             >
               {orderingCtaLabel(locale, link.provider)}
@@ -231,6 +233,8 @@ const openChip = mainHours
         }
         <a
           href={menuPath}
+          data-analytics-event="menu_click"
+          data-analytics-goal="true"
           class:list={[
             'inline-flex min-h-12 items-center rounded-lg px-7 text-base font-semibold transition-colors focus-visible:outline-mango-300',
             orderingLinks.length > 0
@@ -245,6 +249,9 @@ const openChip = mainHours
             <a
               href={location.mapsUrl}
               rel="noopener"
+              data-analytics-event="directions_click"
+              data-analytics-provider="google_maps"
+              data-analytics-goal="true"
               class="inline-flex min-h-12 items-center rounded-lg border border-cream-100/45 bg-cream-50/10 px-7 text-base font-semibold text-cream-100 backdrop-blur-md transition-colors hover:border-cream-100 hover:bg-cream-50/18 focus-visible:outline-mango-300"
             >
               {t(locale, 'home.getDirections')}
@@ -316,10 +323,12 @@ const openChip = mainHours
     </ul>
   </section>
 
-  <section class="wrap pt-10">
+  <section data-analytics-placement="home_action_grid" class="wrap pt-10">
     <div class="grid gap-3 sm:grid-cols-3">
       <a
         href={menuPath}
+        data-analytics-event="menu_click"
+        data-analytics-goal="true"
         class="flex min-h-20 items-center gap-4 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/35 hover:bg-leaf-50"
       >
         <svg
@@ -349,6 +358,7 @@ const openChip = mainHours
             rel="noopener"
             data-analytics-event="order_click"
             data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+            data-analytics-goal="true"
             class="flex min-h-20 items-center gap-4 rounded-lg border border-mango-300 bg-mango-500 px-4 py-3 text-ink-900 transition-colors hover:bg-mango-300"
           >
             <svg
@@ -376,6 +386,9 @@ const openChip = mainHours
       }
       <a
         href={phoneHref}
+        data-analytics-event="phone_click"
+        data-analytics-provider="phone"
+        data-analytics-goal="true"
         class="flex min-h-20 items-center gap-4 rounded-lg border border-cream-300 bg-cream-50 px-4 py-3 transition-colors hover:border-leaf-700/35 hover:bg-leaf-50"
       >
         <svg
@@ -510,13 +523,14 @@ const openChip = mainHours
 
   {
     featured.length > 0 && (
-      <section class="wrap py-14 sm:py-16">
+      <section data-analytics-placement="home_featured" class="wrap py-14 sm:py-16">
         <div class="flex items-baseline justify-between gap-4">
           <h2 class="section-heading text-3xl font-black tracking-tight text-leaf-900 sm:text-4xl">
             {t(locale, 'home.featured')}
           </h2>
           <a
             href={menuPath}
+            data-analytics-event="menu_click"
             class="hidden text-sm font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 transition-colors hover:text-leaf-900 sm:inline"
           >
             {t(locale, 'home.viewMenu')} →
@@ -547,6 +561,9 @@ const openChip = mainHours
                 <h3 class="mt-2 text-xl leading-snug font-extrabold">
                   <a
                     href={`${menuPath}#${dish.slug[locale]}`}
+                    data-analytics-event="menu_item_click"
+                    data-analytics-item-id={dish.slug.en}
+                    data-analytics-item-category={dish.category.id}
                     class="transition-colors after:absolute after:inset-0 after:rounded-lg group-hover:text-leaf-800"
                   >
                     {dish.name[locale]}
@@ -576,7 +593,7 @@ const openChip = mainHours
     )
   }
 
-  <section class="wrap pb-4">
+  <section data-analytics-placement="home_location" class="wrap pb-4">
     <div
       class="decor-card relative overflow-hidden rounded-lg border border-leaf-100 bg-leaf-50 px-6 py-8 sm:px-10 sm:py-10"
     >
@@ -621,6 +638,9 @@ const openChip = mainHours
           }
           <a
             href={phoneHref}
+            data-analytics-event="phone_click"
+            data-analytics-provider="phone"
+            data-analytics-goal="true"
             class="mt-5 inline-flex min-h-12 items-center gap-2.5 rounded-lg bg-leaf-700 px-6 font-bold text-cream-50 transition-colors hover:bg-leaf-800"
           >
             <svg
