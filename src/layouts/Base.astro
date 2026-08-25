@@ -97,19 +97,47 @@ if (settings.reviewLinks.tripadvisor) {
     provider: 'tripadvisor',
   });
 }
-const footerContactLinks: { url: string; label: string }[] = [];
-if (settings.lineUrl) footerContactLinks.push({ url: settings.lineUrl, label: 'LINE' });
+const footerContactLinks: { url: string; label: string; provider: string }[] = [];
+if (settings.lineUrl) {
+  footerContactLinks.push({ url: settings.lineUrl, label: 'LINE', provider: 'line' });
+}
 if (settings.whatsappUrl) {
-  footerContactLinks.push({ url: settings.whatsappUrl, label: 'WhatsApp' });
+  footerContactLinks.push({
+    url: settings.whatsappUrl,
+    label: 'WhatsApp',
+    provider: 'whatsapp',
+  });
 }
 if (settings.email)
-  footerContactLinks.push({ url: `mailto:${settings.email}`, label: settings.email });
+  footerContactLinks.push({
+    url: `mailto:${settings.email}`,
+    label: settings.email,
+    provider: 'email',
+  });
 const mobileContact =
   settings.primaryContact === 'line' && settings.lineUrl
-    ? { href: settings.lineUrl, label: 'LINE', external: true }
+    ? {
+        href: settings.lineUrl,
+        label: 'LINE',
+        external: true,
+        event: 'contact_click',
+        provider: 'line',
+      }
     : settings.primaryContact === 'whatsapp' && settings.whatsappUrl
-      ? { href: settings.whatsappUrl, label: 'WhatsApp', external: true }
-      : { href: phoneHref, label: t(locale, 'actions.call'), external: false };
+      ? {
+          href: settings.whatsappUrl,
+          label: 'WhatsApp',
+          external: true,
+          event: 'contact_click',
+          provider: 'whatsapp',
+        }
+      : {
+          href: phoneHref,
+          label: t(locale, 'actions.call'),
+          external: false,
+          event: 'phone_click',
+          provider: 'phone',
+        };
 const orderingLinks = settings.orderingLinks;
 const orderAction =
   orderingLinks.length === 1
@@ -129,6 +157,30 @@ const brandLabel = {
   en: 'Apple Vegan Cafe',
   th: 'Apple Vegan Cafe',
   ru: 'Apple Vegan Cafe',
+}[locale];
+const gaEnabled = Boolean(import.meta.env.PUBLIC_GA_MEASUREMENT_ID);
+const analyticsConsentCopy = {
+  en: {
+    title: 'Help us improve this site',
+    body: 'Google Analytics shows which pages and buttons help guests. We keep advertising storage off and never send menu search text.',
+    accept: 'Allow analytics',
+    decline: 'No thanks',
+    settings: 'Analytics privacy',
+  },
+  th: {
+    title: 'ช่วยเราปรับปรุงเว็บไซต์',
+    body: 'Google Analytics ช่วยให้เราเห็นว่าหน้าและปุ่มใดมีประโยชน์ เราปิดการจัดเก็บข้อมูลโฆษณาและไม่ส่งข้อความค้นหาเมนู',
+    accept: 'อนุญาตการวิเคราะห์',
+    decline: 'ไม่อนุญาต',
+    settings: 'ความเป็นส่วนตัวของการวิเคราะห์',
+  },
+  ru: {
+    title: 'Помогите улучшить сайт',
+    body: 'Google Analytics показывает, какие страницы и кнопки полезны гостям. Рекламное хранилище отключено, текст поиска по меню не передаётся.',
+    accept: 'Разрешить аналитику',
+    decline: 'Не разрешать',
+    settings: 'Настройки аналитики',
+  },
 }[locale];
 
 const actionLink =
@@ -211,6 +263,7 @@ const specialHoursScript = `
         horizontally-scrollable row — the hero stays high above the fold. */
     }
     <header
+      data-analytics-placement="header"
       class:list={[
         'z-40 border-b border-cream-300/70 bg-cream-100/92 backdrop-blur-md print:hidden',
         staticHeader ? 'relative' : 'sticky top-0',
@@ -246,6 +299,7 @@ const specialHoursScript = `
                     data-analytics-provider={
                       orderAction.external ? orderAction.provider : undefined
                     }
+                    data-analytics-goal={orderAction.external ? 'true' : undefined}
                     class="hidden min-h-9 items-center rounded-lg bg-mango-500 px-4 text-sm font-extrabold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300 sm:inline-flex"
                   >
                     {t(locale, 'actions.order')}
@@ -310,7 +364,7 @@ const specialHoursScript = `
       <slot />
     </main>
 
-    <footer class="mt-16 bg-leaf-900 text-cream-100 print:hidden">
+    <footer data-analytics-placement="footer" class="mt-16 bg-leaf-900 text-cream-100 print:hidden">
       <div class="wrap grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <p class="font-display text-xl leading-snug font-bold text-cream-50">
@@ -332,6 +386,9 @@ const specialHoursScript = `
           <p class="mt-2">
             <a
               href={phoneHref}
+              data-analytics-event="phone_click"
+              data-analytics-provider="phone"
+              data-analytics-goal="true"
               class="font-semibold underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
             >
               {settings.phone}
@@ -343,6 +400,9 @@ const specialHoursScript = `
                 <a
                   href={link.url}
                   rel={link.url.startsWith('https:') ? 'noopener' : undefined}
+                  data-analytics-event="contact_click"
+                  data-analytics-provider={link.provider}
+                  data-analytics-goal="true"
                   class="font-semibold underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
                 >
                   {link.label}
@@ -412,6 +472,8 @@ const specialHoursScript = `
                   <a
                     href={s.url}
                     rel="noopener"
+                    data-analytics-event="social_click"
+                    data-analytics-provider={s.platform.toLowerCase()}
                     class="inline-flex items-center gap-2 underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
                   >
                     {s.platform.toLowerCase() === 'instagram' && (
@@ -452,20 +514,39 @@ const specialHoursScript = `
         </div>
       </div>
       <div class="border-t border-leaf-800">
-        <p class="wrap py-4 text-xs text-leaf-200">
-          {`© ${new Date().getFullYear()} ${settings.name}`}
-        </p>
+        <div
+          class="wrap flex flex-wrap items-center justify-between gap-3 py-4 text-xs text-leaf-200"
+        >
+          <p>{`© ${new Date().getFullYear()} ${settings.name}`}</p>
+          {
+            gaEnabled && (
+              <button
+                type="button"
+                data-analytics-consent-open
+                class="min-h-11 rounded-lg px-2 underline decoration-mango-500/60 underline-offset-4 hover:text-mango-200 focus-visible:outline-mango-300"
+              >
+                {analyticsConsentCopy.settings}
+              </button>
+            )
+          }
+        </div>
       </div>
     </footer>
 
     {/* Mobile-only fixed action bar (CSS only). Body padding keeps content clear. */}
     <nav
+      data-analytics-placement="mobile_action_bar"
       aria-label={t(locale, 'actions.quick')}
       class="fixed inset-x-0 bottom-0 z-40 bg-leaf-900 pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgba(30,61,38,0.35)] md:hidden print:hidden"
     >
       <ul class="flex divide-x divide-leaf-800">
         <li class="flex-1">
-          <a href={localePath(locale, '/menu/')} class={actionLink}>
+          <a
+            href={localePath(locale, '/menu/')}
+            data-analytics-event="menu_click"
+            data-analytics-goal="true"
+            class={actionLink}
+          >
             <svg
               viewBox="0 0 24 24"
               class="h-5 w-5"
@@ -490,6 +571,7 @@ const specialHoursScript = `
                 rel={orderAction.external ? 'noopener' : undefined}
                 data-analytics-event={orderAction.external ? 'order_click' : undefined}
                 data-analytics-provider={orderAction.external ? orderAction.provider : undefined}
+                data-analytics-goal={orderAction.external ? 'true' : undefined}
                 class={actionLink}
               >
                 <svg
@@ -515,6 +597,9 @@ const specialHoursScript = `
           <a
             href={mobileContact.href}
             rel={mobileContact.external ? 'noopener' : undefined}
+            data-analytics-event={mobileContact.event}
+            data-analytics-provider={mobileContact.provider}
+            data-analytics-goal="true"
             class={actionLink}
           >
             <svg
@@ -537,7 +622,14 @@ const specialHoursScript = `
         {
           location.mapsUrl && (
             <li class="flex-1">
-              <a href={location.mapsUrl} rel="noopener" class={actionLink}>
+              <a
+                href={location.mapsUrl}
+                rel="noopener"
+                data-analytics-event="directions_click"
+                data-analytics-provider="google_maps"
+                data-analytics-goal="true"
+                class={actionLink}
+              >
                 <svg
                   viewBox="0 0 24 24"
                   class="h-5 w-5"
@@ -558,6 +650,58 @@ const specialHoursScript = `
         }
       </ul>
     </nav>
+
+    {
+      gaEnabled && (
+        <aside
+          data-analytics-consent
+          hidden
+          role="region"
+          aria-labelledby="analytics-consent-title"
+          aria-describedby="analytics-consent-description"
+          class="fixed inset-x-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 mx-auto max-h-[calc(100dvh-6rem)] max-w-xl overflow-y-auto rounded-2xl border border-cream-300 bg-cream-50 p-4 shadow-[0_18px_60px_rgba(30,61,38,0.32)] sm:p-5 md:bottom-4 print:hidden"
+        >
+          <div class="flex gap-3">
+            <span
+              aria-hidden="true"
+              class="mt-1 h-3 w-3 shrink-0 rounded-full bg-leaf-700 shadow-[0_0_0_5px_rgba(239,184,78,0.28)]"
+            />
+            <div class="min-w-0">
+              <h2
+                id="analytics-consent-title"
+                tabindex="-1"
+                data-analytics-consent-title
+                class="font-display text-lg font-bold text-leaf-900"
+              >
+                {analyticsConsentCopy.title}
+              </h2>
+              <p
+                id="analytics-consent-description"
+                class="mt-1 text-sm leading-relaxed text-ink-700"
+              >
+                {analyticsConsentCopy.body}
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  data-analytics-consent-choice="granted"
+                  class="min-h-11 rounded-lg bg-leaf-800 px-4 text-sm font-bold text-cream-50 transition-colors hover:bg-leaf-700 focus-visible:outline-mango-300"
+                >
+                  {analyticsConsentCopy.accept}
+                </button>
+                <button
+                  type="button"
+                  data-analytics-consent-choice="denied"
+                  class="min-h-11 rounded-lg border border-leaf-700 bg-cream-50 px-4 text-sm font-bold text-leaf-800 transition-colors hover:bg-leaf-50 focus-visible:outline-leaf-700"
+                >
+                  {analyticsConsentCopy.decline}
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      )
+    }
 
     {hasSpecialHours && <script is:inline set:html={specialHoursScript} />}
   </body>

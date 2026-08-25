@@ -3,7 +3,7 @@
 Это не список работ ради числа 123 и не замена реализации. Каждая строка должна
 закончиться наблюдаемым результатом для гостя или владельца кафе.
 
-Текущий срез: **123 outcomes = 69 DONE · 0 READY · 54 BLOCKED**.
+Текущий срез: **123 outcomes = 74 DONE · 0 READY · 49 BLOCKED**.
 
 - `DONE` — есть прямое доказательство в текущем репозитории или рабочем diff.
 - `READY` — можно делать автономно, не выдумывая business facts.
@@ -13,23 +13,23 @@
 
 ## 1. Find → понять, что это за место, и найти его
 
-| ID      | Конкретный результат                                                               | Статус  | Evidence / DoD                                                                                                               |
-| ------- | ---------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| MVP-001 | Публичные страницы доступны поисковикам после запуска                              | DONE    | `src/lib/site.ts`: `SITE_LAUNCHED = true`; `public/robots.txt` и sitemap включены в build.                                   |
-| MVP-002 | Англоязычный гость получает полноценную главную, меню, FAQ, контакты и About       | DONE    | Структурные страницы генерируются через `src/pages/[...lang]/`; `/` является EN/x-default.                                   |
-| MVP-003 | Тайский гость получает тот же основной путь на тайском                             | DONE    | `localeStaticPaths()` строит `th`; UI/content имеют `th`, включая `/th/menu/` и `/th/contact/`.                              |
-| MVP-004 | Русскоязычный гость получает тот же основной путь на русском                       | DONE    | `localeStaticPaths()` строит `ru`; UI/content имеют `ru`, включая `/ru/menu/` и `/ru/contact/`.                              |
-| MVP-005 | Гость переключает язык без потери эквивалентной страницы, когда перевод существует | DONE    | `LanguageSwitcher.astro` получает `alternates`; структурные страницы создают reciprocal alternates.                          |
-| MVP-006 | Поисковик видит self-canonical и корректные hreflang/x-default связи               | DONE    | `Seo.astro`, `urls.ts` и `Base.astro`; подтверждённый результат описан в BACKLOG R13.                                        |
-| MVP-007 | Адрес читается на EN/TH/RU из одного источника                                     | DONE    | `src/content/locations.json` содержит три локализованных адреса и используется contact/home/footer.                          |
-| MVP-008 | Телефон можно набрать одним касанием с основных страниц                            | DONE    | `Base.astro`, home и contact строят `tel:` из единственного `settings.phone`.                                                |
-| MVP-009 | Кнопка Directions ведёт на подтверждённый точный Google Maps pin                   | BLOCKED | DoD: владелец подтверждает Share URL в `MVP-FACTS-LOCK.md`; `mapsUrl` заполнен и CTA виден в hero/contact/footer/mobile bar. |
-| MVP-010 | Restaurant schema содержит подтверждённые координаты кафе                          | BLOCKED | DoD: владелец подтверждает pin; `locations.geo` заполнен, и существующий `buildRestaurant()` публикует `GeoCoordinates`.     |
-| MVP-011 | Первый визит понятен по проверенному ориентиру, а не только почтовому адресу       | BLOCKED | Conditional schema/CMS/home/contact pipeline готов; осталось получить от владельца landmark EN/TH/RU.                        |
-| MVP-012 | Гость заранее понимает, где оставить машину и мотобайк                             | BLOCKED | Conditional schema/CMS/contact pipeline готов; осталось подтвердить parking instructions без догадок из отзывов.             |
-| MVP-013 | Часы зала видны на home, contact и footer из одного источника                      | DONE    | `locations.hours` — единственный literal времени; helper питает home/FAQ/SEO-landings, contact/footer читают ту же запись.   |
-| MVP-014 | На мобильном видно, что верхнее меню можно прокрутить к скрытым пунктам            | DONE    | Текущий diff `Base.astro`: fade/chevron у горизонтального nav и увеличенный tap/readability hint.                            |
-| MVP-015 | Из любой страницы доступны Menu, About, Blog, FAQ и Contact                        | DONE    | Глобальный массив `nav` в `src/layouts/Base.astro` строит эти ссылки для текущей локали.                                     |
+| ID      | Конкретный результат                                                               | Статус  | Evidence / DoD                                                                                                                               |
+| ------- | ---------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| MVP-001 | Публичные страницы доступны поисковикам после запуска                              | DONE    | `src/lib/site.ts`: `SITE_LAUNCHED = true`; `public/robots.txt` и sitemap включены в build.                                                   |
+| MVP-002 | Англоязычный гость получает полноценную главную, меню, FAQ, контакты и About       | DONE    | Структурные страницы генерируются через `src/pages/[...lang]/`; `/` является EN/x-default.                                                   |
+| MVP-003 | Тайский гость получает тот же основной путь на тайском                             | DONE    | `localeStaticPaths()` строит `th`; UI/content имеют `th`, включая `/th/menu/` и `/th/contact/`.                                              |
+| MVP-004 | Русскоязычный гость получает тот же основной путь на русском                       | DONE    | `localeStaticPaths()` строит `ru`; UI/content имеют `ru`, включая `/ru/menu/` и `/ru/contact/`.                                              |
+| MVP-005 | Гость переключает язык без потери эквивалентной страницы, когда перевод существует | DONE    | `LanguageSwitcher.astro` получает `alternates`; структурные страницы создают reciprocal alternates.                                          |
+| MVP-006 | Поисковик видит self-canonical и корректные hreflang/x-default связи               | DONE    | `Seo.astro`, `urls.ts` и `Base.astro`; подтверждённый результат описан в BACKLOG R13.                                                        |
+| MVP-007 | Адрес читается на EN/TH/RU из одного источника                                     | DONE    | `src/content/locations.json` содержит три локализованных адреса и используется contact/home/footer.                                          |
+| MVP-008 | Телефон можно набрать одним касанием с основных страниц                            | DONE    | `Base.astro`, home и contact строят `tel:` из единственного `settings.phone`.                                                                |
+| MVP-009 | Кнопка Directions ведёт на подтверждённый точный Google Maps pin                   | DONE    | Google Maps Share URL подтверждён по совпадению названия, адреса и телефона; `mapsUrl` заполнен, CTA виден в hero/contact/footer/mobile bar. |
+| MVP-010 | Restaurant schema содержит подтверждённые координаты кафе                          | BLOCKED | DoD: владелец подтверждает pin; `locations.geo` заполнен, и существующий `buildRestaurant()` публикует `GeoCoordinates`.                     |
+| MVP-011 | Первый визит понятен по проверенному ориентиру, а не только почтовому адресу       | BLOCKED | Conditional schema/CMS/home/contact pipeline готов; осталось получить от владельца landmark EN/TH/RU.                                        |
+| MVP-012 | Гость заранее понимает, где оставить машину и мотобайк                             | BLOCKED | Conditional schema/CMS/contact pipeline готов; осталось подтвердить parking instructions без догадок из отзывов.                             |
+| MVP-013 | Часы зала видны на home, contact и footer из одного источника                      | DONE    | `locations.hours` — единственный literal времени; helper питает home/FAQ/SEO-landings, contact/footer читают ту же запись.                   |
+| MVP-014 | На мобильном видно, что верхнее меню можно прокрутить к скрытым пунктам            | DONE    | Текущий diff `Base.astro`: fade/chevron у горизонтального nav и увеличенный tap/readability hint.                                            |
+| MVP-015 | Из любой страницы доступны Menu, About, Blog, FAQ и Contact                        | DONE    | Глобальный массив `nav` в `src/layouts/Base.astro` строит эти ссылки для текущей локали.                                                     |
 
 ## 2. Trust → поверить фактам, еде и людям
 
@@ -39,8 +39,8 @@
 | MVP-017 | Гость видит конкретное обещание «без рыбного соуса, яиц и молока»           | DONE    | `trust.honest` показывается на home/menu; FAQ отдельно объясняет полностью растительную кухню.                                                               |
 | MVP-018 | Семейный характер кафе заметен до перехода в About                          | DONE    | Home/tagline и trust copy используют подтверждённое в текущем контенте `Family-run`.                                                                         |
 | MVP-019 | Vegan-путешественник может открыть реальный HappyCow-профиль                | DONE    | `settings.reviewLinks.happycow` заполнен; ссылка показана на home и в global footer.                                                                         |
-| MVP-020 | Гость может открыть официальный Google review/profile link с сайта          | BLOCKED | Profile и direct-review поля разделены; conditional UI/analytics готовы, остались точные GBP/review URL владельца.                                           |
-| MVP-021 | Сайт показывает несколько проверяемых review sources без выдуманных отзывов | BLOCKED | Multi-source footer + `sameAs` готовы; остались подтверждённые Google/Tripadvisor URL, self-serving review schema не добавлена.                              |
+| MVP-020 | Гость может открыть официальный Google review/profile link с сайта          | DONE    | Точный Google Maps profile Share URL совпал по названию, адресу и телефону; ссылка опубликована отдельно от всё ещё пустого direct-review URL.               |
+| MVP-021 | Сайт показывает несколько проверяемых review sources без выдуманных отзывов | DONE    | Footer и `sameAs` используют два проверяемых источника, точный Google Maps profile и HappyCow; self-serving review schema и выдуманные цитаты не добавлены.  |
 | MVP-022 | Первый экран использует настоящую фотографию еды/стола                      | BLOCKED | Fail-closed media/CMS/hero pipeline готов; осталось получить owner original + per-file rights, после чего approved hero заменит явно помеченную иллюстрацию. |
 | MVP-023 | Гость узнаёт вход и вывеску до приезда                                      | BLOCKED | Conditional exterior slot готов на Home + Contact без пустого placeholder; осталось разрешённое фото входа/вывески.                                          |
 | MVP-024 | Гость понимает реальную атмосферу и посадку                                 | BLOCKED | Conditional interior slot готов на About с localized alt/credit/responsive crop; осталось разрешённое актуальное фото посадки.                               |
@@ -169,9 +169,9 @@
 | MVP-117 | Merge в production может собрать и задеплоить static site в Cloudflare                    | DONE    | `.github/workflows/verified-deploy.yml`, `infrastructure/wrangler.jsonc`; BACKLOG фиксирует working deploy.                                                                                                                        |
 | MVP-118 | При включённой аналитике различаются phone/order/review/directions/outbound действия      | DONE    | `src/components/Analytics.astro` уже определяет conversion-style events без передачи phone number.                                                                                                                                 |
 | MVP-119 | Cloudflare Web Analytics реально получает production pageviews                            | BLOCKED | Dashboard edge injection задокументирован как включённый; repo token намеренно не задаётся, чтобы не удвоить beacon. Aggregate importer готов, но DONE требует реальные production pageviews/dashboard export.                     |
-| MVP-120 | GA4 включается только при согласованной потребности в Ads/UTM attribution                 | BLOCKED | CSV contract умеет принять нормализованные GA4 action events без PII; DoD всё ещё требует owner-approved purpose и `PUBLIC_GA_MEASUREMENT_ID` либо задокументированное решение «не включать».                                      |
+| MVP-120 | GA4 включается только при согласованной потребности в Ads/UTM attribution                 | DONE    | Владелец поручил Google-маркетинг; dedicated GA4 property/stream настроены, Measurement ID сохранён в GitHub Variable, privacy-safe события, Consent Mode и playbook закреплены кодом и тестами.                                   |
 | MVP-121 | Внешний uptime monitor предупреждает о недоступности home/menu                            | BLOCKED | Handoff evidence готов: `infrastructure/uptime-monitor.json`, `pnpm monitor:check`, runbook с точными home/menu checks и честным `not configured`. DoD всё ещё требует внешний monitor, подтверждённый alert contact и test alert. |
-| MVP-122 | `www` безопасно перенаправляет на apex, а HSTS усиливается после периода стабильности     | BLOCKED | DoD: Cloudflare DNS + redirect rule настроены; HSTS preload не раньше даты из BACKLOG B10.                                                                                                                                         |
+| MVP-122 | `www` безопасно перенаправляет на apex, а HSTS усиливается после периода стабильности     | DONE    | Cloudflare Always Use HTTPS, proxied `www` CNAME и zone Redirect Rule включены; оба `301` сохраняют path/query, текущий HSTS имеет двухлетний max-age + includeSubDomains, preload намеренно отложен.                              |
 | MVP-123 | Через 30 дней есть первый фактический funnel baseline find → menu → Grab/call/maps/review | BLOCKED | Read-only importer, strict 30-day/event coverage, locale/provider rates и deterministic top-3 opportunities готовы; DoD остаётся реальный полный export и зафиксированные решения по его результату.                               |
 
 ## Следующий loop

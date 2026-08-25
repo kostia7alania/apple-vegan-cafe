@@ -2,63 +2,442 @@
 const cloudflareToken = import.meta.env.PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN;
 const gaMeasurementId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID;
 const cloudflareBeaconConfig = cloudflareToken ? JSON.stringify({ token: cloudflareToken }) : null;
+const gaScriptUrl = gaMeasurementId
+  ? JSON.stringify(`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`)
+  : null;
 const gaInlineScript = gaMeasurementId
   ? `
 window.dataLayer = window.dataLayer || [];
-window.gtag = function () {
+window.gtag = window.gtag || function () {
   window.dataLayer.push(arguments);
 };
-window.gtag('js', new Date());
-window.gtag('config', ${JSON.stringify(gaMeasurementId)}, {
-  anonymize_ip: true,
-  transport_type: 'beacon',
+var analyticsConsent = 'denied';
+try {
+  if (window.localStorage.getItem('apple_vegan_cafe_analytics_consent') === 'granted') {
+    analyticsConsent = 'granted';
+  }
+} catch (error) {
+  analyticsConsent = 'denied';
+}
+window.gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: analyticsConsent,
+  functionality_storage: 'denied',
+  personalization_storage: 'denied',
+  security_storage: 'granted',
 });
+window.__appleVeganCafeAnalyticsReady = false;
+window.__appleVeganCafeAnalyticsLoaded = false;
+window.__appleVeganCafeBootAnalytics = function () {
+  if (window.__appleVeganCafeAnalyticsReady) return;
+  window.gtag('consent', 'update', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'granted',
+  });
+  window.gtag('js', new Date());
+  window.gtag('config', ${JSON.stringify(gaMeasurementId)}, {
+    allow_ad_personalization_signals: false,
+    allow_google_signals: false,
+    anonymize_ip: true,
+    send_page_view: false,
+    transport_type: 'beacon',
+  });
+  window.__appleVeganCafeAnalyticsReady = true;
+  if (!window.__appleVeganCafeAnalyticsLoaded) {
+    var googleTag = document.createElement('script');
+    googleTag.async = true;
+    googleTag.src = ${gaScriptUrl};
+    document.head.appendChild(googleTag);
+    window.__appleVeganCafeAnalyticsLoaded = true;
+  }
+  window.dispatchEvent(new Event('apple-vegan-cafe:analytics-ready'));
+};
+if (analyticsConsent === 'granted') window.__appleVeganCafeBootAnalytics();
+`
+  : null;
 
-document.addEventListener('click', function (event) {
-  if (typeof window.gtag !== 'function') return;
-  if (!(event.target instanceof Element)) return;
+// The collector is always present so its behaviour can be tested without loading
+// a third party. With no ID or no granted consent, track() is a network-free no-op.
+const analyticsEventScript = `
+(function () {
+  var campaignParameters = new Set([
+    'utm_id',
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content',
+    'utm_term',
+    'gclid',
+    'gbraid',
+    'wbraid',
+  ]);
 
-  var link = event.target.closest('a[href]');
-  if (!link) return;
+  function track(eventName, params, eventCallback) {
+    if (
+      window.__appleVeganCafeAnalyticsReady !== true ||
+      typeof window.gtag !== 'function'
+    ) return false;
+    var eventParams = Object.assign(
+      {
+        page_location: sanitizedPageLocation(),
+        site_language: document.documentElement.lang || 'en',
+      },
+      params || {},
+    );
+    if (typeof eventCallback === 'function') {
+      eventParams.event_callback = eventCallback;
+      eventParams.event_timeout = 800;
+    }
+    window.gtag(
+      'event',
+      eventName,
+      eventParams,
+    );
+    return true;
+  }
 
-  var href = link.getAttribute('href') || '';
-  var pagePath = window.location.pathname;
-  var eventName = '';
-  var params = { page_path: pagePath };
-  var explicitEvent = link.getAttribute('data-analytics-event');
-  var explicitProvider = link.getAttribute('data-analytics-provider');
+  function sanitizedPageLocation() {
+    var url = new URL(window.location.href);
+    Array.from(url.searchParams.keys()).forEach(function (name) {
+      if (!campaignParameters.has(name)) url.searchParams.delete(name);
+    });
+    url.hash = '';
+    return url.href;
+  }
 
-  if (explicitEvent) {
-    eventName = explicitEvent;
-    if (explicitProvider) params.provider = explicitProvider;
-  } else if (href.indexOf('tel:') === 0) {
-    eventName = 'phone_click';
-    params.contact_method = 'phone';
-  } else if (href.indexOf('grab.com') !== -1) {
-    eventName = 'order_click';
-    params.order_provider = 'grab';
-  } else if (href.indexOf('happycow.net') !== -1) {
-    eventName = 'review_click';
-    params.review_provider = 'happycow';
-  } else if (href.indexOf('google.com/maps') !== -1 || href.indexOf('goo.gl/maps') !== -1) {
-    eventName = 'directions_click';
-    params.map_provider = 'google';
-  } else {
+  function sanitizedReferrer() {
+    if (!document.referrer) return '';
     try {
-      var url = new URL(href, window.location.href);
-      if (url.origin !== window.location.origin) {
-        eventName = 'outbound_click';
-        params.link_domain = url.hostname;
-      }
+      var referrer = new URL(document.referrer);
+      return referrer.origin + referrer.pathname;
     } catch (error) {
-      return;
+      return '';
     }
   }
 
-  if (eventName) window.gtag('event', eventName, params);
-});
-`
-  : null;
+  function closestAttribute(element, name) {
+    var owner = element.closest('[' + name + ']');
+    return owner ? owner.getAttribute(name) || '' : '';
+  }
+
+  function elementParams(element) {
+    var params = {};
+    var provider = closestAttribute(element, 'data-analytics-provider');
+    var placement = closestAttribute(element, 'data-analytics-placement');
+    var itemId = closestAttribute(element, 'data-analytics-item-id');
+    var itemCategory = closestAttribute(element, 'data-analytics-item-category');
+
+    if (provider) params.provider = provider;
+    if (placement) params.placement = placement;
+    if (itemId) params.dish_id = itemId;
+    if (itemCategory) params.dish_category = itemCategory;
+    return params;
+  }
+
+  function classifyClick(element) {
+    var explicitEvent = element.getAttribute('data-analytics-event');
+    var params = elementParams(element);
+    if (explicitEvent) return { eventName: explicitEvent, params: params };
+
+    var link = element.closest('a[href]');
+    if (!link) return null;
+    var href = link.getAttribute('href') || '';
+
+    if (href.indexOf('tel:') === 0) {
+      params.provider = 'phone';
+      return { eventName: 'phone_click', params: params };
+    }
+    if (href.indexOf('mailto:') === 0) {
+      params.provider = 'email';
+      return { eventName: 'contact_click', params: params };
+    }
+    if (href.indexOf('grab.com') !== -1) {
+      params.provider = 'grabfood';
+      return { eventName: 'order_click', params: params };
+    }
+    if (href.indexOf('happycow.net') !== -1) {
+      params.provider = 'happycow';
+      return { eventName: 'profile_click', params: params };
+    }
+
+    try {
+      var url = new URL(href, window.location.href);
+      var isGoogleMap =
+        url.hostname === 'maps.app.goo.gl' ||
+        url.hostname === 'goo.gl' ||
+        (url.hostname.endsWith('.google.com') && url.pathname.indexOf('/maps') !== -1);
+      if (isGoogleMap) {
+        params.provider = 'google_maps';
+        return { eventName: 'directions_click', params: params };
+      }
+      if (url.origin !== window.location.origin) {
+        params.link_domain = url.hostname;
+        return { eventName: 'outbound_click', params: params };
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
+  function queryLengthBucket(value) {
+    var length = value.trim().length;
+    if (length === 0) return 'empty';
+    if (length <= 2) return '1_2';
+    if (length <= 5) return '3_5';
+    if (length <= 10) return '6_10';
+    return '11_plus';
+  }
+
+  function menuState(form) {
+    var input = form.querySelector('[data-menu-search-input]');
+    var priceInput = form.querySelector('[data-menu-price-filter]:checked');
+    var checkedDietCount = form.querySelectorAll('[data-menu-diet-filter]:checked').length;
+    var searchParams = new URLSearchParams(window.location.search);
+    var requestedDietCount = (searchParams.get('diet') || '')
+      .split(',')
+      .filter(function (value) {
+        return value === 'jain' || value === 'no-gluten';
+      }).length;
+    var dietFilterCount = Math.max(checkedDietCount, requestedDietCount);
+    var queryValue = input instanceof HTMLInputElement ? input.value : '';
+    var hasQuery = queryValue.trim().length > 0;
+    var hasPriceFilter = Boolean(priceInput);
+    var resultCount = document.querySelectorAll('[data-menu-item]:not([hidden])').length;
+
+    return {
+      active_filter_count: (hasQuery ? 1 : 0) + (hasPriceFilter ? 1 : 0) + dietFilterCount,
+      diet_filter_count: dietFilterCount,
+      has_price_filter: hasPriceFilter,
+      has_query: hasQuery,
+      placement: 'menu_search',
+      query_length_bucket: queryLengthBucket(queryValue),
+      result_count: resultCount,
+      result_state: resultCount > 0 ? 'results' : 'zero',
+    };
+  }
+
+  var hasSentPageView = false;
+  function sendPageViewOnce() {
+    if (hasSentPageView) return;
+    var pageViewParams = {
+      page_location: sanitizedPageLocation(),
+      page_title: document.title,
+    };
+    var referrer = sanitizedReferrer();
+    if (referrer) pageViewParams.page_referrer = referrer;
+    if (track('page_view', pageViewParams)) hasSentPageView = true;
+  }
+  sendPageViewOnce();
+  window.addEventListener('apple-vegan-cafe:analytics-ready', sendPageViewOnce);
+
+  function shouldDelayGoalNavigation(event, element, link) {
+    if (!element.closest('[data-analytics-goal]')) return false;
+    if (event.defaultPrevented || event.button !== 0) return false;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
+    if (link.hasAttribute('download')) return false;
+    var target = link.getAttribute('target');
+    if (target && target !== '_self') return false;
+
+    var href = link.getAttribute('href') || '';
+    if (!href || href.charAt(0) === '#') return false;
+    if (href.indexOf('tel:') === 0 || href.indexOf('mailto:') === 0) return true;
+    try {
+      return new URL(href, window.location.href).origin !== window.location.origin;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!(event.target instanceof Element)) return;
+    var element = event.target.closest('[data-analytics-event], a[href]');
+    if (!element) return;
+    var classified = classifyClick(element);
+    if (!classified) return;
+
+    var link = element.closest('a[href]');
+    var shouldDelay = link instanceof HTMLAnchorElement && shouldDelayGoalNavigation(event, element, link);
+    var hasNavigated = false;
+    var continueNavigation = function () {
+      if (!shouldDelay || hasNavigated || !(link instanceof HTMLAnchorElement)) return;
+      hasNavigated = true;
+      window.location.assign(link.href);
+    };
+
+    if (shouldDelay) event.preventDefault();
+    var isGoal = Boolean(element.closest('[data-analytics-goal]'));
+    var queued = track(classified.eventName, classified.params, isGoal ? continueNavigation : null);
+    if (shouldDelay) {
+      if (!queued) continueNavigation();
+      else window.setTimeout(continueNavigation, 900);
+    }
+  });
+
+  function readConsentChoice() {
+    try {
+      var choice = window.localStorage.getItem('apple_vegan_cafe_analytics_consent');
+      return choice === 'granted' || choice === 'denied' ? choice : '';
+    } catch (error) {
+      return '';
+    }
+  }
+
+  function clearAnalyticsCookies() {
+    document.cookie.split(';').forEach(function (cookie) {
+      var name = cookie.split('=')[0].trim();
+      if (name !== '_ga' && name.indexOf('_ga_') !== 0) return;
+      document.cookie = name + '=; Max-Age=0; Path=/; SameSite=Lax';
+      document.cookie =
+        name + '=; Max-Age=0; Path=/; Domain=.' + window.location.hostname + '; SameSite=Lax';
+    });
+  }
+
+  function updateAnalyticsConsent(choice) {
+    try {
+      window.localStorage.setItem('apple_vegan_cafe_analytics_consent', choice);
+    } catch (error) {
+      // Consent still applies for the current page when storage is unavailable.
+    }
+    if (choice === 'granted' && typeof window.__appleVeganCafeBootAnalytics === 'function') {
+      window.__appleVeganCafeBootAnalytics();
+    } else if (typeof window.gtag === 'function') {
+      window.gtag('consent', 'update', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: choice,
+      });
+    }
+    if (choice === 'denied') {
+      window.__appleVeganCafeAnalyticsReady = false;
+      clearAnalyticsCookies();
+    }
+  }
+
+  document.addEventListener('submit', function (event) {
+    if (!(event.target instanceof HTMLFormElement)) return;
+    var form = event.target.closest('[data-menu-search-form]');
+    if (!form) return;
+    var state = menuState(form);
+    track('menu_search', state);
+    if (state.result_count === 0) {
+      track('menu_zero_results', Object.assign({ interaction_type: 'submit' }, state));
+    }
+  });
+
+  document.addEventListener('change', function (event) {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    var input = event.target;
+    var filterName = '';
+    if (input.matches('[data-menu-price-filter]')) filterName = 'price_up_to_150';
+    if (input.matches('[data-menu-diet-filter]')) {
+      if (input.value === 'jain') filterName = 'diet_jain';
+      if (input.value === 'no-gluten') filterName = 'diet_no_gluten';
+    }
+    if (!filterName) return;
+    track('menu_filter_change', {
+      filter_name: filterName,
+      filter_state: input.checked ? 'on' : 'off',
+      placement: 'menu_search',
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var consentPanel = document.querySelector('[data-analytics-consent]');
+    var consentFocusReturn = null;
+    if (consentPanel instanceof HTMLElement) {
+      var consentTitle = consentPanel.querySelector('[data-analytics-consent-title]');
+      var focusConsentTitle = function () {
+        if (consentTitle instanceof HTMLElement) consentTitle.focus({ preventScroll: true });
+      };
+      if (!readConsentChoice()) {
+        consentFocusReturn = document.querySelector('#main');
+        consentPanel.hidden = false;
+        focusConsentTitle();
+      }
+
+      document.addEventListener('click', function (event) {
+        if (!(event.target instanceof Element)) return;
+        var opener = event.target.closest('[data-analytics-consent-open]');
+        if (opener) {
+          consentFocusReturn = opener;
+          consentPanel.hidden = false;
+          focusConsentTitle();
+          return;
+        }
+
+        var choiceButton = event.target.closest('[data-analytics-consent-choice]');
+        if (!(choiceButton instanceof HTMLButtonElement)) return;
+        var choice = choiceButton.getAttribute('data-analytics-consent-choice');
+        if (choice !== 'granted' && choice !== 'denied') return;
+        updateAnalyticsConsent(choice);
+        consentPanel.hidden = true;
+        if (consentFocusReturn instanceof HTMLElement) {
+          consentFocusReturn.focus({ preventScroll: consentFocusReturn.id !== 'main' });
+        }
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var seenGoals = new Set();
+      var observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.5) return;
+            var element = entry.target;
+            var goalName = element.getAttribute('data-analytics-event') || '';
+            var params = elementParams(element);
+            var key = [goalName, params.placement || '', params.provider || ''].join('|');
+            if (!goalName || seenGoals.has(key)) return;
+            params.goal_name = goalName;
+            if (!track('cta_view', params)) return;
+            seenGoals.add(key);
+            observer.unobserve(element);
+          });
+        },
+        { threshold: 0.5 },
+      );
+      document.querySelectorAll('[data-analytics-goal]').forEach(function (element) {
+        observer.observe(element);
+      });
+      window.addEventListener('apple-vegan-cafe:analytics-ready', function () {
+        document.querySelectorAll('[data-analytics-goal]').forEach(function (element) {
+          observer.unobserve(element);
+          observer.observe(element);
+        });
+      });
+    }
+
+    var form = document.querySelector('[data-menu-search-form]');
+    if (!(form instanceof HTMLFormElement)) return;
+    var searchParams = new URLSearchParams(window.location.search);
+    var hasInitialFilters =
+      Boolean((searchParams.get('q') || '').trim()) ||
+      searchParams.has('price') ||
+      searchParams.has('diet');
+    if (!hasInitialFilters) return;
+
+    var hasSentInitialFilteredView = false;
+    var sendInitialFilteredView = function () {
+      if (hasSentInitialFilteredView) return;
+      var state = menuState(form);
+      if (!track('menu_filtered_view', state)) return;
+      hasSentInitialFilteredView = true;
+      if (state.result_count === 0) {
+        track('menu_zero_results', Object.assign({ interaction_type: 'landing' }, state));
+      }
+    };
+    window.requestAnimationFrame(sendInitialFilteredView);
+    window.addEventListener('apple-vegan-cafe:analytics-ready', sendInitialFilteredView);
+  });
+})();
+`;
 ---
 
 {
@@ -72,15 +451,6 @@ document.addEventListener('click', function (event) {
   )
 }
 
-{
-  gaMeasurementId && (
-    <>
-      <script
-        is:inline
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-      />
-      <script is:inline set:html={gaInlineScript} />
-    </>
-  )
-}
+{gaMeasurementId && <script is:inline set:html={gaInlineScript} />}
+
+<script is:inline set:html={analyticsEventScript} />

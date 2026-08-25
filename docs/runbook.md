@@ -99,16 +99,16 @@ re-verify the current domain property. Do not add the variable merely because
 the hook exists, and do not start **Validate fix** unless an identified indexing
 cause was actually fixed.
 
-## HTTPS redirects (not configured)
+## HTTPS redirects (configured 2026-08-25)
 
-Observed on 2026-08-19: the apex domain serves a complete `200` response over
-plain HTTP, including deep EN/TH/RU paths and query strings. The HTTPS response
-does send `Strict-Transport-Security: max-age=63072000; includeSubDomains`, but
-that header cannot protect a visitor's first plain-HTTP request. Google Search
-Console has also discovered an HTTP copy of a landing page.
+The 2026-08-19 baseline served a complete `200` response over plain HTTP. On
+2026-08-25, Cloudflare Always Use HTTPS was enabled and verified with a deep URL
+and query string. A proxied `www` CNAME plus a dynamic Redirect Rule now sends
+`www` to the canonical apex while preserving path and query. The HTTPS response
+continues to send `Strict-Transport-Security: max-age=63072000; includeSubDomains`.
 
-This is a Cloudflare zone setting, not an application redirect. In the
-family-owned Cloudflare account:
+This remains a Cloudflare zone setting, not an application redirect. To
+re-verify it in the family-owned Cloudflare account:
 
 1. Open **SSL/TLS → Edge Certificates** and enable **Always Use HTTPS**. Confirm
    that the zone's SSL/TLS encryption mode is not `Off`.

@@ -106,7 +106,11 @@ changes, `.github/FUNDING.yml` is where they will appear.
 - **Analytics**: optional; Cloudflare Web Analytics beacon is currently injected
   at the edge (dashboard). Do not also set
   `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` or the beacon will double.
-  `PUBLIC_GA_MEASUREMENT_ID` enables GA4 with click-through conversion events.
+  `PUBLIC_GA_MEASUREMENT_ID` enables GA4 with consent-aware click-through events;
+  advertising storage and Enhanced Measurement remain off to prevent duplicate
+  events and raw menu-query collection.
+  Goals, funnels, UTM naming, dashboard dimensions and honest ROI formulas are
+  defined in [docs/analytics-playbook.md](docs/analytics-playbook.md).
   `PUBLIC_GOOGLE_SITE_VERIFICATION` optionally enables Search Console's HTML-tag
   verification; when empty, no verification tag is emitted. These IDs are
   public build-time values, but the current dashboard-injected analytics setup

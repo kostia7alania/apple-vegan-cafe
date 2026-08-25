@@ -9,7 +9,7 @@
     "parking": null,
     "arrivalNote": null,
     "geo": null,
-    "mapsUrl": null,
+    "mapsUrl": "https://maps.app.goo.gl/ikAWpeC6pjFSqhze8",
     "hours": [
       {
         "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],

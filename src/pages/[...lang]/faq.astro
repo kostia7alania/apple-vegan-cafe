@@ -229,6 +229,8 @@ const jsonld = [
                         rel="noopener"
                         data-analytics-event="order_click"
                         data-analytics-provider={orderingAnalyticsProvider(link.provider)}
+                        data-analytics-placement="faq_delivery"
+                        data-analytics-goal="true"
                         class="inline-flex min-h-11 items-center rounded-lg bg-mango-500 px-4 text-sm font-bold text-ink-900 transition-colors hover:bg-mango-300 focus-visible:outline-mango-300"
                       >
                         {orderingCtaLabel(locale, link.provider)}
@@ -245,6 +247,8 @@ const jsonld = [
                     rel={dietaryContactHref.startsWith('https:') ? 'noopener' : undefined}
                     data-analytics-event="dietary_contact_click"
                     data-analytics-provider={dietaryContact}
+                    data-analytics-placement="faq_dietary"
+                    data-analytics-goal="true"
                     class="font-semibold text-leaf-700 underline decoration-mango-500 decoration-2 underline-offset-4 hover:text-leaf-900"
                   >
                     {dietaryContactLabel} →
