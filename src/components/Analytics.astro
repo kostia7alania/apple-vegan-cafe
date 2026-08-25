@@ -246,7 +246,7 @@ const analyticsEventScript = `
 
     var href = link.getAttribute('href') || '';
     if (!href || href.charAt(0) === '#') return false;
-    if (href.indexOf('tel:') === 0 || href.indexOf('mailto:') === 0) return true;
+    if (href.indexOf('tel:') === 0 || href.indexOf('mailto:') === 0) return false;
     try {
       return new URL(href, window.location.href).origin !== window.location.origin;
     } catch (error) {

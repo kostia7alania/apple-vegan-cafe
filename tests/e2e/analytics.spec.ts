@@ -11,9 +11,11 @@ async function captureAnalytics(page: Page) {
     localStorage.setItem('apple_vegan_cafe_analytics_consent', 'granted');
     const testWindow = window as typeof window & {
       __analyticsEvents: CapturedEvent[];
+      __appleVeganCafeAnalyticsReady: boolean;
       gtag: (command: unknown, eventName?: unknown, params?: unknown) => void;
     };
     testWindow.__analyticsEvents = [];
+    testWindow.__appleVeganCafeAnalyticsReady = true;
     testWindow.gtag = (command, eventName, params) => {
       if (command !== 'event' || typeof eventName !== 'string') return;
       testWindow.__analyticsEvents.push({
@@ -166,6 +168,33 @@ test('goal clicks and impressions keep their provider and CTA placement', async 
     placement: 'home_action_grid',
     provider: 'phone',
   });
+});
+
+test('phone and email goals keep native navigation synchronous', async ({ page }) => {
+  await captureAnalytics(page);
+  await page.goto('/');
+
+  const navigationWasNotCancelled = await page.evaluate(() =>
+    [
+      { eventName: 'phone_click', href: 'tel:+66826797797', provider: 'phone' },
+      { eventName: 'contact_click', href: 'mailto:hello@example.com', provider: 'email' },
+    ].map(({ eventName, href, provider }) => {
+      const link = document.createElement('a');
+      link.href = href;
+      link.dataset.analyticsEvent = eventName;
+      link.dataset.analyticsGoal = '';
+      link.dataset.analyticsProvider = provider;
+      document.body.append(link);
+
+      return link.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, button: 0, cancelable: true }),
+      );
+    }),
+  );
+
+  expect(navigationWasNotCancelled).toEqual([true, true]);
+  await expect.poll(async () => (await capturedEvents(page, 'phone_click')).length).toBe(1);
+  await expect.poll(async () => (await capturedEvents(page, 'contact_click')).length).toBe(1);
 });
 
 test('goal event callback continues same-tab navigation exactly once', async ({ page }) => {
