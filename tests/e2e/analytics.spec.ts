@@ -241,7 +241,9 @@ test('goal event timeout continues same-tab navigation exactly once', async ({ p
   expect(navigationRequests).toBe(1);
 });
 
-test('Google tag starts by default with regional consent safeguards', async ({ page }) => {
+test('Google analytics queues by default and defers the tag until interaction', async ({
+  page,
+}) => {
   let googleTagRequests = 0;
   await page.route('https://www.googletagmanager.com/**', async (route) => {
     googleTagRequests += 1;
@@ -252,7 +254,7 @@ test('Google tag starts by default with regional consent safeguards', async ({ p
   const panel = page.locator('[data-analytics-consent]');
   test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
   await expect(panel).toBeVisible();
-  await expect.poll(() => googleTagRequests).toBe(1);
+  expect(googleTagRequests).toBe(0);
 
   const commands = await page.evaluate(() =>
     (
@@ -275,9 +277,14 @@ test('Google tag starts by default with regional consent safeguards', async ({ p
   expect(
     commands?.some(([command, eventName]) => command === 'event' && eventName === 'page_view'),
   ).toBe(true);
+
+  await page.locator('#main').dispatchEvent('pointerdown');
+  await expect.poll(() => googleTagRequests).toBe(1);
+  await page.locator('#main').dispatchEvent('keydown');
+  expect(googleTagRequests).toBe(1);
 });
 
-test('explicit opt-out persists and blocks future Google tag loads', async ({ page }) => {
+test('keyboard interaction loads the deferred Google tag', async ({ page }) => {
   let googleTagRequests = 0;
   await page.route('https://www.googletagmanager.com/**', async (route) => {
     googleTagRequests += 1;
@@ -287,7 +294,99 @@ test('explicit opt-out persists and blocks future Google tag loads', async ({ pa
 
   const panel = page.locator('[data-analytics-consent]');
   test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
+  expect(googleTagRequests).toBe(0);
+
+  await page.locator('#main').dispatchEvent('keydown');
   await expect.poll(() => googleTagRequests).toBe(1);
+});
+
+test('explicit withdrawal disables an already-loaded Google property', async ({ page }) => {
+  let googleTagRequests = 0;
+  await page.route('https://www.googletagmanager.com/**', async (route) => {
+    googleTagRequests += 1;
+    await route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' });
+  });
+  await page.addInitScript(() => {
+    localStorage.setItem('apple_vegan_cafe_analytics_consent', 'granted');
+  });
+  await page.goto('/');
+
+  const panel = page.locator('[data-analytics-consent]');
+  test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
+  await page.locator('#main').dispatchEvent('pointerdown');
+  await expect.poll(() => googleTagRequests).toBe(1);
+  await page.evaluate(() => {
+    document.cookie = '_ga=analytics-test; Path=/; SameSite=Lax';
+  });
+
+  await page.locator('[data-analytics-consent-open]').click();
+  await panel.locator('[data-analytics-consent-choice="denied"]').click();
+
+  expect(await page.evaluate(() => document.cookie)).not.toContain('_ga=');
+  expect(
+    await page.evaluate(() => {
+      const testWindow = window as typeof window & {
+        __appleVeganCafeAnalyticsDisableProperty?: string;
+        __appleVeganCafeAnalyticsReady?: boolean;
+      };
+      const property = testWindow.__appleVeganCafeAnalyticsDisableProperty;
+      return {
+        disabled: property
+          ? Boolean((window as unknown as Record<string, unknown>)[property])
+          : false,
+        ready: testWindow.__appleVeganCafeAnalyticsReady,
+      };
+    }),
+  ).toEqual({ disabled: true, ready: false });
+
+  const queuedEventsAfterWithdrawal = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          dataLayer?: IArguments[];
+        }
+      ).dataLayer?.filter((entry) => entry[0] === 'event').length ?? 0,
+  );
+  await page.evaluate(() => {
+    const button = document.createElement('button');
+    button.dataset.analyticsEvent = 'menu_click';
+    document.body.append(button);
+    button.click();
+  });
+  expect(
+    await page.evaluate(
+      () =>
+        (
+          window as typeof window & {
+            dataLayer?: IArguments[];
+          }
+        ).dataLayer?.filter((entry) => entry[0] === 'event').length ?? 0,
+    ),
+  ).toBe(queuedEventsAfterWithdrawal);
+
+  await page.reload();
+  expect(googleTagRequests).toBe(1);
+});
+
+test('explicit opt-out persists and blocks future Google tag loads', async ({ page }) => {
+  await page.clock.install();
+  let googleRequests = 0;
+  await page.route(
+    /^https:\/\/(?:www\.)?(?:googletagmanager\.com|google-analytics\.com)\//,
+    async (route) => {
+      googleRequests += 1;
+      await route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' });
+    },
+  );
+  await page.route('https://region1.google-analytics.com/**', async (route) => {
+    googleRequests += 1;
+    await route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' });
+  });
+  await page.goto('/');
+
+  const panel = page.locator('[data-analytics-consent]');
+  test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
+  expect(googleRequests).toBe(0);
   await expect(panel).toBeVisible();
   await expect(panel.locator('[data-analytics-consent-title]')).toBeFocused();
   await page.evaluate(() => {
@@ -313,6 +412,15 @@ test('explicit opt-out persists and blocks future Google tag loads', async ({ pa
           .__appleVeganCafeAnalyticsReady,
     ),
   ).toBe(false);
+  expect(
+    await page.evaluate(() => {
+      const testWindow = window as typeof window & {
+        __appleVeganCafeAnalyticsDisableProperty?: string;
+      };
+      const property = testWindow.__appleVeganCafeAnalyticsDisableProperty;
+      return property ? Boolean((window as unknown as Record<string, unknown>)[property]) : false;
+    }),
+  ).toBe(true);
   const queuedEventsAfterOptOut = await page.evaluate(
     () =>
       (
@@ -338,9 +446,12 @@ test('explicit opt-out persists and blocks future Google tag loads', async ({ pa
     ),
   ).toBe(queuedEventsAfterOptOut);
 
+  await page.clock.fastForward(10_100);
+  expect(googleRequests).toBe(0);
+
   await page.reload();
   await expect(panel).toBeHidden();
-  expect(googleTagRequests).toBe(1);
+  expect(googleRequests).toBe(0);
 
   await consentOpener.click();
   await expect(panel).toBeVisible();
@@ -350,7 +461,16 @@ test('explicit opt-out persists and blocks future Google tag loads', async ({ pa
   expect(
     await page.evaluate(() => localStorage.getItem('apple_vegan_cafe_analytics_consent')),
   ).toBe('granted');
-  await expect.poll(() => googleTagRequests).toBe(2);
+  await expect.poll(() => googleRequests).toBe(1);
+  expect(
+    await page.evaluate(() => {
+      const testWindow = window as typeof window & {
+        __appleVeganCafeAnalyticsDisableProperty?: string;
+      };
+      const property = testWindow.__appleVeganCafeAnalyticsDisableProperty;
+      return property ? Boolean((window as unknown as Record<string, unknown>)[property]) : true;
+    }),
+  ).toBe(false);
 });
 
 test('every declared business goal has an event and stable placement', async ({ page }) => {

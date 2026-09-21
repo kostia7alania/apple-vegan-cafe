@@ -34,6 +34,14 @@ pages. Menu query text and filter query strings are removed from
 are allowed through. This is an owner-selected opt-out policy with regional
 Consent Mode safeguards, not permission to bypass local privacy requirements.
 
+Consent, configuration and the sanitized page view are queued immediately, but
+the non-critical Google runtime loads only after the first interaction outside
+the settings panel or after 10 seconds. An explicit opt-out cancels that load;
+if the runtime is already present, the opt-out disables the GA4 property. An
+explicit opt-in loads it immediately. This keeps the tag out of the critical
+render path. Passive visits shorter than 10 seconds can leave before the queued
+page view reaches GA4, so short-bounce counts are intentionally conservative.
+
 ## Business goals
 
 Mark only events backed by a live CTA as **key events**. They are qualified
