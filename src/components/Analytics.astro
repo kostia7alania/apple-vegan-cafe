@@ -11,14 +11,18 @@ window.dataLayer = window.dataLayer || [];
 window.gtag = window.gtag || function () {
   window.dataLayer.push(arguments);
 };
-var analyticsConsent = 'denied';
+var savedAnalyticsConsent = '';
 try {
-  if (window.localStorage.getItem('apple_vegan_cafe_analytics_consent') === 'granted') {
-    analyticsConsent = 'granted';
+  var storedAnalyticsConsent = window.localStorage.getItem(
+    'apple_vegan_cafe_analytics_consent',
+  );
+  if (storedAnalyticsConsent === 'granted' || storedAnalyticsConsent === 'denied') {
+    savedAnalyticsConsent = storedAnalyticsConsent;
   }
 } catch (error) {
-  analyticsConsent = 'denied';
+  savedAnalyticsConsent = '';
 }
+var analyticsConsent = savedAnalyticsConsent === 'denied' ? 'denied' : 'granted';
 window.gtag('consent', 'default', {
   ad_storage: 'denied',
   ad_user_data: 'denied',
@@ -28,16 +32,22 @@ window.gtag('consent', 'default', {
   personalization_storage: 'denied',
   security_storage: 'granted',
 });
+if (!savedAnalyticsConsent) {
+  // Google requires affirmative consent for analytics storage in the EEA, UK and Switzerland.
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    region: [
+      'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK',
+      'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU',
+      'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
+      'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
+    ],
+  });
+}
 window.__appleVeganCafeAnalyticsReady = false;
 window.__appleVeganCafeAnalyticsLoaded = false;
 window.__appleVeganCafeBootAnalytics = function () {
   if (window.__appleVeganCafeAnalyticsReady) return;
-  window.gtag('consent', 'update', {
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    analytics_storage: 'granted',
-  });
   window.gtag('js', new Date());
   window.gtag('config', ${JSON.stringify(gaMeasurementId)}, {
     allow_ad_personalization_signals: false,
@@ -61,7 +71,7 @@ if (analyticsConsent === 'granted') window.__appleVeganCafeBootAnalytics();
   : null;
 
 // The collector is always present so its behaviour can be tested without loading
-// a third party. With no ID or no granted consent, track() is a network-free no-op.
+// a third party. With no ID or an explicit opt-out, track() is a network-free no-op.
 const analyticsEventScript = `
 (function () {
   var campaignParameters = new Set([
@@ -304,15 +314,16 @@ const analyticsEventScript = `
     } catch (error) {
       // Consent still applies for the current page when storage is unavailable.
     }
-    if (choice === 'granted' && typeof window.__appleVeganCafeBootAnalytics === 'function') {
-      window.__appleVeganCafeBootAnalytics();
-    } else if (typeof window.gtag === 'function') {
+    if (typeof window.gtag === 'function') {
       window.gtag('consent', 'update', {
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied',
         analytics_storage: choice,
       });
+    }
+    if (choice === 'granted' && typeof window.__appleVeganCafeBootAnalytics === 'function') {
+      window.__appleVeganCafeBootAnalytics();
     }
     if (choice === 'denied') {
       window.__appleVeganCafeAnalyticsReady = false;

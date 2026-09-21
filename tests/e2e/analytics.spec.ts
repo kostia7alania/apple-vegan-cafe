@@ -241,79 +241,116 @@ test('goal event timeout continues same-tab navigation exactly once', async ({ p
   expect(navigationRequests).toBe(1);
 });
 
-test('Google tag stays network-free until consent and then sends one page view', async ({
-  page,
-}) => {
+test('Google tag starts by default with regional consent safeguards', async ({ page }) => {
   let googleTagRequests = 0;
   await page.route('https://www.googletagmanager.com/**', async (route) => {
     googleTagRequests += 1;
     await route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' });
   });
-  await page.addInitScript(() => {
-    localStorage.removeItem('apple_vegan_cafe_analytics_consent');
-    const testWindow = window as typeof window & {
-      __analyticsEvents: CapturedEvent[];
-      gtag: (command: unknown, eventName?: unknown, params?: unknown) => void;
-    };
-    testWindow.__analyticsEvents = [];
-    testWindow.gtag = (command, eventName, params) => {
-      if (command !== 'event' || typeof eventName !== 'string') return;
-      testWindow.__analyticsEvents.push({
-        eventName,
-        params: params && typeof params === 'object' ? (params as Record<string, unknown>) : {},
-      });
-    };
+  await page.goto('/');
+
+  const panel = page.locator('[data-analytics-consent]');
+  test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
+  await expect(panel).toBeVisible();
+  await expect.poll(() => googleTagRequests).toBe(1);
+
+  const commands = await page.evaluate(() =>
+    (
+      window as typeof window & {
+        dataLayer?: IArguments[];
+      }
+    ).dataLayer?.map((entry) => Array.from(entry)),
+  );
+  const consentDefaults = commands?.filter(
+    ([command, action]) => command === 'consent' && action === 'default',
+  );
+  expect(consentDefaults?.[0]?.[2]).toMatchObject({
+    ad_storage: 'denied',
+    analytics_storage: 'granted',
+  });
+  expect(consentDefaults?.[1]?.[2]).toMatchObject({
+    analytics_storage: 'denied',
+    region: expect.arrayContaining(['AT', 'CH', 'GB', 'NO']),
+  });
+  expect(
+    commands?.some(([command, eventName]) => command === 'event' && eventName === 'page_view'),
+  ).toBe(true);
+});
+
+test('explicit opt-out persists and blocks future Google tag loads', async ({ page }) => {
+  let googleTagRequests = 0;
+  await page.route('https://www.googletagmanager.com/**', async (route) => {
+    googleTagRequests += 1;
+    await route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' });
   });
   await page.goto('/');
 
   const panel = page.locator('[data-analytics-consent]');
   test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
-  await expect(panel).toBeVisible();
-  expect(googleTagRequests).toBe(0);
-  expect(await capturedEvents(page, 'page_view')).toHaveLength(0);
-
-  await panel.locator('[data-analytics-consent-choice="granted"]').click();
-
   await expect.poll(() => googleTagRequests).toBe(1);
-  await expect.poll(async () => (await capturedEvents(page, 'page_view')).length).toBe(1);
-});
-
-test('consent choice persists and can be changed from the footer when GA4 is enabled', async ({
-  page,
-}) => {
-  await page.route('https://www.googletagmanager.com/**', (route) =>
-    route.fulfill({ body: '/* analytics test loader */', contentType: 'text/javascript' }),
-  );
-  await page.goto('/');
-  await page.evaluate(() => localStorage.removeItem('apple_vegan_cafe_analytics_consent'));
-  await page.reload();
-
-  const panel = page.locator('[data-analytics-consent]');
-  test.skip((await panel.count()) === 0, 'GA4 is disabled for this build');
   await expect(panel).toBeVisible();
   await expect(panel.locator('[data-analytics-consent-title]')).toBeFocused();
+  await page.evaluate(() => {
+    document.cookie = '_ga=analytics-test; Path=/; SameSite=Lax';
+  });
+
+  const consentOpener = page.locator('[data-analytics-consent-open]');
   await page.keyboard.press('Tab');
   await expect(panel.locator('[data-analytics-consent-choice="granted"]')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(panel.locator('[data-analytics-consent-choice="denied"]')).toBeFocused();
-  await panel.locator('[data-analytics-consent-choice="granted"]').click();
+  await panel.locator('[data-analytics-consent-choice="denied"]').click();
   await expect(panel).toBeHidden();
   await expect(page.locator('#main')).toBeFocused();
   expect(
     await page.evaluate(() => localStorage.getItem('apple_vegan_cafe_analytics_consent')),
-  ).toBe('granted');
+  ).toBe('denied');
+  expect(await page.evaluate(() => document.cookie)).not.toContain('_ga=');
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __appleVeganCafeAnalyticsReady?: boolean })
+          .__appleVeganCafeAnalyticsReady,
+    ),
+  ).toBe(false);
+  const queuedEventsAfterOptOut = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          dataLayer?: IArguments[];
+        }
+      ).dataLayer?.filter((entry) => entry[0] === 'event').length ?? 0,
+  );
+  await page.evaluate(() => {
+    const button = document.createElement('button');
+    button.dataset.analyticsEvent = 'menu_click';
+    document.body.append(button);
+    button.click();
+  });
+  expect(
+    await page.evaluate(
+      () =>
+        (
+          window as typeof window & {
+            dataLayer?: IArguments[];
+          }
+        ).dataLayer?.filter((entry) => entry[0] === 'event').length ?? 0,
+    ),
+  ).toBe(queuedEventsAfterOptOut);
 
   await page.reload();
   await expect(panel).toBeHidden();
-  const consentOpener = page.locator('[data-analytics-consent-open]');
+  expect(googleTagRequests).toBe(1);
+
   await consentOpener.click();
   await expect(panel).toBeVisible();
   await expect(panel.locator('[data-analytics-consent-title]')).toBeFocused();
-  await panel.locator('[data-analytics-consent-choice="denied"]').click();
+  await panel.locator('[data-analytics-consent-choice="granted"]').click();
   await expect(consentOpener).toBeFocused();
   expect(
     await page.evaluate(() => localStorage.getItem('apple_vegan_cafe_analytics_consent')),
-  ).toBe('denied');
+  ).toBe('granted');
+  await expect.poll(() => googleTagRequests).toBe(2);
 });
 
 test('every declared business goal has an event and stable placement', async ({ page }) => {
