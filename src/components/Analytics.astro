@@ -11,14 +11,21 @@ window.dataLayer = window.dataLayer || [];
 window.gtag = window.gtag || function () {
   window.dataLayer.push(arguments);
 };
-var analyticsConsent = 'denied';
+var savedAnalyticsConsent = '';
 try {
-  if (window.localStorage.getItem('apple_vegan_cafe_analytics_consent') === 'granted') {
-    analyticsConsent = 'granted';
+  var storedAnalyticsConsent = window.localStorage.getItem(
+    'apple_vegan_cafe_analytics_consent',
+  );
+  if (storedAnalyticsConsent === 'granted' || storedAnalyticsConsent === 'denied') {
+    savedAnalyticsConsent = storedAnalyticsConsent;
   }
 } catch (error) {
-  analyticsConsent = 'denied';
+  savedAnalyticsConsent = '';
 }
+var analyticsConsent = savedAnalyticsConsent === 'denied' ? 'denied' : 'granted';
+var analyticsDisableProperty = 'ga-disable-' + ${JSON.stringify(gaMeasurementId)};
+window.__appleVeganCafeAnalyticsDisableProperty = analyticsDisableProperty;
+window[analyticsDisableProperty] = analyticsConsent === 'denied';
 window.gtag('consent', 'default', {
   ad_storage: 'denied',
   ad_user_data: 'denied',
@@ -28,16 +35,64 @@ window.gtag('consent', 'default', {
   personalization_storage: 'denied',
   security_storage: 'granted',
 });
+if (!savedAnalyticsConsent) {
+  // Google requires affirmative consent for analytics storage in the EEA, UK and Switzerland.
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    region: [
+      'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK',
+      'EE', 'ES', 'FI', 'FR', 'GB', 'GR', 'HR', 'HU',
+      'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
+      'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
+    ],
+  });
+}
 window.__appleVeganCafeAnalyticsReady = false;
 window.__appleVeganCafeAnalyticsLoaded = false;
+var analyticsLoadTimer = null;
+var analyticsInteractionEvents = ['pointerdown', 'keydown'];
+var loadAnalyticsOnInteraction = function (event) {
+  if (
+    event.target instanceof Element &&
+    event.target.closest('[data-analytics-consent]')
+  ) return;
+  window.__appleVeganCafeLoadAnalytics();
+};
+window.__appleVeganCafeCancelScheduledAnalytics = function () {
+  analyticsInteractionEvents.forEach(function (eventName) {
+    window.removeEventListener(eventName, loadAnalyticsOnInteraction, true);
+  });
+  if (analyticsLoadTimer !== null) {
+    window.clearTimeout(analyticsLoadTimer);
+    analyticsLoadTimer = null;
+  }
+};
+window.__appleVeganCafeLoadAnalytics = function () {
+  if (
+    window.__appleVeganCafeAnalyticsReady !== true ||
+    window.__appleVeganCafeAnalyticsLoaded
+  ) return false;
+  window.__appleVeganCafeAnalyticsLoaded = true;
+  window.__appleVeganCafeCancelScheduledAnalytics();
+  var googleTag = document.createElement('script');
+  googleTag.async = true;
+  googleTag.src = ${gaScriptUrl};
+  document.head.appendChild(googleTag);
+  return true;
+};
+window.__appleVeganCafeScheduleAnalytics = function () {
+  if (
+    window.__appleVeganCafeAnalyticsReady !== true ||
+    window.__appleVeganCafeAnalyticsLoaded ||
+    analyticsLoadTimer !== null
+  ) return;
+  analyticsInteractionEvents.forEach(function (eventName) {
+    window.addEventListener(eventName, loadAnalyticsOnInteraction, true);
+  });
+  analyticsLoadTimer = window.setTimeout(window.__appleVeganCafeLoadAnalytics, 10000);
+};
 window.__appleVeganCafeBootAnalytics = function () {
   if (window.__appleVeganCafeAnalyticsReady) return;
-  window.gtag('consent', 'update', {
-    ad_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    analytics_storage: 'granted',
-  });
   window.gtag('js', new Date());
   window.gtag('config', ${JSON.stringify(gaMeasurementId)}, {
     allow_ad_personalization_signals: false,
@@ -47,13 +102,7 @@ window.__appleVeganCafeBootAnalytics = function () {
     transport_type: 'beacon',
   });
   window.__appleVeganCafeAnalyticsReady = true;
-  if (!window.__appleVeganCafeAnalyticsLoaded) {
-    var googleTag = document.createElement('script');
-    googleTag.async = true;
-    googleTag.src = ${gaScriptUrl};
-    document.head.appendChild(googleTag);
-    window.__appleVeganCafeAnalyticsLoaded = true;
-  }
+  window.__appleVeganCafeScheduleAnalytics();
   window.dispatchEvent(new Event('apple-vegan-cafe:analytics-ready'));
 };
 if (analyticsConsent === 'granted') window.__appleVeganCafeBootAnalytics();
@@ -61,7 +110,7 @@ if (analyticsConsent === 'granted') window.__appleVeganCafeBootAnalytics();
   : null;
 
 // The collector is always present so its behaviour can be tested without loading
-// a third party. With no ID or no granted consent, track() is a network-free no-op.
+// a third party. With no ID or an explicit opt-out, track() is a network-free no-op.
 const analyticsEventScript = `
 (function () {
   var campaignParameters = new Set([
@@ -289,12 +338,18 @@ const analyticsEventScript = `
   }
 
   function clearAnalyticsCookies() {
+    var cookieDomains = [window.location.hostname];
+    if (window.location.hostname === 'www.apple-vegan-cafe.com') {
+      cookieDomains.push('apple-vegan-cafe.com');
+    }
     document.cookie.split(';').forEach(function (cookie) {
       var name = cookie.split('=')[0].trim();
       if (name !== '_ga' && name.indexOf('_ga_') !== 0) return;
       document.cookie = name + '=; Max-Age=0; Path=/; SameSite=Lax';
-      document.cookie =
-        name + '=; Max-Age=0; Path=/; Domain=.' + window.location.hostname + '; SameSite=Lax';
+      cookieDomains.forEach(function (domain) {
+        document.cookie =
+          name + '=; Max-Age=0; Path=/; Domain=.' + domain + '; SameSite=Lax';
+      });
     });
   }
 
@@ -304,9 +359,17 @@ const analyticsEventScript = `
     } catch (error) {
       // Consent still applies for the current page when storage is unavailable.
     }
-    if (choice === 'granted' && typeof window.__appleVeganCafeBootAnalytics === 'function') {
-      window.__appleVeganCafeBootAnalytics();
-    } else if (typeof window.gtag === 'function') {
+    var analyticsDisableProperty = window.__appleVeganCafeAnalyticsDisableProperty;
+    if (typeof analyticsDisableProperty === 'string') {
+      window[analyticsDisableProperty] = choice === 'denied';
+    }
+    if (choice === 'denied') {
+      window.__appleVeganCafeAnalyticsReady = false;
+      if (typeof window.__appleVeganCafeCancelScheduledAnalytics === 'function') {
+        window.__appleVeganCafeCancelScheduledAnalytics();
+      }
+    }
+    if (typeof window.gtag === 'function') {
       window.gtag('consent', 'update', {
         ad_storage: 'denied',
         ad_user_data: 'denied',
@@ -314,8 +377,13 @@ const analyticsEventScript = `
         analytics_storage: choice,
       });
     }
+    if (choice === 'granted' && typeof window.__appleVeganCafeBootAnalytics === 'function') {
+      window.__appleVeganCafeBootAnalytics();
+      if (typeof window.__appleVeganCafeLoadAnalytics === 'function') {
+        window.__appleVeganCafeLoadAnalytics();
+      }
+    }
     if (choice === 'denied') {
-      window.__appleVeganCafeAnalyticsReady = false;
       clearAnalyticsCookies();
     }
   }

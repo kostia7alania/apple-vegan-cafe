@@ -6,7 +6,7 @@ an outbound click a completed order.
 
 ## Current production state
 
-Verified 2026-08-25:
+Verified 2026-09-21:
 
 - Cloudflare Web Analytics is active at the edge for page views and Web Vitals.
 - Cloudflare does not support custom events or UTM reports, so it cannot be the
@@ -15,23 +15,32 @@ Verified 2026-08-25:
   `Apple Vegan Cafe Website` were created with Thailand reporting time and THB.
   Enhanced Measurement is off, so sanitized custom page views and CTA events
   are the only site events. The approved stream ID is stored in the GitHub
-  repository variable `PUBLIC_GA_MEASUREMENT_ID`; the rendered site still makes
-  no Google request until a guest chooses Allow.
+  repository variable `PUBLIC_GA_MEASUREMENT_ID`. The rendered site starts
+  privacy-reduced analytics by default unless the guest has explicitly opted out.
 - Do not set `PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN`; the edge already injects
   that beacon and a second token would double-count page views.
 
-When enabled, GA4 starts with analytics/ad storage denied, Google signals and ad
-personalisation disabled, and no site-side user ID. A compact EN/TH/RU consent
-control can grant analytics storage and can be reopened from the footer to
-withdraw that choice. Advertising storage stays denied. Menu query text and
-filter query strings are removed from `page_location`; only the controlled
-`utm_*` and Google Ads attribution parameters are allowed through.
+GA4 analytics storage is granted by default outside the EEA, UK and Switzerland.
+Those regulated regions stay denied until the guest explicitly grants consent,
+while Google Consent Mode can retain cookieless measurement. Advertising
+storage, Google signals, ad personalisation and site-side user IDs stay disabled
+everywhere. The EN/TH/RU control explains the default on the first visit and is
+available from the footer at all times.
 
-This uses basic Consent Mode: before a guest chooses Allow, the Google tag is
-not downloaded and no GA4 measurement is sent. Granting consent loads the tag
-and sends that page's single sanitized `page_view`; later events use analytics
-storage until the guest withdraws consent. This deliberately gives up
-cookieless modelling in exchange for a faster first visit and stricter privacy.
+An explicit opt-out is persisted, immediately pauses site event dispatch,
+clears first-party GA cookies and prevents the Google tag from loading on later
+pages. Menu query text and filter query strings are removed from
+`page_location`; only controlled `utm_*` and Google Ads attribution parameters
+are allowed through. This is an owner-selected opt-out policy with regional
+Consent Mode safeguards, not permission to bypass local privacy requirements.
+
+Consent, configuration and the sanitized page view are queued immediately, but
+the non-critical Google runtime loads only after the first interaction outside
+the settings panel or after 10 seconds. An explicit opt-out cancels that load;
+if the runtime is already present, the opt-out disables the GA4 property. An
+explicit opt-in loads it immediately. This keeps the tag out of the critical
+render path. Passive visits shorter than 10 seconds can leave before the queued
+page view reaches GA4, so short-bounce counts are intentionally conservative.
 
 ## Business goals
 
