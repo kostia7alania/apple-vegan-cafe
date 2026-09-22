@@ -1,18 +1,14 @@
 # Reusable Cloudflare deployment, called by CI only after the full verification
 # job succeeds for the same main-branch commit.
-# Requires the CLOUDFLARE_API_TOKEN repository secret
+# Requires the CLOUDFLARE_API_TOKEN secret in the production environment
 # (create token: dash.cloudflare.com/profile/api-tokens → "Edit Cloudflare
-# Workers" template; add it yourself: repo Settings → Secrets → Actions).
+# Workers" template; store it under repo Settings → Environments → production).
 # A missing secret fails the release visibly instead of reporting a green no-op.
 # This replaces the Workers Builds git integration — no GitHub App needed.
 name: Verified production deploy
 
 on:
-  workflow_call:
-    secrets:
-      CLOUDFLARE_API_TOKEN:
-        description: Cloudflare token used by Wrangler for the production deploy
-        required: true
+  workflow_call: {}
 
 concurrency:
   group: production-deploy
@@ -21,6 +17,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://apple-vegan-cafe.com/
     steps:
       - name: Require deploy token
         env:
